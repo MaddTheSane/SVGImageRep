@@ -1,0 +1,6 @@
+This Xcode project builds a Cocoa bundle that houses the SVGImageRep class,
+a class that allows Cocoa apps to use SVG images as NSImages. This is based on
+Alexander Malmberg's code for GNUstep.
+
+Included is libsvg, libpng, and libjpeg. These are needed by the bundle to load
+SVGs.
