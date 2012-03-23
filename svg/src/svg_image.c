@@ -271,8 +271,7 @@ _svg_image_read_png (const char		*filename,
 
     /* expand gray bit depth if needed */
     if (color_type == PNG_COLOR_TYPE_GRAY && depth < 8)
-	//png_set_gray_1_2_4_to_8 (png);
-		;
+	png_set_expand_gray_1_2_4_to_8 (png);
 
     /* transform transparency to alpha */
     if (png_get_valid(png, info, PNG_INFO_tRNS))
