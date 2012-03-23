@@ -60,7 +60,7 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 
 @implementation SVGRenderContext
 
-@synthesize size;
+@synthesize size, ctxt;
 
 -(void) prepareRender: (double)a_scale
 {
@@ -133,10 +133,13 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 
 -(void) setColor: (svg_color_t *)c
 {
-	DPSsetrgbcolor(ctxt,
-		svg_color_get_red(c)/255.0,
-		svg_color_get_green(c)/255.0,
-		svg_color_get_blue(c)/255.0);
+	CGContextRef tempCtx =(CGContextRef)[ctxt graphicsPort];
+	
+	//Which color is being set? Set them both!
+	CGColorRef tempColor = CGColorCreateGenericRGB(svg_color_get_red(c)/255.0, svg_color_get_green(c)/255.0, svg_color_get_blue(c)/255.0, 1.0);
+	CGContextSetFillColorWithColor(tempCtx, tempColor);
+	CGContextSetStrokeColorWithColor(tempCtx, tempColor);
+	CGColorRelease(tempColor);
 }
 
 
@@ -208,9 +211,10 @@ A few methods based on code in libxsvg:
     x2 = x3 + t * sin (th1);
     y2 = y3 - t * cos (th1);
 
-    DPScurveto(ctxt, a00 * x1 + a01 * y1, a10 * x1 + a11 * y1,
-		a00 * x2 + a01 * y2, a10 * x2 + a11 * y2,
-		a00 * x3 + a01 * y3, a10 * x3 + a11 * y3);
+	CGContextRef tempCtx =(CGContextRef)[ctxt graphicsPort];
+
+	CGContextAddCurveToPoint(tempCtx, a00 * x1 + a01 * y1, a10 * x1 + a11 * y1, a00 * x2 + a01 * y2, a10 * x2 + a11 * y2, a00 * x3 + a01 * y3, a10 * x3 + a11 * y3);
+	
 }
 
 /**
@@ -243,10 +247,10 @@ A few methods based on code in libxsvg:
     double cury;
 
 	{
-		float x,y;
-		DPScurrentpoint(ctxt,&x,&y);
-		curx=x;
-		cury=y;
+		CGContextRef tempCtx =(CGContextRef)[ctxt graphicsPort];
+		CGPoint tempPoint =CGContextGetPathCurrentPoint(tempCtx);
+		curx=tempPoint.x;
+		cury=tempPoint.y;
 	}
 
     sin_th = sin (x_axis_rotation * (M_PI / 180.0));
@@ -333,27 +337,38 @@ A few methods based on code in libxsvg:
 	if (crx>cw/2) crx=cw/2;
 	if (cry>ch/2) cry=ch/2;
 
+	CGContextRef tempCtx =(CGContextRef)[ctxt graphicsPort];
+	
 	switch (current->fill_paint.type)
 	{
-	case SVG_PAINT_TYPE_COLOR:
+		case SVG_PAINT_TYPE_GRADIENT:
+#warning SVG_PAINT_TYPE_GRADIENT not handled yet!
+			break;
+			
+		case SVG_PAINT_TYPE_PATTERN:
+#warning SVG_PAINT_TYPE_PATTERN not handled yet!
+			break;
+
+			
+		case SVG_PAINT_TYPE_COLOR:
 		[self setColor: &current->fill_paint.p.color];
-		DPSsetalpha(ctxt,current->fill_opacity);
+			CGContextSetAlpha(tempCtx, current->fill_opacity);
 		if (rx>0 || ry>0)
 		{
-			DPSmoveto(ctxt, cx + crx, cy);
-			DPSlineto(ctxt, cx + cw - crx, cy);
+			CGContextMoveToPoint(tempCtx, cx + crx, cy);
+			CGContextAddLineToPoint(tempCtx, cx + cw - crx, cy);
 			[self arcTo: crx : cry : 0 : 0 : 1 : cx + cw : cy + cry];
-			DPSlineto(ctxt, cx + cw, cy + ch - cry);
+			CGContextAddLineToPoint(tempCtx, cx + cw, cy + ch - cry);
 			[self arcTo: crx : cry : 0 : 0 : 1 : cx + cw - crx : cy + ch];
-			DPSlineto(ctxt, cx + crx, cy + ch);
+			CGContextAddLineToPoint(tempCtx, cx + crx, cy + ch);
 			[self arcTo: crx : cry : 0 : 0 : 1 : cx : cy + ch - cry];
-			DPSlineto(ctxt, cx, cy + cry);
+			CGContextAddLineToPoint(tempCtx, cx, cy + cry);
 			[self arcTo: crx : cry : 0 : 0 : 1 : cx + crx : cy];
-			DPSclosepath(ctxt);
-			DPSfill(ctxt);
+			CGContextClosePath(tempCtx);
+			CGContextFillPath(tempCtx);
 		}
 		else
-			DPSrectfill(ctxt,cx,cy,cw,ch);
+			CGContextFillRect(tempCtx, CGRectMake(cx, cy, cw, ch));
 		break;
 /*
 	case SVG_PAINT_TYPE_CURRENTCOLOR:
@@ -383,10 +398,18 @@ A few methods based on code in libxsvg:
 
 	switch (current->stroke_paint.type)
 	{
+		case SVG_PAINT_TYPE_GRADIENT:
+#warning SVG_PAINT_TYPE_GRADIENT not handled yet!
+			break;
+			
+		case SVG_PAINT_TYPE_PATTERN:
+#warning SVG_PAINT_TYPE_PATTERN not handled yet!
+			break;
+			
 	case SVG_PAINT_TYPE_COLOR:
 		[self setColor: &current->stroke_paint.p.color];
-		DPSsetalpha(ctxt,current->stroke_opacity);
-		DPSrectstroke(ctxt,cx,cy,cw,ch);
+			CGContextSetAlpha(tempCtx, current->fill_opacity);
+			CGContextStrokeRect(tempCtx, CGRectMake(cx, cy, cw, ch));
 		break;
 /*
 	case SVG_PAINT_TYPE_CURRENTCOLOR:
@@ -412,12 +435,14 @@ A few methods based on code in libxsvg:
 	rx=[self lengthToPoints: lrx];
 	ry=[self lengthToPoints: lry];
 
-	DPSmoveto(ctxt, cx + rx, cy);
-	DPScurveto(ctxt, cx + rx, cy + ry * SVG_ARC_MAGIC, cx + rx * SVG_ARC_MAGIC, cy + ry, cx, cy + ry);
-	DPScurveto(ctxt, cx - rx * SVG_ARC_MAGIC, cy + ry, cx - rx, cy + ry * SVG_ARC_MAGIC, cx - rx, cy);
-	DPScurveto(ctxt, cx - rx, cy - ry * SVG_ARC_MAGIC, cx - rx * SVG_ARC_MAGIC, cy - ry, cx, cy - ry);
-	DPScurveto(ctxt, cx + rx * SVG_ARC_MAGIC, cy - ry, cx + rx, cy - ry * SVG_ARC_MAGIC, cx + rx, cy);
-	DPSclosepath(ctxt);
+	CGContextRef tempCtx =(CGContextRef)[ctxt graphicsPort];
+	
+	CGContextMoveToPoint(tempCtx, cx + rx, cy);
+	CGContextAddCurveToPoint(tempCtx, cx + rx, cy + ry * SVG_ARC_MAGIC, cx + rx * SVG_ARC_MAGIC, cy + ry, cx, cy + ry);
+	CGContextAddCurveToPoint(tempCtx, cx - rx * SVG_ARC_MAGIC, cy + ry, cx - rx, cy + ry * SVG_ARC_MAGIC, cx - rx, cy);
+	CGContextAddCurveToPoint(tempCtx, cx - rx, cy - ry * SVG_ARC_MAGIC, cx - rx * SVG_ARC_MAGIC, cy - ry, cx, cy - ry);
+	CGContextAddCurveToPoint(tempCtx, cx + rx * SVG_ARC_MAGIC, cy - ry, cx + rx, cy - ry * SVG_ARC_MAGIC, cx + rx, cy);
+	CGContextClosePath(tempCtx);
 	[self renderPath];
 
 	return SVG_STATUS_SUCCESS;
@@ -430,6 +455,7 @@ End of methods based on libxsvg code.
 
 -(svg_status_t) beginGroup: (double)opacity
 {
+	CGContextRef tempCtx =(CGContextRef)[ctxt graphicsPort];
 	if (current)
 	{
 		if (!result)
@@ -439,9 +465,10 @@ End of methods based on libxsvg code.
 		}
 		current=[current copy];
 
-		DPSgsave(ctxt);
+		CGContextSaveGState(tempCtx);
 		if (opacity<1.0)
 		{
+			CGAffineTransform ctm = CGContextGetCTM(tempCtx);
 			//NSAffineTransform *ctm=GSCurrentCTM(ctxt);
 			//NSAffineTransform *ctm = [NSAffineTransform transform];
 
@@ -454,17 +481,19 @@ End of methods based on libxsvg code.
 			[current->window setReleasedWhenClosed: NO];
 			//[GSCurrentServer() windowdevice: [current->window windowNumber]];
 			//GSSetCTM(ctxt,ctm);
+			CGContextConcatCTM(tempCtx, ctm);
 
-			DPSgsave(ctxt);
-			DPSinitmatrix(ctxt);
-			DPSinitclip(ctxt);
-			DPScompositerect(ctxt,0,0,size.width,size.height,NSCompositeClear);
-			DPSgrestore(ctxt);
+			CGContextSaveGState(tempCtx);
+			//TODO: find out what these do and find substitutes.
+			//DPSinitmatrix(ctxt);
+			//DPSinitclip(ctxt);
+			//DPScompositerect(ctxt,0,0,size.width,size.height,NSCompositeClear);
+			CGContextRestoreGState(tempCtx);
 		}
 	}
 	else
 	{
-		DPSgsave(ctxt);
+		CGContextSaveGState(tempCtx);
 		current=[[SVGRenderState alloc] init];
 	}
 	[states addObject: current];
@@ -475,16 +504,19 @@ End of methods based on libxsvg code.
 
 -(svg_status_t) endGroup: (double)opacity
 {
-	DPSgrestore(ctxt);
+	CGContextRef tempCtx =(CGContextRef)[ctxt graphicsPort];
+
+	CGContextRestoreGState(tempCtx);
 
 	if (opacity!=1.0)
 	{
 		NSWindow *w=[current->window retain];
-		DPSgsave(ctxt);
-		DPSinitmatrix(ctxt);
-		DPSinitclip(ctxt);
-		DPSdissolve(ctxt,0,0,size.width,size.height,[w gState],0,0,opacity);
-		DPSgrestore(ctxt);
+		CGContextSaveGState(tempCtx);
+		//TODO: Find out how to do this in CG
+		//DPSinitmatrix(ctxt);
+		//DPSinitclip(ctxt);
+		//DPSdissolve(ctxt,0,0,size.width,size.height,[w gState],0,0,opacity);
+		CGContextRestoreGState(tempCtx);
 	}
 
 	[states removeObjectAtIndex: [states count]-1];
@@ -543,19 +575,20 @@ End of methods based on libxsvg code.
 
 -(svg_status_t) renderPath
 {
+	CGContextRef tempCtx =(CGContextRef)[ctxt graphicsPort];
 	switch (current->fill_paint.type)
 	{
 	case SVG_PAINT_TYPE_COLOR:
 		[self setColor: &current->fill_paint.p.color];
-		DPSsetalpha(ctxt,current->fill_opacity);
+			CGContextSetAlpha(tempCtx, current->fill_opacity);
 		if (current->stroke_paint.type!=SVG_PAINT_TYPE_NONE)
-			DPSgsave(ctxt);
+			CGContextSaveGState(tempCtx);
 		if (current->fill_rule)
 			DPSeofill(ctxt);
 		else
 			DPSfill(ctxt);
 		if (current->stroke_paint.type!=SVG_PAINT_TYPE_NONE)
-			DPSgrestore(ctxt);
+			CGContextRestoreGState(tempCtx);
 		break;
 /*
 	case SVG_PAINT_TYPE_CURRENTCOLOR:
@@ -579,7 +612,7 @@ End of methods based on libxsvg code.
 	{
 	case SVG_PAINT_TYPE_COLOR:
 		[self setColor: &current->stroke_paint.p.color];
-		DPSsetalpha(ctxt,current->stroke_opacity);
+		CGContextSetAlpha(tempCtx, current->fill_opacity);
 		DPSstroke(ctxt);
 		break;
 /*
@@ -599,6 +632,7 @@ End of methods based on libxsvg code.
 
 -(svg_status_t) renderText: (const unsigned char *)utf8
 {
+	CGContextRef tempCtx =(CGContextRef)[ctxt graphicsPort];
 	NSFont *f;
 	NSFontManager *fm;
 	NSArray *fonts,*font;
@@ -684,7 +718,8 @@ End of methods based on libxsvg code.
 	{
 	case SVG_PAINT_TYPE_COLOR:
 		[self setColor: &current->fill_paint.p.color];
-		DPSsetalpha(ctxt,current->fill_opacity);
+			CGContextSetAlpha(tempCtx, current->fill_opacity);
+
 		DPSshow(ctxt,utf8);
 		break;
 /*
@@ -702,7 +737,7 @@ End of methods based on libxsvg code.
 	{
 	case SVG_PAINT_TYPE_COLOR:
 		[self setColor: &current->stroke_paint.p.color];
-		DPSsetalpha(ctxt,current->stroke_opacity);
+		CGContextSetAlpha(tempCtx, current->stroke_opacity);
 		DPScharpath(ctxt,utf8,0);
 		DPSstroke(ctxt);
 		break;
@@ -731,6 +766,7 @@ End of methods based on libxsvg code.
 	static svg_status_t r_##name(void *closure, ##args) \
 	{ \
 		SVGRenderContext *self=(SVGRenderContext *)closure; \
+		CGContextRef CGCtx =(CGContextRef)[[self ctxt] graphicsPort]; \
 
 
 static int indent=1;
@@ -748,10 +784,11 @@ static svg_status_t r_begin_group(void *closure,double opacity)
 static svg_status_t r_begin_element(void *closure)
 {
 	SVGRenderContext *self=(SVGRenderContext *)closure;
+	CGContextRef CGCtx =(CGContextRef)[[self ctxt] graphicsPort];
 //	I;printf("begin_element()\n");
 	indent+=3;
 
-	DPSgsave(self->ctxt);
+	CGContextSaveGState(CGCtx);
 	self->current=[self->current copy];
 	[self->states addObject: self->current];
 	[self->current release];
@@ -762,10 +799,11 @@ static svg_status_t r_begin_element(void *closure)
 static svg_status_t r_end_element(void *closure)
 {
 	SVGRenderContext *self=(SVGRenderContext *)closure;
+	CGContextRef CGCtx =(CGContextRef)[[self ctxt] graphicsPort];
 	indent-=3;
 //	I;printf("end_element()\n");
 
-	DPSgrestore(self->ctxt);
+	CGContextRestoreGState(CGCtx);
 	[self->states removeObjectAtIndex: [self->states count]-1];
 	if ([self->states count])
 		self->current=[self->states objectAtIndex: [self->states count]-1];

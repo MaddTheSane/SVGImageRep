@@ -63,6 +63,7 @@
 	NSMutableArray *states;
 }
 
+@property (readonly) NSGraphicsContext *ctxt;
 @property (readonly) NSSize size;
 
 -(void) prepareRender: (double)a_scale;
