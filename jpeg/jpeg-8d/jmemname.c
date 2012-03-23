@@ -22,6 +22,8 @@ extern void * malloc JPP((size_t size));
 extern void free JPP((void *ptr));
 #endif
 
+#include <unistd.h>
+
 #ifndef SEEK_SET		/* pre-ANSI systems may not define this; */
 #define SEEK_SET  0		/* if not, assume 0 is correct */
 #endif
