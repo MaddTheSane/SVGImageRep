@@ -2,6 +2,9 @@
 // Prefix header for all source files of the 'jpeg' target in the 'jpeg' project
 //
 
-#ifdef __OBJC__
-	#import <Cocoa/Cocoa.h>
-#endif
+#include <string.h>
+#include <stdio.h>
+#define JPEG_INTERNALS
+#include "jinclude.h"
+#include "jpeglib.h"
+#include "jerror.h"

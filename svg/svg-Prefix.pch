@@ -2,6 +2,9 @@
 // Prefix header for all source files of the 'svg' target in the 'svg' project
 //
 
-#ifdef __OBJC__
-	#import <Cocoa/Cocoa.h>
-#endif
+#include <string.h>
+#include <stdio.h>
+#include "jpeglib.h"
+#include "jerror.h"
+#include "png.h"
+#include "svg.h"
