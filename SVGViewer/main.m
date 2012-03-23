@@ -28,7 +28,7 @@ copyright 2002, 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 @end
 
 
-@interface SVGViewer : NSObject
+@interface SVGViewer : NSObject <NSApplicationDelegate>
 {
   NSMenu *_recentMenu;
 }
