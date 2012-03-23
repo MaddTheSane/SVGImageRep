@@ -14,15 +14,13 @@
 			<key>CFBundleTypeIconFile</key>
 			<string></string>
 			<key>CFBundleTypeName</key>
-			<string>DocumentType</string>
-			<key>CFBundleTypeOSTypes</key>
-			<array>
-				<string>????</string>
-			</array>
+			<string>SVG Image</string>
 			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>NSDocumentClass</key>
-			<string>Document</string>
+			<string>Viewer</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>public.svg-image</string>
+			</array>
 		</dict>
 	</array>
 	<key>CFBundleExecutable</key>

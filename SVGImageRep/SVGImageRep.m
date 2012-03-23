@@ -32,8 +32,8 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 
 	if (new->dash)
 	{
-		new->dash=malloc(sizeof(float)*new->num_dash);
-		memcpy(new->dash,dash,sizeof(float)*new->num_dash);
+		new->dash = malloc(sizeof(float)*new->num_dash);
+		memcpy(new->dash, dash, sizeof(float)*new->num_dash);
 	}
 
 	return new;
@@ -48,9 +48,19 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 	[super dealloc];
 }
 
+- (void)finalize
+{
+	if (dash)
+		free(dash);
+
+	[super finalize];
+}
+
 @end
 
 @implementation SVGRenderContext
+
+@synthesize size;
 
 -(void) prepareRender: (double)a_scale
 {
@@ -432,7 +442,8 @@ End of methods based on libxsvg code.
 		DPSgsave(ctxt);
 		if (opacity<1.0)
 		{
-			NSAffineTransform *ctm=GSCurrentCTM(ctxt);
+			//NSAffineTransform *ctm=GSCurrentCTM(ctxt);
+			//NSAffineTransform *ctm = [NSAffineTransform transform];
 
 			[current->window release]; current->window = nil;
 			current->window = [[NSWindow alloc]
@@ -1211,11 +1222,16 @@ r_render_image
 
 +(NSArray *) imageUnfilteredFileTypes
 {
-static NSArray *list;
+static NSArray *list = nil;
 //	printf("%s\n",__PRETTY_FUNCTION__);
 	if (!list)
-		list=[[NSArray arrayWithObjects: @"svg",nil] retain];
+		list=[[NSArray arrayWithObject: @"svg"] retain];
 	return list;
+}
+
++ (NSArray *)imageUnfilteredTypes
+{
+	return [NSArray arrayWithObject:@"public.svg-image"];
 }
 
 +(NSArray *) imageUnfilteredPasteboardTypes
@@ -1231,7 +1247,7 @@ static NSArray *list;
 	svg_status_t status;
 //	printf("%s\n",__PRETTY_FUNCTION__);
 	svg_create(&svg_test);
-	status=svg_parse_buffer(svg_test,[d bytes],[d length]);
+	status = svg_parse_buffer(svg_test,[d bytes],[d length]);
 	svg_destroy(svg_test);
 	return status==SVG_STATUS_SUCCESS;
 }
@@ -1260,7 +1276,7 @@ static NSArray *list;
 		return nil;
 	}
 
-	[self setColorSpaceName: NSDeviceRGBColorSpace];
+	[self setColorSpaceName: NSCalibratedRGBColorSpace];
 	[self setAlpha: YES];
 	[self setBitsPerSample: 0];
 	[self setOpaque: NO];
@@ -1271,7 +1287,7 @@ static NSArray *list;
 		[svg_render_context prepareRender: 1.0];
 		svg_render(svg,&engine,svg_render_context);
 		[svg_render_context finishRender];
-		[self setSize: NSMakeSize(svg_render_context->size.width, svg_render_context->size.height)];
+		[self setSize: [svg_render_context size]];
 		[svg_render_context release];
 //		printf("size %gx%g\n",[self size].width,[self size].height);
 	}
@@ -1284,6 +1300,13 @@ static NSArray *list;
 //	printf("%s\n",__PRETTY_FUNCTION__);
 	svg_destroy(svg);
 	[super dealloc];
+}
+
+- (void)finalize
+{
+	svg_destroy(svg);
+
+	[super finalize];
 }
 
 

@@ -63,6 +63,8 @@
 	NSMutableArray *states;
 }
 
+@property (readonly) NSSize size;
+
 -(void) prepareRender: (double)a_scale;
 -(void) finishRender;
 
