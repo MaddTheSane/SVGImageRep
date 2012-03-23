@@ -9,13 +9,10 @@
 /* Begin PBXBuildFile section */
 		553711AB151BCF7300F8848A /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 553711AA151BCF7300F8848A /* ApplicationServices.framework */; };
 		553711C0151BCF9A00F8848A /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55AFA493151AA3BC00B5351D /* Cocoa.framework */; };
-		553711C6151BCF9A00F8848A /* png.m in Sources */ = {isa = PBXBuildFile; fileRef = 553711C5151BCF9A00F8848A /* png.m */; };
 		553712C8151BD0CD00F8848A /* cderror.h in Headers */ = {isa = PBXBuildFile; fileRef = 55371210151BD0CD00F8848A /* cderror.h */; };
 		553712C9151BD0CD00F8848A /* cdjpeg.c in Sources */ = {isa = PBXBuildFile; fileRef = 55371211151BD0CD00F8848A /* cdjpeg.c */; };
 		553712CA151BD0CD00F8848A /* cdjpeg.h in Headers */ = {isa = PBXBuildFile; fileRef = 55371212151BD0CD00F8848A /* cdjpeg.h */; };
-		553712CB151BD0CD00F8848A /* cjpeg.c in Sources */ = {isa = PBXBuildFile; fileRef = 55371215151BD0CD00F8848A /* cjpeg.c */; };
 		553712CC151BD0CD00F8848A /* ckconfig.c in Sources */ = {isa = PBXBuildFile; fileRef = 55371216151BD0CD00F8848A /* ckconfig.c */; };
-		553712CE151BD0CD00F8848A /* example.c in Sources */ = {isa = PBXBuildFile; fileRef = 55371221151BD0CD00F8848A /* example.c */; };
 		553712CF151BD0CD00F8848A /* jaricom.c in Sources */ = {isa = PBXBuildFile; fileRef = 55371225151BD0CD00F8848A /* jaricom.c */; };
 		553712D0151BD0CD00F8848A /* jcapimin.c in Sources */ = {isa = PBXBuildFile; fileRef = 55371226151BD0CD00F8848A /* jcapimin.c */; };
 		553712D1151BD0CD00F8848A /* jcapistd.c in Sources */ = {isa = PBXBuildFile; fileRef = 55371227151BD0CD00F8848A /* jcapistd.c */; };
@@ -63,7 +60,6 @@
 		553712FB151BD0CD00F8848A /* jinclude.h in Headers */ = {isa = PBXBuildFile; fileRef = 5537125D151BD0CD00F8848A /* jinclude.h */; };
 		553712FC151BD0CD00F8848A /* jmemansi.c in Sources */ = {isa = PBXBuildFile; fileRef = 5537125E151BD0CD00F8848A /* jmemansi.c */; };
 		55371300151BD0CD00F8848A /* jmemmgr.c in Sources */ = {isa = PBXBuildFile; fileRef = 55371262151BD0CD00F8848A /* jmemmgr.c */; };
-		55371301151BD0CD00F8848A /* jmemname.c in Sources */ = {isa = PBXBuildFile; fileRef = 55371263151BD0CD00F8848A /* jmemname.c */; };
 		55371302151BD0CD00F8848A /* jmemnobs.c in Sources */ = {isa = PBXBuildFile; fileRef = 55371264151BD0CD00F8848A /* jmemnobs.c */; };
 		55371303151BD0CD00F8848A /* jmemsys.h in Headers */ = {isa = PBXBuildFile; fileRef = 55371265151BD0CD00F8848A /* jmemsys.h */; };
 		55371304151BD0CD00F8848A /* jmorecfg.h in Headers */ = {isa = PBXBuildFile; fileRef = 55371266151BD0CD00F8848A /* jmorecfg.h */; };
@@ -153,6 +149,7 @@
 		55AFA533151AB3B700B5351D /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 55AFA52E151AACFF00B5351D /* libxml2.dylib */; };
 		55AFA535151AB48C00B5351D /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 55AFA534151AB48C00B5351D /* libz.dylib */; };
 		55AFA536151AB4AB00B5351D /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 55AFA534151AB48C00B5351D /* libz.dylib */; };
+		55F0FA88151CDCB6006426B8 /* jmemname.c in Sources */ = {isa = PBXBuildFile; fileRef = 55371263151BD0CD00F8848A /* jmemname.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -186,14 +183,10 @@
 		553711B4151BCF9100F8848A /* jpeg-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "jpeg-Prefix.pch"; sourceTree = "<group>"; };
 		553711BF151BCF9A00F8848A /* libpng.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libpng.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		553711C3151BCF9A00F8848A /* png-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "png-Prefix.pch"; sourceTree = "<group>"; };
-		553711C4151BCF9A00F8848A /* png.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = png.h; sourceTree = "<group>"; };
-		553711C5151BCF9A00F8848A /* png.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = png.m; sourceTree = "<group>"; };
 		55371210151BD0CD00F8848A /* cderror.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cderror.h; sourceTree = "<group>"; };
 		55371211151BD0CD00F8848A /* cdjpeg.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cdjpeg.c; sourceTree = "<group>"; };
 		55371212151BD0CD00F8848A /* cdjpeg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cdjpeg.h; sourceTree = "<group>"; };
 		55371213151BD0CD00F8848A /* change.log */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = change.log; sourceTree = "<group>"; };
-		55371214151BD0CD00F8848A /* cjpeg.1 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.man; path = cjpeg.1; sourceTree = "<group>"; };
-		55371215151BD0CD00F8848A /* cjpeg.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cjpeg.c; sourceTree = "<group>"; };
 		55371216151BD0CD00F8848A /* ckconfig.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ckconfig.c; sourceTree = "<group>"; };
 		55371217151BD0CD00F8848A /* coderules.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = coderules.txt; sourceTree = "<group>"; };
 		55371221151BD0CD00F8848A /* example.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = example.c; sourceTree = "<group>"; };
@@ -265,14 +258,7 @@
 		553712B1151BD0CD00F8848A /* rdswitch.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = rdswitch.c; sourceTree = "<group>"; };
 		553712B2151BD0CD00F8848A /* rdtarga.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = rdtarga.c; sourceTree = "<group>"; };
 		553712B3151BD0CD00F8848A /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
-		553712B4151BD0CD00F8848A /* stamp-h1 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "stamp-h1"; sourceTree = "<group>"; };
 		553712B5151BD0CD00F8848A /* structure.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = structure.txt; sourceTree = "<group>"; };
-		553712B6151BD0CD00F8848A /* testimg.bmp */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; path = testimg.bmp; sourceTree = "<group>"; };
-		553712B7151BD0CD00F8848A /* testimg.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testimg.jpg; sourceTree = "<group>"; };
-		553712B8151BD0CD00F8848A /* testimg.ppm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = testimg.ppm; sourceTree = "<group>"; };
-		553712B9151BD0CD00F8848A /* testimgp.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testimgp.jpg; sourceTree = "<group>"; };
-		553712BA151BD0CD00F8848A /* testorig.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testorig.jpg; sourceTree = "<group>"; };
-		553712BB151BD0CD00F8848A /* testprog.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testprog.jpg; sourceTree = "<group>"; };
 		553712BC151BD0CD00F8848A /* transupp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = transupp.c; sourceTree = "<group>"; };
 		553712BD151BD0CD00F8848A /* transupp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = transupp.h; sourceTree = "<group>"; };
 		553712C0151BD0CD00F8848A /* wrbmp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = wrbmp.c; sourceTree = "<group>"; };
@@ -326,7 +312,7 @@
 		55AFA4CD151AA7E900B5351D /* libsvg.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libsvg.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		55AFA4D1151AA7E900B5351D /* svg-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "svg-Prefix.pch"; sourceTree = "<group>"; };
 		55AFA4F1151AA82000B5351D /* svg.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = svg.c; sourceTree = "<group>"; };
-		55AFA4F2151AA82000B5351D /* svg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = svg.h; sourceTree = "<group>"; };
+		55AFA4F2151AA82000B5351D /* svg.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; path = svg.h; sourceTree = "<group>"; };
 		55AFA4F3151AA82000B5351D /* svg_ascii.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = svg_ascii.c; sourceTree = "<group>"; };
 		55AFA4F4151AA82000B5351D /* svg_ascii.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = svg_ascii.h; sourceTree = "<group>"; };
 		55AFA4F5151AA82000B5351D /* svg_attribute.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = svg_attribute.c; sourceTree = "<group>"; };
@@ -431,8 +417,6 @@
 			isa = PBXGroup;
 			children = (
 				55371325151BD40500F8848A /* libpng-1.5.9 */,
-				553711C4151BCF9A00F8848A /* png.h */,
-				553711C5151BCF9A00F8848A /* png.m */,
 				553711C2151BCF9A00F8848A /* Supporting Files */,
 			);
 			path = png;
@@ -453,8 +437,6 @@
 				55371211151BD0CD00F8848A /* cdjpeg.c */,
 				55371212151BD0CD00F8848A /* cdjpeg.h */,
 				55371213151BD0CD00F8848A /* change.log */,
-				55371214151BD0CD00F8848A /* cjpeg.1 */,
-				55371215151BD0CD00F8848A /* cjpeg.c */,
 				55371216151BD0CD00F8848A /* ckconfig.c */,
 				55371217151BD0CD00F8848A /* coderules.txt */,
 				55371221151BD0CD00F8848A /* example.c */,
@@ -526,14 +508,7 @@
 				553712B1151BD0CD00F8848A /* rdswitch.c */,
 				553712B2151BD0CD00F8848A /* rdtarga.c */,
 				553712B3151BD0CD00F8848A /* README */,
-				553712B4151BD0CD00F8848A /* stamp-h1 */,
 				553712B5151BD0CD00F8848A /* structure.txt */,
-				553712B6151BD0CD00F8848A /* testimg.bmp */,
-				553712B7151BD0CD00F8848A /* testimg.jpg */,
-				553712B8151BD0CD00F8848A /* testimg.ppm */,
-				553712B9151BD0CD00F8848A /* testimgp.jpg */,
-				553712BA151BD0CD00F8848A /* testorig.jpg */,
-				553712BB151BD0CD00F8848A /* testprog.jpg */,
 				553712BC151BD0CD00F8848A /* transupp.c */,
 				553712BD151BD0CD00F8848A /* transupp.h */,
 				553712C0151BD0CD00F8848A /* wrbmp.c */,
@@ -914,9 +889,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				553712C9151BD0CD00F8848A /* cdjpeg.c in Sources */,
-				553712CB151BD0CD00F8848A /* cjpeg.c in Sources */,
 				553712CC151BD0CD00F8848A /* ckconfig.c in Sources */,
-				553712CE151BD0CD00F8848A /* example.c in Sources */,
 				553712CF151BD0CD00F8848A /* jaricom.c in Sources */,
 				553712D0151BD0CD00F8848A /* jcapimin.c in Sources */,
 				553712D1151BD0CD00F8848A /* jcapistd.c in Sources */,
@@ -960,7 +933,6 @@
 				553712FA151BD0CD00F8848A /* jidctint.c in Sources */,
 				553712FC151BD0CD00F8848A /* jmemansi.c in Sources */,
 				55371300151BD0CD00F8848A /* jmemmgr.c in Sources */,
-				55371301151BD0CD00F8848A /* jmemname.c in Sources */,
 				55371302151BD0CD00F8848A /* jmemnobs.c in Sources */,
 				55371308151BD0CD00F8848A /* jquant1.c in Sources */,
 				55371309151BD0CD00F8848A /* jquant2.c in Sources */,
@@ -975,6 +947,7 @@
 				55371315151BD0CD00F8848A /* transupp.c in Sources */,
 				55371317151BD0CD00F8848A /* wrbmp.c in Sources */,
 				5537131C151BD0CD00F8848A /* wrtarga.c in Sources */,
+				55F0FA88151CDCB6006426B8 /* jmemname.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -982,7 +955,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				553711C6151BCF9A00F8848A /* png.m in Sources */,
 				55371454151BD40500F8848A /* png.c in Sources */,
 				55371458151BD40500F8848A /* pngerror.c in Sources */,
 				55371459151BD40500F8848A /* pngget.c in Sources */,
@@ -1099,6 +1071,7 @@
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "jpeg/jpeg-Prefix.pch";
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -1108,6 +1081,7 @@
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "jpeg/jpeg-Prefix.pch";
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -1122,6 +1096,7 @@
 					HAVE_CONFIG_H,
 					PNG_CONFIGURE_LIBPNG,
 				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -1135,6 +1110,7 @@
 					HAVE_CONFIG_H,
 					PNG_CONFIGURE_LIBPNG,
 				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -1187,6 +1163,7 @@
 		55AFA4A3151AA3BC00B5351D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				GCC_ENABLE_OBJC_GC = supported;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SVGImageRep/SVGImageRep-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
@@ -1205,6 +1182,7 @@
 		55AFA4A4151AA3BC00B5351D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				GCC_ENABLE_OBJC_GC = supported;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SVGImageRep/SVGImageRep-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
@@ -1260,6 +1238,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu89;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "svg/svg-Prefix.pch";
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = (
 					/usr/include/libxml2,
 					"\"${SRCROOT}\"/jpeg/jpeg-8d",
@@ -1275,6 +1254,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu89;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "svg/svg-Prefix.pch";
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = (
 					/usr/include/libxml2,
 					"\"${SRCROOT}\"/jpeg/jpeg-8d",
@@ -1294,6 +1274,7 @@
 				553711BA151BCF9100F8848A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		553711C7151BCF9A00F8848A /* Build configuration list for PBXNativeTarget "png" */ = {
 			isa = XCConfigurationList;
@@ -1302,6 +1283,7 @@
 				553711C9151BCF9A00F8848A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		55AFA48A151AA3BC00B5351D /* Build configuration list for PBXProject "SVGImageRep" */ = {
 			isa = XCConfigurationList;
