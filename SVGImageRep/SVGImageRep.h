@@ -12,6 +12,7 @@
 #include <svg.h>
 #import <AppKit/NSImageRep.h>
 
+extern svg_render_engine_t cocoa_svg_engine;
 @interface SVGRenderState : NSObject <NSCopying>
 {
 @public
@@ -33,10 +34,27 @@
 	double font_weight;
 	svg_text_anchor_t text_anchor;
 	
-	float *dash;
-	int num_dash;
-	float dash_offset;
+	CGFloat *dash;
+	size_t num_dash;
+	CGFloat dash_offset;
 }
+@property (readwrite, retain) NSWindow *window;
+@property (readwrite) svg_paint_t fill_paint;
+@property (readwrite) svg_paint_t stroke_paint;
+@property (readwrite) double fill_opacity;
+@property (readwrite) double stroke_opacity;
+@property (readwrite) svg_color_t color;
+@property (readwrite) double opacity;
+@property (readwrite) double stroke_width;
+@property (readwrite) int fill_rule;
+@property (readwrite, copy) NSString *font_family;
+@property (readwrite) svg_font_style_t font_style;
+@property (readwrite) double font_size;
+@property (readwrite) double font_weight;
+@property (readwrite) svg_text_anchor_t text_anchor;
+@property (readwrite) CGFloat *dash;
+@property (readwrite) size_t num_dash;
+@property (readwrite) CGFloat dash_offset;
 
 @end
 
@@ -63,7 +81,9 @@
 	NSMutableArray *states;
 }
 
-@property (readonly) NSGraphicsContext *ctxt;
+@property (readwrite, assign) SVGRenderState *current;
+@property (readwrite, retain) NSMutableArray *states;
+@property (readwrite, retain) NSGraphicsContext *ctxt;
 @property (readonly) NSSize size;
 
 -(void) prepareRender: (double)a_scale;

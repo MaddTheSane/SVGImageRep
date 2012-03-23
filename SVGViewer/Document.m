@@ -7,13 +7,11 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 #include <math.h>
 #include <time.h>
 
-#include <Foundation/NSFileManager.h>
-#include <AppKit/NSBezierPath.h>
-#include <AppKit/NSFontManager.h>
-#include <AppKit/NSScrollView.h>
-#include <AppKit/NSWindow.h>
-//#include <AppKit/DPSOperators.h>
-//#include <GNUstepGUI/GSDisplayServer.h>
+#import <Foundation/NSFileManager.h>
+#import <AppKit/NSBezierPath.h>
+#import <AppKit/NSFontManager.h>
+#import <AppKit/NSScrollView.h>
+#import <AppKit/NSWindow.h>
 
 #include <svg.h>
 #import "SVGImageRep.h"
@@ -778,7 +776,6 @@ End of methods based on libxsvg code.
 
 
 @end
-#endif
 
 #define FUNC(name,args...) \
 	static svg_status_t r_##name(void *closure, ##args) \
@@ -1226,7 +1223,7 @@ FUNC(render_image,
 }
 
 
-static svg_render_engine_t engine=
+static svg_render_engine_t Cocoa_svg_engine=
 {
 r_begin_group,
 r_begin_element,
@@ -1270,7 +1267,7 @@ r_render_rect,
 r_render_text,
 r_render_image
 };
-
+#endif
 
 @interface SVGView : NSView
 {
@@ -1286,7 +1283,7 @@ r_render_image
 -(void) setSVGRenderContext: (SVGRenderContext *)s
 {
 	if(s != svg) 
-		svg = s;
+		svg = [s retain];
 	[self setNeedsDisplay: YES];
 }
 
@@ -1338,7 +1335,7 @@ r_render_image
 //		printf("rendering...\n");
 		t=clock();
 		[svg_render_context prepareRender: scale];
-		svg_render(svg,&engine,svg_render_context);
+		svg_render(svg,&cocoa_svg_engine,svg_render_context);
 		[svg_render_context finishRender];
 		t=clock()-t;
 //		printf("done: %15.8f seconds\n",t/(double)CLOCKS_PER_SEC);
