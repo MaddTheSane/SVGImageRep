@@ -67,21 +67,22 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 	{
 		svg_t *svg;
 		clock_t t;
-		SVGRenderContext *svg_render_context=[[SVGRenderContext alloc] init];
+		SVGRenderContext *svg_render_context = [[SVGRenderContext alloc] init];
 
 		svg_create(&svg);
 //		printf("parsing...\n");
-		svg_parse(svg,[[NSFileManager defaultManager] fileSystemRepresentationWithPath: path]);
+		svg_parse(svg, [path fileSystemRepresentation]);
 
 //		printf("rendering...\n");
 		t=clock();
 		[svg_render_context prepareRender: scale];
-		svg_render(svg,&cocoa_svg_engine,svg_render_context);
+		svg_render(svg, &cocoa_svg_engine, svg_render_context);
 		[svg_render_context finishRender];
 		t=clock()-t;
 //		printf("done: %15.8f seconds\n",t/(double)CLOCKS_PER_SEC);
 
-		[svg_view setFrame: NSMakeRect(0,0,svg_render_context->size.width,svg_render_context->size.height)];
+		NSSize contextSize = [svg_render_context size];
+		[svg_view setFrame: NSMakeRect(0, 0, contextSize.width, contextSize.height)];
 		[svg_view setSVGRenderContext: svg_render_context];
 		[svg_render_context release];
 
@@ -92,21 +93,21 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 
 - (id)initWithFile: (NSString *)apath
 {
-	NSWindow *win;
+	//NSWindow *win;
 
-	win=[[NSWindow alloc] initWithContentRect: NSMakeRect(100,100,450,300)
+	/*win=[[NSWindow alloc] initWithContentRect: NSMakeRect(100,100,450,300)
 		styleMask: NSClosableWindowMask|NSTitledWindowMask|NSResizableWindowMask|NSMiniaturizableWindowMask
 		backing: NSBackingStoreRetained
 		defer: YES];
-	if (!(self=[super initWithWindow: win])) return nil;
+	if (!(self=[super initWithWindow: win])) return nil;*/
+	if (!(self=[super initWithWindowNibName: @"Document"])) return nil;
 	path = [apath copy];
-	[win setTitleWithRepresentedFilename: path];
-	[win setDelegate: self];
+	[[self window] setTitleWithRepresentedFilename: path];
 
 	//[NSObject enableDoubleReleaseCheck: YES];
 
 
-	scale=1.0;
+	/*scale=1.0;
 
 	svg_view=[[SVGView alloc]
 		initWithFrame: NSMakeRect(0,0,10,10)];
@@ -124,8 +125,11 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 
 	[win release];
 
-	[self showWindow: nil];
+	[self showWindow: nil];*/
 
+	scale = 1.0;
+	[self reload:nil];
+	[self showWindow: nil];
 
 	return self;
 }
