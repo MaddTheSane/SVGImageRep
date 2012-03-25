@@ -10,10 +10,10 @@
 
 @interface SVGViewer : NSObject <NSApplicationDelegate>
 {
-	NSMenu *_recentMenu;
+
 }
 
--(IBAction) openDocument: (id)sender;
+- (IBAction)openSVGDocument:(id)sender;
 
 
 @end

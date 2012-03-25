@@ -26,15 +26,15 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 
 -(id) copyWithZone: (NSZone *)zone
 {
-	SVGRenderState *new=NSCopyObject(self,0,zone);
+	SVGRenderState *new = NSCopyObject(self, 0, zone);
 
 	[new->window retain];
 	[new->font_family retain];
 
 	if (new->dash)
 	{
-		new->dash = malloc(sizeof(float)*new->num_dash);
-		memcpy(new->dash, dash, sizeof(float)*new->num_dash);
+		new->dash = malloc(sizeof(CGFloat)*new->num_dash);
+		memcpy(new->dash, dash, sizeof(CGFloat)*new->num_dash);
 	}
 
 	return new;
