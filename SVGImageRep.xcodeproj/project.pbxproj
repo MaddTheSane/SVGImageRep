@@ -149,6 +149,9 @@
 		55AFA535151AB48C00B5351D /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 55AFA534151AB48C00B5351D /* libz.dylib */; };
 		55AFA536151AB4AB00B5351D /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 55AFA534151AB48C00B5351D /* libz.dylib */; };
 		55F0FA88151CDCB6006426B8 /* jmemname.c in Sources */ = {isa = PBXBuildFile; fileRef = 55371263151BD0CD00F8848A /* jmemname.c */; };
+		55F0FA8F151FBAB6006426B8 /* SVGViewer.m in Sources */ = {isa = PBXBuildFile; fileRef = 55F0FA8E151FBAB6006426B8 /* SVGViewer.m */; };
+		55F0FA92151FBB80006426B8 /* SVGViewer.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55F0FA91151FBB80006426B8 /* SVGViewer.xib */; };
+		55F0FA94151FBE4A006426B8 /* Document.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55F0FA93151FBE4A006426B8 /* Document.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -339,6 +342,10 @@
 		55AFA529151AABB700B5351D /* SVGImageRep.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVGImageRep.m; sourceTree = "<group>"; };
 		55AFA52E151AACFF00B5351D /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		55AFA534151AB48C00B5351D /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		55F0FA8D151FBAB6006426B8 /* SVGViewer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVGViewer.h; sourceTree = "<group>"; };
+		55F0FA8E151FBAB6006426B8 /* SVGViewer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVGViewer.m; sourceTree = "<group>"; };
+		55F0FA91151FBB80006426B8 /* SVGViewer.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SVGViewer.xib; sourceTree = "<group>"; };
+		55F0FA93151FBE4A006426B8 /* Document.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Document.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -625,6 +632,8 @@
 			children = (
 				55AFA4C4151AA43700B5351D /* Document.h */,
 				55AFA4C5151AA43700B5351D /* Document.m */,
+				55F0FA8D151FBAB6006426B8 /* SVGViewer.h */,
+				55F0FA8E151FBAB6006426B8 /* SVGViewer.m */,
 				55AFA4AD151AA3FB00B5351D /* Supporting Files */,
 			);
 			path = SVGViewer;
@@ -638,6 +647,8 @@
 				55AFA4C7151AA5E500B5351D /* main.m */,
 				55AFA4B4151AA3FB00B5351D /* SVGViewer-Prefix.pch */,
 				55AFA4B5151AA3FB00B5351D /* Credits.rtf */,
+				55F0FA91151FBB80006426B8 /* SVGViewer.xib */,
+				55F0FA93151FBE4A006426B8 /* Document.xib */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -877,6 +888,8 @@
 			files = (
 				55AFA4B1151AA3FB00B5351D /* InfoPlist.strings in Resources */,
 				55AFA4B7151AA3FB00B5351D /* Credits.rtf in Resources */,
+				55F0FA92151FBB80006426B8 /* SVGViewer.xib in Resources */,
+				55F0FA94151FBE4A006426B8 /* Document.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -987,6 +1000,7 @@
 				55AFA4C6151AA43700B5351D /* Document.m in Sources */,
 				55AFA4C8151AA5E500B5351D /* main.m in Sources */,
 				5537146F151BD60B00F8848A /* SVGImageRep.m in Sources */,
+				55F0FA8F151FBAB6006426B8 /* SVGViewer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

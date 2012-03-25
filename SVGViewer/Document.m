@@ -16,15 +16,6 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 #include <svg.h>
 #import "SVGImageRep.h"
 
-@interface SVGView : NSView
-{
-	SVGRenderContext *svg;
-}
-
--(void) setSVGRenderContext: (SVGRenderContext *)s;
-
-@end
-
 @implementation SVGView
 
 -(void) setSVGRenderContext: (SVGRenderContext *)s
@@ -71,7 +62,7 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 }
 
 
--(void) reload: (id)sender
+-(IBAction) reload: (id)sender
 {
 	{
 		svg_t *svg;
@@ -99,7 +90,7 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 }
 
 
-- initWithFile: (NSString *)apath
+- (id)initWithFile: (NSString *)apath
 {
 	NSWindow *win;
 
@@ -153,7 +144,7 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 
 
 #define SCALE(a,b) \
-	-(void) scale_##a##_##b: (id)sender \
+	-(IBAction) scale_##a##_##b: (id)sender \
 	{ \
 		scale=a##.##b; \
 		[self reload: nil]; \

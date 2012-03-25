@@ -46,7 +46,7 @@
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2012 __MyCompanyName__. All rights reserved.</string>
 	<key>NSMainNibFile</key>
-	<string>MainMenu</string>
+	<string>SVGViewer</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
 </dict>
