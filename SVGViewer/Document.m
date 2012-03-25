@@ -20,8 +20,11 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 
 -(void) setSVGRenderContext: (SVGRenderContext *)s
 {
-	if(s != svg) 
+	if(s != svg)
+	{
+		[svg release];
 		svg = [s retain];
+	}
 	[self setNeedsDisplay: YES];
 }
 
@@ -45,8 +48,9 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 	
 	if (svg)
 	{
+		NSSize SVGSize = [svg size];
 		CGContextSetGrayFillColor(tempRef, 1.0, 1.0);
-		CGContextFillRect(tempRef, CGRectMake(0, 0, svg->size.width, svg->size.height));
+		CGContextFillRect(tempRef, CGRectMake(0, 0, SVGSize.width, SVGSize.height));
 		
 //		DPScomposite(ctxt,0,0,svg->size.width,svg->size.height,[svg->result gState],0,0,NSCompositeSourceOver);
 	}

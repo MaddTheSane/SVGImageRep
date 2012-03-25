@@ -81,6 +81,7 @@ extern svg_render_engine_t cocoa_svg_engine;
 
 @property (readwrite, assign) SVGRenderState *current;
 @property (readwrite, retain) NSMutableArray *states;
+@property (readonly) NSWindow *result;
 @property (readonly) NSSize size;
 
 -(void) prepareRender: (double)a_scale;

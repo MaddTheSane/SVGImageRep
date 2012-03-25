@@ -61,7 +61,7 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 
 @implementation SVGRenderContext
 
-@synthesize size, states, current;
+@synthesize size, states, current, result;
 
 -(void) prepareRender: (double)a_scale
 {
@@ -463,7 +463,7 @@ End of methods based on libxsvg code.
 			return SVG_STATUS_INVALID_CALL;
 		}
 		SVGRenderState *oldCurrent = current;
-		current=[current copy];
+		current = [current copy];
 		[oldCurrent release];
 
 		CGContextSaveGState(tempCtx);
@@ -657,7 +657,7 @@ End of methods based on libxsvg code.
 		NSArray *families;
 		NSString *family;
 
-		families=[current->font_family componentsSeparatedByString: @","];
+		families=[[current font_family] componentsSeparatedByString: @","];
 
 		fonts=nil;
 		for (i=0;i<[families count];i++)
@@ -722,7 +722,7 @@ End of methods based on libxsvg code.
 	//DPSscale(ctxt,1,-1);
 	CGFontRef tempFontRef = CTFontCopyGraphicsFont((CTFontRef)f, NULL);
 	CGContextSetFont(tempCtx, tempFontRef);
-	CFRelease(tempFontRef);
+	CGFontRelease(tempFontRef);
 
 	switch (current->fill_paint.type)
 	{
