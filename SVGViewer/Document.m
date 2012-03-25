@@ -38,6 +38,7 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 
 -(void) drawRect: (NSRect)r
 {
+	[super drawRect:r];
 	NSGraphicsContext *ctxt = [NSGraphicsContext currentContext];
 
 	CGContextRef tempRef = (CGContextRef)[ctxt graphicsPort];
@@ -105,27 +106,6 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 	[[self window] setTitleWithRepresentedFilename: path];
 
 	//[NSObject enableDoubleReleaseCheck: YES];
-
-
-	/*scale=1.0;
-
-	svg_view=[[SVGView alloc]
-		initWithFrame: NSMakeRect(0,0,10,10)];
-
-	[self reload: nil];
-
-	scroll_view=[[NSScrollView alloc] init];
-	[scroll_view setDocumentView: svg_view];
-	[svg_view release];
-	[scroll_view setHasHorizontalScroller: YES];
-	[scroll_view setHasVerticalScroller: YES];
-
-	[win setContentView: scroll_view];
-	[scroll_view release];
-
-	[win release];
-
-	[self showWindow: nil];*/
 
 	scale = 1.0;
 	[self reload:nil];
