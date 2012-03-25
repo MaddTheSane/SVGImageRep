@@ -717,7 +717,7 @@ End of methods based on libxsvg code.
 	//DPSscale(ctxt,1,-1);
 	CGFontRef tempFontRef = CTFontCopyGraphicsFont((CTFontRef)f, NULL);
 	CGContextSetFont(tempCtx, tempFontRef);
-	CFRelease(tempFontRef);
+	CGRelease(tempFontRef);
 
 	switch (current->fill_paint.type)
 	{
