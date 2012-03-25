@@ -61,12 +61,11 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 
 @implementation SVGRenderContext
 
-@synthesize size, ctxt, states, current;
+@synthesize size, states, current;
 
 -(void) prepareRender: (double)a_scale
 {
 	[result release]; result = nil;
-	ctxt = [NSGraphicsContext currentContext];
 	states = [[NSMutableArray alloc] init];
 	current = nil;
 	scale = a_scale;
@@ -76,7 +75,6 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 -(void) finishRender
 {
 //	printf("result=%@, current=%@, states=%i\n",result,current,[states count]);
-	ctxt=nil;
 	[states release]; states = nil;
 }
 
@@ -134,7 +132,7 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 
 -(void) setColor: (svg_color_t *)c
 {
-	CGContextRef tempCtx =(CGContextRef)[ctxt graphicsPort];
+	CGContextRef tempCtx =(CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
 	
 	//Which color is being set? Set them both!
 	CGColorRef tempColor = CGColorCreateGenericRGB(svg_color_get_red(c)/255.0, svg_color_get_green(c)/255.0, svg_color_get_blue(c)/255.0, 1.0);
@@ -212,7 +210,7 @@ A few methods based on code in libxsvg:
     x2 = x3 + t * sin (th1);
     y2 = y3 - t * cos (th1);
 
-	CGContextRef tempCtx =(CGContextRef)[ctxt graphicsPort];
+	CGContextRef tempCtx =(CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
 
 	CGContextAddCurveToPoint(tempCtx, a00 * x1 + a01 * y1, a10 * x1 + a11 * y1, a00 * x2 + a01 * y2, a10 * x2 + a11 * y2, a00 * x3 + a01 * y3, a10 * x3 + a11 * y3);
 	
@@ -248,8 +246,8 @@ A few methods based on code in libxsvg:
     double cury;
 
 	{
-		CGContextRef tempCtx =(CGContextRef)[ctxt graphicsPort];
-		CGPoint tempPoint =CGContextGetPathCurrentPoint(tempCtx);
+		CGContextRef tempCtx =(CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
+		CGPoint tempPoint = CGContextGetPathCurrentPoint(tempCtx);
 		curx=tempPoint.x;
 		cury=tempPoint.y;
 	}
@@ -338,7 +336,7 @@ A few methods based on code in libxsvg:
 	if (crx>cw/2) crx=cw/2;
 	if (cry>ch/2) cry=ch/2;
 
-	CGContextRef tempCtx =(CGContextRef)[ctxt graphicsPort];
+	CGContextRef tempCtx =(CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
 	
 	switch (current->fill_paint.type)
 	{
@@ -436,7 +434,7 @@ A few methods based on code in libxsvg:
 	rx=[self lengthToPoints: lrx];
 	ry=[self lengthToPoints: lry];
 
-	CGContextRef tempCtx =(CGContextRef)[ctxt graphicsPort];
+	CGContextRef tempCtx =(CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
 	
 	CGContextMoveToPoint(tempCtx, cx + rx, cy);
 	CGContextAddCurveToPoint(tempCtx, cx + rx, cy + ry * SVG_ARC_MAGIC, cx + rx * SVG_ARC_MAGIC, cy + ry, cx, cy + ry);
@@ -456,7 +454,7 @@ End of methods based on libxsvg code.
 
 -(svg_status_t) beginGroup: (double)opacity
 {
-	CGContextRef tempCtx =(CGContextRef)[ctxt graphicsPort];
+	CGContextRef tempCtx =(CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
 	if (current)
 	{
 		if (!result)
@@ -464,7 +462,9 @@ End of methods based on libxsvg code.
 			printf("beginGroup: with current but no result\n");
 			return SVG_STATUS_INVALID_CALL;
 		}
+		SVGRenderState *oldCurrent = current;
 		current=[current copy];
+		[oldCurrent release];
 
 		CGContextSaveGState(tempCtx);
 		if (opacity<1.0)
@@ -505,7 +505,7 @@ End of methods based on libxsvg code.
 
 -(svg_status_t) endGroup: (double)opacity
 {
-	CGContextRef tempCtx = (CGContextRef)[ctxt graphicsPort];
+	CGContextRef tempCtx = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
 
 	CGContextRestoreGState(tempCtx);
 
@@ -533,7 +533,7 @@ End of methods based on libxsvg code.
 -(svg_status_t) setViewportDimension: (svg_length_t *)width :(svg_length_t *)height
 {
 	int w,h;
-	CGContextRef tempCtx = (CGContextRef)[ctxt graphicsPort];
+	CGContextRef tempCtx = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
 
 	if (result)
 	{
@@ -570,7 +570,7 @@ End of methods based on libxsvg code.
 -(svg_status_t) applyViewbox: (svg_view_box_t)viewbox
 	: (svg_length_t *)width : (svg_length_t *)height
 {
-	CGContextRef tempCtx = (CGContextRef)[ctxt graphicsPort];
+	CGContextRef tempCtx = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
 
 	double w,h;
 	w=[self lengthToPoints: width];
@@ -583,7 +583,7 @@ End of methods based on libxsvg code.
 
 -(svg_status_t) renderPath
 {
-	CGContextRef tempCtx = (CGContextRef)[ctxt graphicsPort];
+	CGContextRef tempCtx = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
 	switch ([current fill_paint].type)
 	{
 	case SVG_PAINT_TYPE_COLOR:
@@ -640,7 +640,7 @@ End of methods based on libxsvg code.
 
 -(svg_status_t) renderText: (const unsigned char *)utf8
 {
-	CGContextRef tempCtx = (CGContextRef)[ctxt graphicsPort];
+	CGContextRef tempCtx = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
 	NSFont *f;
 	NSFontManager *fm;
 	NSArray *fonts,*font;
@@ -776,7 +776,7 @@ End of methods based on libxsvg code.
 	static svg_status_t r_##name(void *closure, ##args) \
 	{ \
 		SVGRenderContext *self=(SVGRenderContext *)closure; \
-		CGContextRef CGCtx = (CGContextRef)[[self ctxt] graphicsPort]; \
+		CGContextRef CGCtx = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort]; \
 
 
 static int indent=1;
@@ -794,12 +794,14 @@ static svg_status_t r_begin_group(void *closure,double opacity)
 static svg_status_t r_begin_element(void *closure)
 {
 	SVGRenderContext *self=(SVGRenderContext *)closure;
-	CGContextRef CGCtx =(CGContextRef)[[self ctxt] graphicsPort];
+	CGContextRef CGCtx =(CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
 //	I;printf("begin_element()\n");
 	indent+=3;
 
 	CGContextSaveGState(CGCtx);
+	SVGRenderState *oldCurrent = self.current;
 	self.current = [[self current] copy];
+	[oldCurrent release];
 	[[self states] addObject: [self current]];
 	[[self current] release];
 
@@ -809,7 +811,7 @@ static svg_status_t r_begin_element(void *closure)
 static svg_status_t r_end_element(void *closure)
 {
 	SVGRenderContext *self=(SVGRenderContext *)closure;
-	CGContextRef CGCtx =(CGContextRef)[[self ctxt] graphicsPort];
+	CGContextRef CGCtx =(CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
 	indent-=3;
 //	I;printf("end_element()\n");
 

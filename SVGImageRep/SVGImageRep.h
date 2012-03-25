@@ -70,8 +70,6 @@ extern svg_render_engine_t cocoa_svg_engine;
 @interface SVGRenderContext : NSObject
 {
 @public
-	NSGraphicsContext *ctxt;
-	
 	NSWindow *result;
 	NSSize size;
 	
@@ -83,7 +81,6 @@ extern svg_render_engine_t cocoa_svg_engine;
 
 @property (readwrite, assign) SVGRenderState *current;
 @property (readwrite, retain) NSMutableArray *states;
-@property (readwrite, retain) NSGraphicsContext *ctxt;
 @property (readonly) NSSize size;
 
 -(void) prepareRender: (double)a_scale;
