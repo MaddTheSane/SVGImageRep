@@ -10,7 +10,7 @@ copyright 2003 Alexander Malmberg <alexander@malmberg.org>
 @class NSString,NSScrollView;
 @class SVGView;
 
-@interface Document : NSWindowController
+@interface Document : NSWindowController <NSWindowDelegate>
 {
 	NSString *path;
 

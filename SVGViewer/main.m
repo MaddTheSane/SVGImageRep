@@ -13,17 +13,17 @@ copyright 2002, 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 
 
 @interface NSMenu (im_lazy)
--(id <NSMenuItem>) addItemWithTitle: (NSString *)s;
--(id <NSMenuItem>) addItemWithTitle: (NSString *)s  action: (SEL)sel;
+-(NSMenuItem*) addItemWithTitle: (NSString *)s;
+-(NSMenuItem*) addItemWithTitle: (NSString *)s  action: (SEL)sel;
 @end
 @implementation NSMenu (im_lazy)
--(id <NSMenuItem>) addItemWithTitle: (NSString *)s
+-(NSMenuItem*) addItemWithTitle: (NSString *)s
 {
-	return [self addItemWithTitle: s  action: NULL  keyEquivalent: nil];
+	return [self addItemWithTitle: s  action: NULL  keyEquivalent: @""];
 }
--(id <NSMenuItem>) addItemWithTitle: (NSString *)s  action: (SEL)sel
+-(NSMenuItem*) addItemWithTitle: (NSString *)s  action: (SEL)sel
 {
-	return [self addItemWithTitle: s  action: sel  keyEquivalent: nil];
+	return [self addItemWithTitle: s  action: sel  keyEquivalent: @""];
 }
 @end
 

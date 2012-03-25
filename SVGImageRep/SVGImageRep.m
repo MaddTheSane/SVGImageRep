@@ -505,7 +505,7 @@ End of methods based on libxsvg code.
 
 -(svg_status_t) endGroup: (double)opacity
 {
-	CGContextRef tempCtx =(CGContextRef)[ctxt graphicsPort];
+	CGContextRef tempCtx = (CGContextRef)[ctxt graphicsPort];
 
 	CGContextRestoreGState(tempCtx);
 
@@ -533,6 +533,7 @@ End of methods based on libxsvg code.
 -(svg_status_t) setViewportDimension: (svg_length_t *)width :(svg_length_t *)height
 {
 	int w,h;
+	CGContextRef tempCtx = (CGContextRef)[ctxt graphicsPort];
 
 	if (result)
 	{
@@ -560,25 +561,29 @@ End of methods based on libxsvg code.
 	//DPStranslate(ctxt,0,size.height);
 	//DPSscale(ctxt,scale,-scale);
 
+	CGContextTranslateCTM(tempCtx, 0, size.height);
+	CGContextScaleCTM(tempCtx, scale, -scale);
+	
 	return SVG_STATUS_SUCCESS;
 }
 
 -(svg_status_t) applyViewbox: (svg_view_box_t)viewbox
 	: (svg_length_t *)width : (svg_length_t *)height
 {
+	CGContextRef tempCtx = (CGContextRef)[ctxt graphicsPort];
+
 	double w,h;
 	w=[self lengthToPoints: width];
 	h=[self lengthToPoints: height];
-	//TODO: set the view box here.
-	//DPSscale(ctxt,w/viewbox.box.width,h/viewbox.box.height);
-	//DPStranslate(ctxt,-viewbox.box.x,-viewbox.box.y);
+	CGContextScaleCTM(tempCtx, w/viewbox.box.width, h/viewbox.box.height);
+	CGContextTranslateCTM(tempCtx, -viewbox.box.x, -viewbox.box.y);
 	return SVG_STATUS_SUCCESS;
 }
 
 
 -(svg_status_t) renderPath
 {
-	CGContextRef tempCtx =(CGContextRef)[ctxt graphicsPort];
+	CGContextRef tempCtx = (CGContextRef)[ctxt graphicsPort];
 	switch ([current fill_paint].type)
 	{
 	case SVG_PAINT_TYPE_COLOR:
@@ -635,7 +640,7 @@ End of methods based on libxsvg code.
 
 -(svg_status_t) renderText: (const unsigned char *)utf8
 {
-	CGContextRef tempCtx =(CGContextRef)[ctxt graphicsPort];
+	CGContextRef tempCtx = (CGContextRef)[ctxt graphicsPort];
 	NSFont *f;
 	NSFontManager *fm;
 	NSArray *fonts,*font;
@@ -717,7 +722,7 @@ End of methods based on libxsvg code.
 	//DPSscale(ctxt,1,-1);
 	CGFontRef tempFontRef = CTFontCopyGraphicsFont((CTFontRef)f, NULL);
 	CGContextSetFont(tempCtx, tempFontRef);
-	CGRelease(tempFontRef);
+	CFRelease(tempFontRef);
 
 	switch (current->fill_paint.type)
 	{
@@ -742,7 +747,8 @@ End of methods based on libxsvg code.
 	case SVG_PAINT_TYPE_COLOR:
 		[self setColor: &current->stroke_paint.p.color];
 		CGContextSetAlpha(tempCtx, current->stroke_opacity);
-		DPScharpath(ctxt,utf8,0);
+		//TODO: find DPScharpath replacement
+		//DPScharpath(ctxt,utf8,0);
 		CGContextStrokePath(tempCtx);
 		break;
 /*
@@ -770,7 +776,7 @@ End of methods based on libxsvg code.
 	static svg_status_t r_##name(void *closure, ##args) \
 	{ \
 		SVGRenderContext *self=(SVGRenderContext *)closure; \
-		CGContextRef CGCtx =(CGContextRef)[[self ctxt] graphicsPort]; \
+		CGContextRef CGCtx = (CGContextRef)[[self ctxt] graphicsPort]; \
 
 
 static int indent=1;
@@ -793,9 +799,9 @@ static svg_status_t r_begin_element(void *closure)
 	indent+=3;
 
 	CGContextSaveGState(CGCtx);
-	self->current=[self->current copy];
-	[self->states addObject: self->current];
-	[self->current release];
+	self.current = [[self current] copy];
+	[[self states] addObject: [self current]];
+	[[self current] release];
 
 	return SVG_STATUS_SUCCESS;
 }
@@ -1337,28 +1343,26 @@ static NSArray *list = nil;
 {
 	SVGRenderContext *svg_render_context;
 	NSGraphicsContext *ctxt=[NSGraphicsContext currentContext];
-	NSAffineTransform *ctm;
+	CGContextRef CGCtx = (CGContextRef)[ctxt graphicsPort];
+
+	CGAffineTransform ctm;
 
 //	printf("%s\n",__PRETTY_FUNCTION__);
-	//ctm=[ctxt GSCurrentCTM];
-	//FIXME: is this right for Cocoa?
-	ctm = [NSAffineTransform transform];
+	ctm = CGContextGetCTM(CGCtx);
 	
-	NSAffineTransformStruct TS = [ctm transformStruct];
-
 	svg_render_context=[[SVGRenderContext alloc] init];
 
 	[svg_render_context prepareRender:
-		sqrt(TS.m11*TS.m22+TS.m12*TS.m21)];
+		sqrt(ctm.a*ctm.b+ctm.c*ctm.d)];
 	svg_render(svg,&cocoa_svg_engine,svg_render_context);
 	[svg_render_context finishRender];
 
 /*	printf("got %@  %gx%g\n",
 		svg_render_context->result,
 		svg_render_context->size.width,svg_render_context->size.height);*/
-	DPScomposite(ctxt,
+	/*DPScomposite(ctxt,
 		0,0,svg_render_context->size.width,svg_render_context->size.height,
-		[svg_render_context->result gState],0,0,NSCompositeSourceOver);
+		[svg_render_context->result gState],0,0,NSCompositeSourceOver);*/
 	
 
 	[svg_render_context release];

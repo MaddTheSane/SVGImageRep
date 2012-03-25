@@ -1302,11 +1302,14 @@ r_render_image
 {
 	NSGraphicsContext *ctxt = [NSGraphicsContext currentContext];
 
+	CGContextRef tempRef = (CGContextRef)[ctxt graphicsPort];
+	
 	if (svg)
 	{
-		DPSsetgray(ctxt,1.0);
-		DPSrectfill(ctxt,0,0,svg->size.width,svg->size.height);
-		DPScomposite(ctxt,0,0,svg->size.width,svg->size.height,[svg->result gState],0,0,NSCompositeSourceOver);
+		CGContextSetGrayFillColor(tempRef, 1.0, 1.0);
+		CGContextFillRect(tempRef, CGRectMake(0, 0, svg->size.width, svg->size.height));
+		
+//		DPScomposite(ctxt,0,0,svg->size.width,svg->size.height,[svg->result gState],0,0,NSCompositeSourceOver);
 	}
 }
 
