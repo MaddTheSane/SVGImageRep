@@ -360,7 +360,7 @@
 			break;
 			
 		case SVG_PAINT_TYPE_COLOR:
-			[self setColor:&current->stroke_paint.p.color alpha:[current fill_opacity]];
+			[self setColor:&current->stroke_paint.p.color alpha:[current stroke_opacity]];
 			CGContextStrokeRect(tempCtx, CGRectMake(cx, cy, cw, ch));
 			break;
 			/*
@@ -416,7 +416,8 @@
 			return SVG_STATUS_INVALID_CALL;
 		}
 		SVGRenderState *oldCurrent = current;
-		current = [current copy];
+		current = nil;
+		current = [oldCurrent copy];
 		[oldCurrent release];
 		
 		CGContextSaveGState(tempCtx);
@@ -588,7 +589,7 @@
 			break;
 			
 		case SVG_PAINT_TYPE_COLOR:
-			[self setColor: &current->stroke_paint.p.color alpha:[current fill_opacity]];
+			[self setColor: &current->stroke_paint.p.color alpha:[current stroke_opacity]];
 			CGContextStrokePath(tempCtx);
 			break;
 			/*
@@ -779,9 +780,7 @@ static svg_status_t r_begin_element(void *closure)
 	indent+=3;
 	
 	CGContextSaveGState(CGCtx);
-	SVGRenderState *oldCurrent = self.current;
 	self.current = [[self current] copy];
-	[oldCurrent release];
 	[[self states] addObject: [self current]];
 	[[self current] release];
 	

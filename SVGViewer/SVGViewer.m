@@ -52,6 +52,7 @@
 	{
 		NSString *filepath = [filenames objectAtIndex:i];
 		[Document openFile: filepath];
+		[[NSDocumentController sharedDocumentController] noteNewRecentDocumentURL:[NSURL fileURLWithPath:filepath]];
 	}
 }
 

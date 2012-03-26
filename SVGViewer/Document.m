@@ -15,6 +15,7 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 
 #include <svg.h>
 #import "SVGImageRep.h"
+#import "SVGRenderContext.h"
 
 @implementation SVGView
 
