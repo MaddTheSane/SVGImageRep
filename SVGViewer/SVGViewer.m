@@ -11,10 +11,6 @@
 
 @implementation SVGViewer
 
-- (void)dealloc
-{
-	[super dealloc];
-}
 
 - (void)applicationWillFinishLaunching:(NSNotification *)n
 {

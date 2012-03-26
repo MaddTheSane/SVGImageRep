@@ -16,12 +16,26 @@
 
 - (id)copyWithZone:(NSZone *)zone
 {
-	SVGRenderState *new = NSCopyObject(self, 0, zone);
+	SVGRenderState *new = [SVGRenderState new];
 	
-	[[new window] retain];
-	[[new font_family] retain];
+	new.num_dash = num_dash;
+	new.stroke_opacity = stroke_opacity;
+	new.color = color;
+	new.window = window;
+	new.opacity = opacity;
+	new.fill_rule = fill_rule;
+	new.font_size = font_size;
+	new.fill_paint = fill_paint;
+	new.font_style = font_style;
+	new.dash_offset = dash_offset;
+	new.font_weight = font_weight;
+	new.text_anchor = text_anchor;
+	new.fill_opacity = fill_opacity;
+	new.stroke_paint = stroke_paint;
+	new.stroke_width = stroke_width;
+	new.font_family = [font_family copyWithZone:zone];
 	
-	if ([new dash])
+	if (dash)
 	{
 		new.dash = malloc(sizeof(CGFloat) * new.num_dash);
 		memcpy(new.dash, dash, sizeof(CGFloat) * new.num_dash);
@@ -34,17 +48,7 @@
 {
 	if (dash)
 		free(dash);
-	[window release];
-	[font_family release];
-	[super dealloc];
 }
 
-- (void)finalize
-{
-	if (dash)
-		free(dash);
-	
-	[super finalize];
-}
 
 @end

@@ -17,7 +17,7 @@
 
 - (void)prepareRender:(double)a_scale
 {
-	[result release]; result = nil;
+	 result = nil;
 	states = [[NSMutableArray alloc] init];
 	current = nil;
 	scale = a_scale;
@@ -26,16 +26,8 @@
 
 - (void)finishRender
 {
-	[states release]; states = nil;
+	 states = nil;
 }
-
-
-- (void)dealloc
-{
-	[result release];
-	[super dealloc];
-}
-
 
 - (double)lengthToPoints:(svg_length_t *)l
 {
@@ -418,7 +410,7 @@
 		SVGRenderState *oldCurrent = current;
 		current = nil;
 		current = [oldCurrent copy];
-		[oldCurrent release];
+		oldCurrent = nil;
 		
 		CGContextSaveGState(tempCtx);
 		if (opacity < 1.0)
@@ -427,7 +419,7 @@
 			//NSAffineTransform *ctm=GSCurrentCTM(ctxt);
 			//NSAffineTransform *ctm = [NSAffineTransform transform];
 			
-			[current.window release]; current.window = nil;
+			current.window = nil;
 			current.window = [[NSWindow alloc]
 							  initWithContentRect: NSMakeRect(0,0,size.width,size.height)
 							  styleMask: 0
@@ -452,7 +444,6 @@
 		current = [[SVGRenderState alloc] init];
 	}
 	[states addObject: current];
-	[current release];
 	
 	return SVG_STATUS_SUCCESS;
 }
@@ -465,14 +456,13 @@
 	
 	if (opacity != 1.0)
 	{
-		NSWindow *w = [[current window] retain];
+		NSWindow *w = [current window];
 		CGContextSaveGState(tempCtx);
 		//TODO: Find out how to do this in CG
 		//DPSinitmatrix(ctxt);
 		//DPSinitclip(ctxt);
 		//DPSdissolve(ctxt,0,0,size.width,size.height,[w gState],0,0,opacity);
 		CGContextRestoreGState(tempCtx);
-		[w release];
 	}
 	
 	[states removeObjectAtIndex:[states count] - 1];
@@ -506,7 +496,6 @@
 							   backing: NSBackingStoreRetained
 							   defer: NO];
 	[[current window] setReleasedWhenClosed: NO];
-	[result retain];
 	
 	//[NSCurrentServer() windowdevice: [current->window windowNumber]];
 	//TODO: find replacements for these:
@@ -690,7 +679,7 @@
 	
 	//Should we set the text CTM here?
 	CGContextScaleCTM(tempCtx, 1, -1);
-	CGFontRef tempFontRef = CTFontCopyGraphicsFont((CTFontRef)f, NULL);
+	CGFontRef tempFontRef = CTFontCopyGraphicsFont((__bridge CTFontRef)f, NULL);
 	CGContextSetFont(tempCtx, tempFontRef);
 	CGFontRelease(tempFontRef);
 	
@@ -759,7 +748,7 @@
 #define FUNC(name,args...) \
 	static svg_status_t r_##name(void *closure, ##args) \
 	{ \
-		SVGRenderContext *self = (SVGRenderContext *)closure; \
+		SVGRenderContext *self = (__bridge SVGRenderContext *)closure; \
 		CGContextRef CGCtx = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort]; \
 
 
@@ -767,7 +756,7 @@ static int indent=1;
 
 static svg_status_t r_begin_group(void *closure, double opacity)
 {
-	SVGRenderContext *self = (SVGRenderContext *)closure;
+	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
 	indent+=3;
 	
 	return [self beginGroup: opacity];
@@ -775,21 +764,21 @@ static svg_status_t r_begin_group(void *closure, double opacity)
 
 static svg_status_t r_begin_element(void *closure)
 {
-	SVGRenderContext *self = (SVGRenderContext *)closure;
+	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
 	CGContextRef CGCtx = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
 	indent+=3;
 	
 	CGContextSaveGState(CGCtx);
-	self.current = [[self current] copy];
+	SVGRenderState *tempState = [[self current] copy];
+	self.current = tempState;
 	[[self states] addObject: [self current]];
-	[[self current] release];
 	
 	return SVG_STATUS_SUCCESS;
 }
 
 static svg_status_t r_end_element(void *closure)
 {
-	SVGRenderContext *self = (SVGRenderContext *)closure;
+	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
 	CGContextRef CGCtx = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
 	indent-=3;
 	
@@ -805,7 +794,7 @@ static svg_status_t r_end_element(void *closure)
 
 static svg_status_t r_end_group(void *closure, double opacity)
 {
-	SVGRenderContext *self = (SVGRenderContext *)closure;
+	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
 	indent-=3;
 	
 	return [self endGroup: opacity];

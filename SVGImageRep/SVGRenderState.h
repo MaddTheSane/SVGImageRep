@@ -35,7 +35,7 @@
 	size_t num_dash;
 	CGFloat dash_offset;
 }
-@property (readwrite, retain) NSWindow *window;
+@property (readwrite) NSWindow *window;
 @property (readwrite) svg_paint_t fill_paint;
 @property (readwrite) svg_paint_t stroke_paint;
 @property (readwrite) double fill_opacity;

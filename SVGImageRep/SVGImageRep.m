@@ -27,7 +27,7 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 {
 	static NSArray *list = nil;
 	if (!list)
-		list = [[NSArray arrayWithObject: @"svg"] retain];
+		list = [NSArray arrayWithObject: @"svg"];
 	return list;
 }
 
@@ -70,7 +70,6 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 	status = svg_parse_buffer(svg,[d bytes],[d length]);
 	if (status != SVG_STATUS_SUCCESS)
 	{
-		[self release];
 		return nil;
 	}
 
@@ -83,10 +82,9 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 	{
 		SVGRenderContext *svg_render_context = [[SVGRenderContext alloc] init];
 		[svg_render_context prepareRender: 1.0];
-		svg_render(svg, &cocoa_svg_engine, svg_render_context);
+		svg_render(svg, &cocoa_svg_engine,  (__bridge void*)svg_render_context);
 		[svg_render_context finishRender];
 		[self setSize: [svg_render_context size]];
-		[svg_render_context release];
 	}
 
 	return self;
@@ -95,17 +93,7 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 - (void)dealloc
 {
 	svg_destroy(svg);
-	
-	[super dealloc];
 }
-
-- (void)finalize
-{
-	svg_destroy(svg);
-
-	[super finalize];
-}
-
 
 - (BOOL)draw
 {
@@ -121,7 +109,7 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 
 	[svg_render_context prepareRender:
 		sqrt(ctm.a * ctm.b + ctm.c * ctm.d)];
-	svg_render(svg, &cocoa_svg_engine, svg_render_context);
+	svg_render(svg, &cocoa_svg_engine,  (__bridge void*)svg_render_context);
 	[svg_render_context finishRender];
 
 	/*DPScomposite(ctxt,
@@ -129,7 +117,6 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 		[svg_render_context->result gState],0,0,NSCompositeSourceOver);*/
 	
 
-	[svg_render_context release];
 
 	return YES;
 }

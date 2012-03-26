@@ -23,17 +23,11 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 {
 	if(s != svg)
 	{
-		[svg release];
-		svg = [s retain];
+		svg = s;
 	}
 	[self setNeedsDisplay: YES];
 }
 
-- (void)dealloc
-{
-	[svg release];
-	[super dealloc];
-}
 
 - (BOOL)isOpaque
 {
@@ -82,7 +76,7 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 //		printf("rendering...\n");
 		t=clock();
 		[svg_render_context prepareRender: scale];
-		svg_render(svg, &cocoa_svg_engine, svg_render_context);
+		svg_render(svg, &cocoa_svg_engine, (__bridge void*)svg_render_context);
 		[svg_render_context finishRender];
 		t=clock()-t;
 //		printf("done: %15.8f seconds\n",t/(double)CLOCKS_PER_SEC);
@@ -90,7 +84,6 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 		NSSize contextSize = [svg_render_context size];
 		[svg_view setFrame: NSMakeRect(0, 0, contextSize.width, contextSize.height)];
 		[svg_view setSVGRenderContext: svg_render_context];
-		[svg_render_context release];
 
 		svg_destroy(svg);
 	}
@@ -122,14 +115,9 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 
 - (void)windowWillClose:(NSNotification *)n
 {
-	[self autorelease];
+	//[self autorelease];
 }
 
-- (void)dealloc
-{
-	[path release];
-	[super dealloc];
-}
 
 
 #define SCALE(a,b) \

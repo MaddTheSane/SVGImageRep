@@ -15,7 +15,7 @@ extern svg_render_engine_t cocoa_svg_engine;
 @interface SVGRenderContext : NSObject
 {
 @public
-	NSWindow *result;
+	NSWindow *__unsafe_unretained result;
 	NSSize size;
 	
 	double scale;
@@ -24,9 +24,9 @@ extern svg_render_engine_t cocoa_svg_engine;
 	NSMutableArray *states;
 }
 
-@property (readwrite, assign) SVGRenderState *current;
-@property (readwrite, retain) NSMutableArray *states;
-@property (readonly) NSWindow *result;
+@property (readwrite) SVGRenderState *current;
+@property (readwrite) NSMutableArray *states;
+@property (unsafe_unretained, readonly) NSWindow *result;
 @property (readonly) NSSize size;
 @property (readwrite) double scale;
 
