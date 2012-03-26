@@ -152,6 +152,10 @@
 		55F0FA8F151FBAB6006426B8 /* SVGViewer.m in Sources */ = {isa = PBXBuildFile; fileRef = 55F0FA8E151FBAB6006426B8 /* SVGViewer.m */; };
 		55F0FA92151FBB80006426B8 /* SVGViewer.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55F0FA91151FBB80006426B8 /* SVGViewer.xib */; };
 		55F0FA94151FBE4A006426B8 /* Document.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55F0FA93151FBE4A006426B8 /* Document.xib */; };
+		55F0FAC81520E925006426B8 /* SVGRenderState.m in Sources */ = {isa = PBXBuildFile; fileRef = 55F0FAC71520E925006426B8 /* SVGRenderState.m */; };
+		55F0FAC91520E925006426B8 /* SVGRenderState.m in Sources */ = {isa = PBXBuildFile; fileRef = 55F0FAC71520E925006426B8 /* SVGRenderState.m */; };
+		55F0FACC1520E9F8006426B8 /* SVGRenderContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 55F0FACB1520E9F8006426B8 /* SVGRenderContext.m */; };
+		55F0FACD1520E9F8006426B8 /* SVGRenderContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 55F0FACB1520E9F8006426B8 /* SVGRenderContext.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -346,6 +350,10 @@
 		55F0FA8E151FBAB6006426B8 /* SVGViewer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVGViewer.m; sourceTree = "<group>"; };
 		55F0FA91151FBB80006426B8 /* SVGViewer.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SVGViewer.xib; sourceTree = "<group>"; };
 		55F0FA93151FBE4A006426B8 /* Document.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Document.xib; sourceTree = "<group>"; };
+		55F0FAC61520E925006426B8 /* SVGRenderState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVGRenderState.h; sourceTree = "<group>"; };
+		55F0FAC71520E925006426B8 /* SVGRenderState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVGRenderState.m; sourceTree = "<group>"; };
+		55F0FACA1520E9F8006426B8 /* SVGRenderContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVGRenderContext.h; sourceTree = "<group>"; };
+		55F0FACB1520E9F8006426B8 /* SVGRenderContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVGRenderContext.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -612,6 +620,10 @@
 			children = (
 				55AFA529151AABB700B5351D /* SVGImageRep.m */,
 				553711A8151BCDB900F8848A /* SVGImageRep.h */,
+				55F0FACB1520E9F8006426B8 /* SVGRenderContext.m */,
+				55F0FACA1520E9F8006426B8 /* SVGRenderContext.h */,
+				55F0FAC71520E925006426B8 /* SVGRenderState.m */,
+				55F0FAC61520E925006426B8 /* SVGRenderState.h */,
 				55AFA49A151AA3BC00B5351D /* Supporting Files */,
 			);
 			path = SVGImageRep;
@@ -990,6 +1002,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				55AFA52A151AABB700B5351D /* SVGImageRep.m in Sources */,
+				55F0FAC81520E925006426B8 /* SVGRenderState.m in Sources */,
+				55F0FACC1520E9F8006426B8 /* SVGRenderContext.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1001,6 +1015,8 @@
 				55AFA4C8151AA5E500B5351D /* main.m in Sources */,
 				5537146F151BD60B00F8848A /* SVGImageRep.m in Sources */,
 				55F0FA8F151FBAB6006426B8 /* SVGViewer.m in Sources */,
+				55F0FAC91520E925006426B8 /* SVGRenderState.m in Sources */,
+				55F0FACD1520E9F8006426B8 /* SVGRenderContext.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
