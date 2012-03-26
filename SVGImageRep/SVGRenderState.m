@@ -16,7 +16,7 @@
 
 - (id)copyWithZone:(NSZone *)zone
 {
-	SVGRenderState *new = [SVGRenderState new];
+	SVGRenderState *new = [[SVGRenderState allocWithZone:zone] init];
 	
 	new.num_dash = num_dash;
 	new.stroke_opacity = stroke_opacity;
