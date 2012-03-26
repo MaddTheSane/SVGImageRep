@@ -24,23 +24,23 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 
 @synthesize stroke_opacity, dash, color, window, opacity, num_dash, fill_rule, font_size, fill_paint, font_style, dash_offset, font_family, font_weight, text_anchor, fill_opacity, stroke_paint, stroke_width;
 
--(id) copyWithZone: (NSZone *)zone
+- (id)copyWithZone:(NSZone *)zone
 {
 	SVGRenderState *new = NSCopyObject(self, 0, zone);
 
-	[new->window retain];
-	[new->font_family retain];
+	[[new window] retain];
+	[[new font_family] retain];
 
-	if (new->dash)
+	if ([new dash])
 	{
-		new->dash = malloc(sizeof(CGFloat)*new->num_dash);
-		memcpy(new->dash, dash, sizeof(CGFloat)*new->num_dash);
+		new.dash = malloc(sizeof(CGFloat)*new->num_dash);
+		memcpy(new.dash, dash, sizeof(CGFloat) * new.num_dash);
 	}
 
 	return new;
 }
 
--(void) dealloc
+- (void)dealloc
 {
 	if (dash)
 		free(dash);
@@ -63,7 +63,7 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 
 @synthesize size, states, current, result;
 
--(void) prepareRender: (double)a_scale
+- (void)prepareRender:(double)a_scale
 {
 	[result release]; result = nil;
 	states = [[NSMutableArray alloc] init];
@@ -72,65 +72,64 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 	size = NSMakeSize(500 * scale, 500 * scale);
 }
 
--(void) finishRender
+- (void)finishRender
 {
-//	printf("result=%@, current=%@, states=%i\n",result,current,[states count]);
 	[states release]; states = nil;
 }
 
 
--(void) dealloc
+- (void)dealloc
 {
 	[result release];
 	[super dealloc];
 }
 
 
--(double) lengthToPoints: (svg_length_t *)l
+- (double)lengthToPoints:(svg_length_t *)l
 {
 	double points;
 	switch (l->unit)
 	{
-	case SVG_LENGTH_UNIT_PT:
-		points=l->value;
-		break;
+		case SVG_LENGTH_UNIT_PT:
+			points = l->value;
+			break;
 
-	case SVG_LENGTH_UNIT_PX:
-		points=l->value/1.25;
-		break;
+		case SVG_LENGTH_UNIT_PX:
+			points = l->value/1.25;
+			break;
 
-	case SVG_LENGTH_UNIT_CM:
-		points=l->value/2.54*72;
-		break;
+		case SVG_LENGTH_UNIT_CM:
+			points = l->value/2.54*72;
+			break;
 
-	case SVG_LENGTH_UNIT_MM:
-		points=l->value/25.4*72;
-		break;
+		case SVG_LENGTH_UNIT_MM:
+			points = l->value/25.4*72;
+			break;
 
-	case SVG_LENGTH_UNIT_IN:
-		points=l->value*72;
-		break;
+		case SVG_LENGTH_UNIT_IN:
+			points = l->value*72;
+			break;
 
-	case SVG_LENGTH_UNIT_PC:
-		points=l->value/6*72;
-		break;
+		case SVG_LENGTH_UNIT_PC:
+			points = l->value/6*72;
+			break;
 
-	case SVG_LENGTH_UNIT_PCT:
-		if (l->orientation==SVG_LENGTH_ORIENTATION_HORIZONTAL)
-			return l->value/100*size.width/scale;
-		else if (l->orientation==SVG_LENGTH_ORIENTATION_VERTICAL)
-			return l->value/100*size.height/scale;
-		else
-			return l->value/100*sqrt(size.width*size.width+size.height*size.height)*sqrt(2)/scale;
+		case SVG_LENGTH_UNIT_PCT:
+			if (l->orientation == SVG_LENGTH_ORIENTATION_HORIZONTAL)
+				return l->value / 100 * size.width / scale;
+			else if (l->orientation == SVG_LENGTH_ORIENTATION_VERTICAL)
+				return l->value / 100 * size.height / scale;
+			else
+				return l->value / 100 * sqrt(size.width * size.width+size.height * size.height) * sqrt(2) / scale;
 
-	default:
-		printf("unhandled unit %i\n",l->unit);
-		return l->value;
+		default:
+			printf("unhandled unit %i\n", l->unit);
+			return l->value;
 	}
-	return points*1.25;
+	return points * 1.25;
 }
 
--(void) setColor: (svg_color_t *)c
+- (void)setColor:(svg_color_t *)c
 {
 	CGContextRef tempCtx =(CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
 	
@@ -141,6 +140,16 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 	CGColorRelease(tempColor);
 }
 
+- (void)setColor:(svg_color_t *)c alpha:(CGFloat)alph
+{
+	CGContextRef tempCtx = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
+	
+	//Which color is being set? Set them both!
+	CGColorRef tempColor = CGColorCreateGenericRGB(svg_color_get_red(c)/255.0, svg_color_get_green(c)/255.0, svg_color_get_blue(c)/255.0, alph);
+	CGContextSetFillColorWithColor(tempCtx, tempColor);
+	CGContextSetStrokeColorWithColor(tempCtx, tempColor);
+	CGColorRelease(tempColor);
+}
 
 /*
 A few methods based on code in libxsvg:
@@ -183,7 +192,7 @@ A few methods based on code in libxsvg:
 */
 /* 4/3 * (1-cos 45Â)/sin 45Â = 4/3 * sqrt(2) - 1 */
 #define SVG_ARC_MAGIC ((double) 0.5522847498)
--(void) _pathArcSegment: (double)xc : (double)yc
+- (void)_pathArcSegment:(double)xc : (double)yc
 	: (double)th0 : (double)th1
 	: (double)rx : (double)ry : (double)x_axis_rotation
 {
@@ -210,7 +219,7 @@ A few methods based on code in libxsvg:
     x2 = x3 + t * sin (th1);
     y2 = y3 - t * cos (th1);
 
-	CGContextRef tempCtx =(CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
+	CGContextRef tempCtx = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
 
 	CGContextAddCurveToPoint(tempCtx, a00 * x1 + a01 * y1, a10 * x1 + a11 * y1, a00 * x2 + a01 * y2, a10 * x2 + a11 * y2, a00 * x3 + a01 * y3, a10 * x3 + a11 * y3);
 	
@@ -228,7 +237,7 @@ A few methods based on code in libxsvg:
  * y: New y coordinate.
  *
  **/
--(void) arcTo: (double)rx : (double) ry
+- (void)arcTo:(double)rx : (double) ry
 	: (double)x_axis_rotation
 	: (int)large_arc_flag
 	: (int)sweep_flag
@@ -246,14 +255,14 @@ A few methods based on code in libxsvg:
     double cury;
 
 	{
-		CGContextRef tempCtx =(CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
+		CGContextRef tempCtx = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
 		CGPoint tempPoint = CGContextGetPathCurrentPoint(tempCtx);
-		curx=tempPoint.x;
-		cury=tempPoint.y;
+		curx = tempPoint.x;
+		cury = tempPoint.y;
 	}
 
-    sin_th = sin (x_axis_rotation * (M_PI / 180.0));
-    cos_th = cos (x_axis_rotation * (M_PI / 180.0));
+    sin_th = sin(x_axis_rotation * (M_PI / 180.0));
+    cos_th = cos(x_axis_rotation * (M_PI / 180.0));
 
     dx = (curx - x) / 2.0;
     dy = (cury - y) / 2.0;
@@ -293,8 +302,8 @@ A few methods based on code in libxsvg:
     yc = 0.5 * (y0 + y1) + sfactor * (x1 - x0);
     /* (xc, yc) is center of the circle. */
     
-    th0 = atan2 (y0 - yc, x0 - xc);
-    th1 = atan2 (y1 - yc, x1 - xc);
+    th0 = atan2(y0 - yc, x0 - xc);
+    th1 = atan2(y1 - yc, x1 - xc);
     
     th_arc = th1 - th0;
     if (th_arc < 0 && sweep_flag)
@@ -308,7 +317,7 @@ A few methods based on code in libxsvg:
        user should be able to specify as well). I don't yet know the
        bounds of the error from the following computation of
        n_segs. Plus the "+ 0.001" looks just plain fishy. -cworth */
-    n_segs = ceil (fabs (th_arc / (M_PI * 0.5 + 0.001)));
+    n_segs = ceil(fabs(th_arc / (M_PI * 0.5 + 0.001)));
     
     for (i = 0; i < n_segs; i++) {
 	[self _pathArcSegment: xc : yc
@@ -319,26 +328,26 @@ A few methods based on code in libxsvg:
 }
 
 
--(svg_status_t) renderRect: (svg_length_t *)x : (svg_length_t *)y
+- (svg_status_t)renderRect:(svg_length_t *)x : (svg_length_t *)y
 	: (svg_length_t *)width : (svg_length_t *)height
 	: (svg_length_t *)rx : (svg_length_t *)ry
 {
-	double cx,cy,cw,ch;
-	double crx,cry;
+	double cx, cy, cw, ch;
+	double crx, cry;
 
-	cx=[self lengthToPoints: x];
-	cy=[self lengthToPoints: y];
-	cw=[self lengthToPoints: width];
-	ch=[self lengthToPoints: height];
-	crx=[self lengthToPoints: rx];
-	cry=[self lengthToPoints: ry];
+	cx = [self lengthToPoints: x];
+	cy = [self lengthToPoints: y];
+	cw = [self lengthToPoints: width];
+	ch = [self lengthToPoints: height];
+	crx = [self lengthToPoints: rx];
+	cry = [self lengthToPoints: ry];
 
-	if (crx>cw/2) crx=cw/2;
-	if (cry>ch/2) cry=ch/2;
+	if (crx > cw / 2) crx = cw / 2;
+	if (cry > ch / 2) cry = ch / 2;
 
 	CGContextRef tempCtx =(CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
 	
-	switch (current->fill_paint.type)
+	switch ([current fill_paint].type)
 	{
 		case SVG_PAINT_TYPE_GRADIENT:
 #warning SVG_PAINT_TYPE_GRADIENT not handled yet!
@@ -350,25 +359,24 @@ A few methods based on code in libxsvg:
 
 			
 		case SVG_PAINT_TYPE_COLOR:
-		[self setColor: &current->fill_paint.p.color];
-			CGContextSetAlpha(tempCtx, current->fill_opacity);
-		if (rx>0 || ry>0)
-		{
-			CGContextMoveToPoint(tempCtx, cx + crx, cy);
-			CGContextAddLineToPoint(tempCtx, cx + cw - crx, cy);
-			[self arcTo: crx : cry : 0 : 0 : 1 : cx + cw : cy + cry];
-			CGContextAddLineToPoint(tempCtx, cx + cw, cy + ch - cry);
-			[self arcTo: crx : cry : 0 : 0 : 1 : cx + cw - crx : cy + ch];
-			CGContextAddLineToPoint(tempCtx, cx + crx, cy + ch);
-			[self arcTo: crx : cry : 0 : 0 : 1 : cx : cy + ch - cry];
-			CGContextAddLineToPoint(tempCtx, cx, cy + cry);
-			[self arcTo: crx : cry : 0 : 0 : 1 : cx + crx : cy];
-			CGContextClosePath(tempCtx);
-			CGContextFillPath(tempCtx);
-		}
-		else
-			CGContextFillRect(tempCtx, CGRectMake(cx, cy, cw, ch));
-		break;
+			[self setColor:&current->fill_paint.p.color alpha:[current fill_opacity]];
+			if (rx > 0 || ry > 0)
+			{
+				CGContextMoveToPoint(tempCtx, cx + crx, cy);
+				CGContextAddLineToPoint(tempCtx, cx + cw - crx, cy);
+				[self arcTo: crx : cry : 0 : 0 : 1 : cx + cw : cy + cry];
+				CGContextAddLineToPoint(tempCtx, cx + cw, cy + ch - cry);
+				[self arcTo: crx : cry : 0 : 0 : 1 : cx + cw - crx : cy + ch];
+				CGContextAddLineToPoint(tempCtx, cx + crx, cy + ch);
+				[self arcTo: crx : cry : 0 : 0 : 1 : cx : cy + ch - cry];
+				CGContextAddLineToPoint(tempCtx, cx, cy + cry);
+				[self arcTo: crx : cry : 0 : 0 : 1 : cx + crx : cy];
+				CGContextClosePath(tempCtx);
+				CGContextFillPath(tempCtx);
+			}
+			else
+				CGContextFillRect(tempCtx, CGRectMake(cx, cy, cw, ch));
+			break;
 /*
 	case SVG_PAINT_TYPE_CURRENTCOLOR:
 		[self setColor: &current->color];
@@ -395,7 +403,7 @@ A few methods based on code in libxsvg:
 		break;
 	}
 
-	switch (current->stroke_paint.type)
+	switch ([current stroke_paint].type)
 	{
 		case SVG_PAINT_TYPE_GRADIENT:
 #warning SVG_PAINT_TYPE_GRADIENT not handled yet!
@@ -405,11 +413,10 @@ A few methods based on code in libxsvg:
 #warning SVG_PAINT_TYPE_PATTERN not handled yet!
 			break;
 			
-	case SVG_PAINT_TYPE_COLOR:
-		[self setColor: &current->stroke_paint.p.color];
-			CGContextSetAlpha(tempCtx, current->fill_opacity);
+		case SVG_PAINT_TYPE_COLOR:
+			[self setColor:&current->stroke_paint.p.color alpha:[current fill_opacity]];
 			CGContextStrokeRect(tempCtx, CGRectMake(cx, cy, cw, ch));
-		break;
+			break;
 /*
 	case SVG_PAINT_TYPE_CURRENTCOLOR:
 		[self setColor: &current->color];
@@ -417,24 +424,24 @@ A few methods based on code in libxsvg:
 		DPSrectstroke(ctxt,cx,cy,cw,ch);
 		break;
 */
-	case SVG_PAINT_TYPE_NONE:
-		break;
+		case SVG_PAINT_TYPE_NONE:
+			break;
 	}
 
 	return SVG_STATUS_SUCCESS;
 }
 
--(svg_status_t) renderEllipse: (svg_length_t *)lcx : (svg_length_t *)lcy
+- (svg_status_t)renderEllipse:(svg_length_t *)lcx : (svg_length_t *)lcy
 	: (svg_length_t *)lrx : (svg_length_t *)lry
 {
 	double cx,cy,rx,ry;
 
-	cx=[self lengthToPoints: lcx];
-	cy=[self lengthToPoints: lcy];
-	rx=[self lengthToPoints: lrx];
-	ry=[self lengthToPoints: lry];
+	cx = [self lengthToPoints:lcx];
+	cy = [self lengthToPoints:lcy];
+	rx = [self lengthToPoints:lrx];
+	ry = [self lengthToPoints:lry];
 
-	CGContextRef tempCtx =(CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
+	CGContextRef tempCtx = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
 	
 	CGContextMoveToPoint(tempCtx, cx + rx, cy);
 	CGContextAddCurveToPoint(tempCtx, cx + rx, cy + ry * SVG_ARC_MAGIC, cx + rx * SVG_ARC_MAGIC, cy + ry, cx, cy + ry);
@@ -452,7 +459,7 @@ End of methods based on libxsvg code.
 */
 
 
--(svg_status_t) beginGroup: (double)opacity
+- (svg_status_t)beginGroup:(double)opacity
 {
 	CGContextRef tempCtx =(CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
 	if (current)
@@ -467,22 +474,22 @@ End of methods based on libxsvg code.
 		[oldCurrent release];
 
 		CGContextSaveGState(tempCtx);
-		if (opacity<1.0)
+		if (opacity < 1.0)
 		{
-			CGAffineTransform ctm = CGContextGetCTM(tempCtx);
+			//CGAffineTransform ctm = CGContextGetCTM(tempCtx);
 			//NSAffineTransform *ctm=GSCurrentCTM(ctxt);
 			//NSAffineTransform *ctm = [NSAffineTransform transform];
 
-			[current->window release]; current->window = nil;
-			current->window = [[NSWindow alloc]
+			[current.window release]; current.window = nil;
+			current.window = [[NSWindow alloc]
 				initWithContentRect: NSMakeRect(0,0,size.width,size.height)
 				styleMask: 0
 				backing: NSBackingStoreRetained
 				defer: NO];
-			[current->window setReleasedWhenClosed: NO];
+			[current.window setReleasedWhenClosed: NO];
 			//[GSCurrentServer() windowdevice: [current->window windowNumber]];
 			//GSSetCTM(ctxt,ctm);
-			CGContextConcatCTM(tempCtx, ctm);
+			//CGContextConcatCTM(tempCtx, ctm);
 
 			CGContextSaveGState(tempCtx);
 			//TODO: find out what these do and find substitutes.
@@ -495,7 +502,7 @@ End of methods based on libxsvg code.
 	else
 	{
 		CGContextSaveGState(tempCtx);
-		current=[[SVGRenderState alloc] init];
+		current = [[SVGRenderState alloc] init];
 	}
 	[states addObject: current];
 	[current release];
@@ -503,54 +510,55 @@ End of methods based on libxsvg code.
 	return SVG_STATUS_SUCCESS;
 }
 
--(svg_status_t) endGroup: (double)opacity
+- (svg_status_t)endGroup:(double)opacity
 {
 	CGContextRef tempCtx = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
 
 	CGContextRestoreGState(tempCtx);
 
-	if (opacity!=1.0)
+	if (opacity != 1.0)
 	{
-		NSWindow *w=[current->window retain];
+		NSWindow *w = [[current window] retain];
 		CGContextSaveGState(tempCtx);
 		//TODO: Find out how to do this in CG
 		//DPSinitmatrix(ctxt);
 		//DPSinitclip(ctxt);
 		//DPSdissolve(ctxt,0,0,size.width,size.height,[w gState],0,0,opacity);
 		CGContextRestoreGState(tempCtx);
+		[w release];
 	}
 
-	[states removeObjectAtIndex: [states count]-1];
+	[states removeObjectAtIndex:[states count] - 1];
 	if ([states count])
-		current=[states objectAtIndex: [states count]-1];
+		current = [states objectAtIndex:[states count] - 1];
 	else
-		current=nil;
+		current = nil;
 
 	return SVG_STATUS_SUCCESS;
 }
 
 
--(svg_status_t) setViewportDimension: (svg_length_t *)width :(svg_length_t *)height
+- (svg_status_t)setViewportDimension:(svg_length_t *)width :(svg_length_t *)height
 {
 	int w,h;
 	CGContextRef tempCtx = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
 
 	if (result)
 	{
-		printf("setViewportDimension: Already have size, ignoring.\n");
+		NSLog(@"setViewportDimension: Already have size, ignoring.");
 		return SVG_STATUS_SUCCESS;
 	}
 
-	w = ceil([self lengthToPoints: width])*scale;
-	h = ceil([self lengthToPoints: height])*scale;
+	w = ceil([self lengthToPoints: width]) * scale;
+	h = ceil([self lengthToPoints: height]) * scale;
 	size = NSMakeSize(w,h);
 
-	result=current->window=[[NSWindow alloc]
-		initWithContentRect: NSMakeRect(0,0,size.width,size.height)
+	result = current.window = [[NSWindow alloc]
+		initWithContentRect: NSMakeRect(0, 0, size.width, size.height)
 		styleMask: 0
 		backing: NSBackingStoreRetained
 		defer: NO];
-	[current->window setReleasedWhenClosed: NO];
+	[[current window] setReleasedWhenClosed: NO];
 	[result retain];
 
 	//[NSCurrentServer() windowdevice: [current->window windowNumber]];
@@ -567,37 +575,44 @@ End of methods based on libxsvg code.
 	return SVG_STATUS_SUCCESS;
 }
 
--(svg_status_t) applyViewbox: (svg_view_box_t)viewbox
+- (svg_status_t)applyViewbox: (svg_view_box_t)viewbox
 	: (svg_length_t *)width : (svg_length_t *)height
 {
 	CGContextRef tempCtx = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
 
 	double w,h;
-	w=[self lengthToPoints: width];
-	h=[self lengthToPoints: height];
-	CGContextScaleCTM(tempCtx, w/viewbox.box.width, h/viewbox.box.height);
+	w = [self lengthToPoints: width];
+	h = [self lengthToPoints: height];
+	CGContextScaleCTM(tempCtx, w / viewbox.box.width, h / viewbox.box.height);
 	CGContextTranslateCTM(tempCtx, -viewbox.box.x, -viewbox.box.y);
 	return SVG_STATUS_SUCCESS;
 }
 
 
--(svg_status_t) renderPath
+- (svg_status_t)renderPath
 {
 	CGContextRef tempCtx = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
 	switch ([current fill_paint].type)
 	{
-	case SVG_PAINT_TYPE_COLOR:
-		[self setColor: &current->fill_paint.p.color];
-			CGContextSetAlpha(tempCtx, current->fill_opacity);
-		if (current->stroke_paint.type!=SVG_PAINT_TYPE_NONE)
-			CGContextSaveGState(tempCtx);
-		if (current->fill_rule)
-			CGContextEOFillPath(tempCtx);
-		else
-			CGContextFillPath(tempCtx);
-		if (current->stroke_paint.type!=SVG_PAINT_TYPE_NONE)
-			CGContextRestoreGState(tempCtx);
-		break;
+		case SVG_PAINT_TYPE_GRADIENT:
+#warning SVG_PAINT_TYPE_GRADIENT not handled yet!
+			break;
+			
+		case SVG_PAINT_TYPE_PATTERN:
+#warning SVG_PAINT_TYPE_PATTERN not handled yet!
+			break;
+			
+		case SVG_PAINT_TYPE_COLOR:
+			[self setColor: &current->fill_paint.p.color alpha:[current fill_opacity]];
+			if (current->stroke_paint.type != SVG_PAINT_TYPE_NONE)
+				CGContextSaveGState(tempCtx);
+			if ([current fill_rule])
+				CGContextEOFillPath(tempCtx);
+			else
+				CGContextFillPath(tempCtx);
+			if (current->stroke_paint.type != SVG_PAINT_TYPE_NONE)
+				CGContextRestoreGState(tempCtx);
+			break;
 /*
 	case SVG_PAINT_TYPE_CURRENTCOLOR:
 		[self setColor: &current->color];
@@ -612,17 +627,24 @@ End of methods based on libxsvg code.
 			DPSgrestore(ctxt);
 		break;
 */
-	case SVG_PAINT_TYPE_NONE:
-		break;
+		case SVG_PAINT_TYPE_NONE:
+			break;
 	}
 
 	switch ([current stroke_paint].type)
 	{
-	case SVG_PAINT_TYPE_COLOR:
-		[self setColor: &current->stroke_paint.p.color];
-		CGContextSetAlpha(tempCtx, current->fill_opacity);
-		CGContextStrokePath(tempCtx);
-		break;
+		case SVG_PAINT_TYPE_GRADIENT:
+#warning SVG_PAINT_TYPE_GRADIENT not handled yet!
+			break;
+			
+		case SVG_PAINT_TYPE_PATTERN:
+#warning SVG_PAINT_TYPE_PATTERN not handled yet!
+			break;
+
+		case SVG_PAINT_TYPE_COLOR:
+			[self setColor: &current->stroke_paint.p.color alpha:[current fill_opacity]];
+			CGContextStrokePath(tempCtx);
+			break;
 /*
 	case SVG_PAINT_TYPE_CURRENTCOLOR:
 		[self setColor: &current->color];
@@ -630,107 +652,115 @@ End of methods based on libxsvg code.
 		DPSstroke(ctxt);
 		break;
 */
-	case SVG_PAINT_TYPE_NONE:
-		break;
+		case SVG_PAINT_TYPE_NONE:
+			break;
 	}
 
 	return SVG_STATUS_SUCCESS;
 }
 
 
--(svg_status_t) renderText: (const unsigned char *)utf8
+- (svg_status_t)renderText:(const unsigned char *)utf8
 {
 	CGContextRef tempCtx = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
 	NSFont *f;
 	NSFontManager *fm;
-	NSArray *fonts,*font;
-	int w=ceil(current->font_weight/80);
-	int score,best;
-	int i;
+	NSArray *fonts, *font;
+	int w = ceil([current font_weight] / 80);
+	int score, best;
+	NSInteger i;
 
 	if (utf8 == NULL)
 	  return SVG_STATUS_SUCCESS;
 	
-	fm=[NSFontManager sharedFontManager];
+	fm = [NSFontManager sharedFontManager];
 
 	{
 		NSArray *families;
 		NSString *family;
 
-		families=[[current font_family] componentsSeparatedByString: @","];
+		families = [[current font_family] componentsSeparatedByString: @","];
 
-		fonts=nil;
-		for (i=0;i<[families count];i++)
+		fonts = nil;
+		for (i = 0;i < [families count];i++)
 		{
-			family=[families objectAtIndex: i];
+			family = [families objectAtIndex: i];
 
-			family=[family stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceCharacterSet]];
+			family = [family stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceCharacterSet]];
 			if ([family hasPrefix: @"'"])
-				family=[[family substringToIndex: [family length]-1] substringFromIndex: 1];
+				family = [[family substringToIndex: [family length]-1] substringFromIndex: 1];
 
 			if ([family isEqual: @"serif"])
-				family=@"Times";
+				family = @"Times";
 			else if ([family isEqual: @"sans-serif"])
-				family=@"Helvetica";
+				family = @"Helvetica";
 			else if ([family isEqual: @"monospace"])
-				family=@"Courier";
+				family = @"Courier";
 
-			fonts=[fm availableMembersOfFontFamily: family];
+			fonts=[fm availableMembersOfFontFamily:family];
 			if (!fonts || ![fonts count])
-				fonts=[fm availableMembersOfFontFamily: [family capitalizedString]];
+				fonts = [fm availableMembersOfFontFamily:[family capitalizedString]];
 			if (fonts && [fonts count])
 				break;
 		}
 
 
 		if (!fonts || ![fonts count])
-			fonts=[fm availableMembersOfFontFamily: @"Helvetica"];
+			fonts = [fm availableMembersOfFontFamily: @"Helvetica"];
 	}
 
-	f=nil;
-	best=1e6;
-	for (i=0;i<[fonts count];i++)
+	f = nil;
+	best = 1e6;
+	for (i = 0; i < [fonts count]; i++)
 	{
 		NSFontTraitMask traits;
 
 		font=[fonts objectAtIndex: i];
-		score=abs([[font objectAtIndex: 2] intValue]-w);
+		score = abs([[font objectAtIndex: 2] intValue] - w);
 
-		traits=[[font objectAtIndex: 3] unsignedIntValue]&~NSBoldFontMask;
-		if (current->font_style)
+		traits = [[font objectAtIndex: 3] unsignedIntValue]&~NSBoldFontMask;
+		if ([current font_style])
 		{
-			if (!(traits&NSItalicFontMask))
-				score+=10;
+			if (!(traits & NSItalicFontMask))
+				score += 10;
 			else
-				traits&=~NSItalicFontMask;
+				traits &=~ NSItalicFontMask;
 		}
 
 		if (traits)
-			score+=10;
+			score += 10;
 
-		if (score<best)
+		if (score < best)
 		{
-			best=score;
-			f=[NSFont fontWithName: [font objectAtIndex: 0]
-				size: current->font_size];
+			best = score;
+			f = [NSFont fontWithName: [font objectAtIndex: 0]
+				size: [current font_size]];
 		}
 	}
 
 	if (!f)
-		f=[NSFont userFontOfSize: current->font_size];
+		f = [NSFont userFontOfSize: [current font_size]];
 
-	//DPSscale(ctxt,1,-1);
+	//Should we set the text CTM here?
+	CGContextScaleCTM(tempCtx, 1, -1);
 	CGFontRef tempFontRef = CTFontCopyGraphicsFont((CTFontRef)f, NULL);
 	CGContextSetFont(tempCtx, tempFontRef);
 	CGFontRelease(tempFontRef);
 
-	switch (current->fill_paint.type)
+	switch ([current fill_paint].type)
 	{
-	case SVG_PAINT_TYPE_COLOR:
-		[self setColor: &current->fill_paint.p.color];
-			CGContextSetAlpha(tempCtx, current->fill_opacity);
+		case SVG_PAINT_TYPE_GRADIENT:
+#warning SVG_PAINT_TYPE_GRADIENT not handled yet!
+			break;
+			
+		case SVG_PAINT_TYPE_PATTERN:
+#warning SVG_PAINT_TYPE_PATTERN not handled yet!
+			break;
+			
+		case SVG_PAINT_TYPE_COLOR:
+			[self setColor: &current->fill_paint.p.color alpha:[current fill_opacity]];
 			CGContextShowText(tempCtx, utf8, strlen(utf8));
-		break;
+			break;
 /*
 	case SVG_PAINT_TYPE_CURRENTCOLOR:
 		[self setColor: &current->color];
@@ -738,19 +768,26 @@ End of methods based on libxsvg code.
 		DPSshow(ctxt,utf8);
 		break;
 */
-	case SVG_PAINT_TYPE_NONE:
-		break;
+		case SVG_PAINT_TYPE_NONE:
+			break;
 	}
 
-	switch (current->stroke_paint.type)
+	switch ([current stroke_paint].type)
 	{
-	case SVG_PAINT_TYPE_COLOR:
-		[self setColor: &current->stroke_paint.p.color];
-		CGContextSetAlpha(tempCtx, current->stroke_opacity);
-		//TODO: find DPScharpath replacement
-		//DPScharpath(ctxt,utf8,0);
-		CGContextStrokePath(tempCtx);
-		break;
+		case SVG_PAINT_TYPE_GRADIENT:
+#warning SVG_PAINT_TYPE_GRADIENT not handled yet!
+			break;
+			
+		case SVG_PAINT_TYPE_PATTERN:
+#warning SVG_PAINT_TYPE_PATTERN not handled yet!
+			break;
+			
+		case SVG_PAINT_TYPE_COLOR:
+			[self setColor: &current->stroke_paint.p.color alpha:[current stroke_opacity]];
+			//TODO: find DPScharpath replacement
+			//DPScharpath(ctxt,utf8,0);
+			CGContextStrokePath(tempCtx);
+			break;
 /*
 	case SVG_PAINT_TYPE_CURRENTCOLOR:
 		[self setColor: &current->color];
@@ -759,11 +796,11 @@ End of methods based on libxsvg code.
 		DPSstroke(ctxt);
 		break;
 */
-	case SVG_PAINT_TYPE_NONE:
-		break;
+		case SVG_PAINT_TYPE_NONE:
+			break;
 	}
 
-	//DPSscale(ctxt,1,-1);
+	CGContextScaleCTM(tempCtx,1,-1);
 
 	return SVG_STATUS_SUCCESS;
 }
@@ -775,17 +812,16 @@ End of methods based on libxsvg code.
 #define FUNC(name,args...) \
 	static svg_status_t r_##name(void *closure, ##args) \
 	{ \
-		SVGRenderContext *self=(SVGRenderContext *)closure; \
+		SVGRenderContext *self = (SVGRenderContext *)closure; \
 		CGContextRef CGCtx = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort]; \
 
 
 static int indent=1;
 #define I printf("%*c",indent,' ')
 
-static svg_status_t r_begin_group(void *closure,double opacity)
+static svg_status_t r_begin_group(void *closure, double opacity)
 {
-	SVGRenderContext *self=(SVGRenderContext *)closure;
-//	I;printf("begin_group(%g)\n",opacity);
+	SVGRenderContext *self = (SVGRenderContext *)closure;
 	indent+=3;
 
 	return [self beginGroup: opacity];
@@ -793,9 +829,8 @@ static svg_status_t r_begin_group(void *closure,double opacity)
 
 static svg_status_t r_begin_element(void *closure)
 {
-	SVGRenderContext *self=(SVGRenderContext *)closure;
-	CGContextRef CGCtx =(CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
-//	I;printf("begin_element()\n");
+	SVGRenderContext *self = (SVGRenderContext *)closure;
+	CGContextRef CGCtx = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
 	indent+=3;
 
 	CGContextSaveGState(CGCtx);
@@ -810,70 +845,44 @@ static svg_status_t r_begin_element(void *closure)
 
 static svg_status_t r_end_element(void *closure)
 {
-	SVGRenderContext *self=(SVGRenderContext *)closure;
-	CGContextRef CGCtx =(CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
+	SVGRenderContext *self = (SVGRenderContext *)closure;
+	CGContextRef CGCtx = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
 	indent-=3;
-//	I;printf("end_element()\n");
 
 	CGContextRestoreGState(CGCtx);
-	[[self states] removeObjectAtIndex: [self->states count]-1];
+	[[self states] removeObjectAtIndex: [[self states] count] - 1];
 	if ([[self states] count])
-		self.current = [[self states] objectAtIndex: [[self states] count]-1];
+		self.current = [[self states] objectAtIndex:[[self states] count] - 1];
 	else
 		self.current = nil;
 
 	return SVG_STATUS_SUCCESS;
 }
 
-static svg_status_t r_end_group(void *closure,double opacity)
+static svg_status_t r_end_group(void *closure, double opacity)
 {
-	SVGRenderContext *self=(SVGRenderContext *)closure;
+	SVGRenderContext *self = (SVGRenderContext *)closure;
 	indent-=3;
-//	I;printf("end_group(%g)\n",opacity);
 
 	return [self endGroup: opacity];
 }
 
 
-FUNC(move_to,double x,double y)
-/*	I;printf("move_to((%g %i %i),(%g %i %i))\n",
-		x->value,x->unit,x->orientation,
-		y->value,y->unit,y->orientation);*/
-
-//	DPSmoveto(self->ctxt,[self lengthToPoints: x],[self lengthToPoints: y]);
+FUNC(move_to, double x, double y)
 	CGContextMoveToPoint(CGCtx, x, y);
 	return SVG_STATUS_SUCCESS;
 }
 
-FUNC(line_to,double x,double y)
-/*	I;printf("line_to((%g %i %i),(%g %i %i))\n",
-		x->value,x->unit,x->orientation,
-		y->value,y->unit,y->orientation);*/
-
-//	DPSlineto(self->ctxt,[self lengthToPoints: x],[self lengthToPoints: y]);
+FUNC(line_to, double x, double y)
 	CGContextAddLineToPoint(CGCtx, x, y);
 	return SVG_STATUS_SUCCESS;
 }
 
 FUNC(curve_to,
-     double x1,double y1,
-     double x2,double y2,
-     double x3,double y3)
-
-/*	I;printf("curve_to((%g %i %i),(%g %i %i), (%g %i %i),(%g %i %i), (%g %i %i),(%g %i %i))\n",
-		x1->value,x1->unit,x1->orientation,
-		y1->value,y1->unit,y1->orientation,
-		x2->value,x2->unit,x2->orientation,
-		y2->value,y2->unit,y2->orientation,
-		x3->value,x3->unit,x3->orientation,
-		y3->value,y3->unit,y3->orientation
-		);*/
-/*	DPScurveto(self->ctxt,
-		[self lengthToPoints: x1],[self lengthToPoints: y1],
-		[self lengthToPoints: x2],[self lengthToPoints: y2],
-		[self lengthToPoints: x3],[self lengthToPoints: y3]);
-*/
-	//CGContextAddCurveToPoint(CGCtx,x1,y1,x2,y2,x3,y3);
+     double x1, double y1,
+     double x2, double y2,
+     double x3, double y3)
+	//CGContextAddCurveToPoint(CGCtx, x1, y1, x2, y2, x3, y3);
 	CGContextAddCurveToPoint(CGCtx, x2, y2, x3, y3, x1, y1);
 	return SVG_STATUS_SUCCESS;
 }
@@ -883,34 +892,16 @@ FUNC(quadratic_curve_to,
         double y1,
         double x2,
         double y2)
-//  I;printf("quadratic_curve_to(%g %g %g %g)\n",x1,y1,x2,y2);
 	CGContextAddQuadCurveToPoint(CGCtx, x2, y2, x1, y1);
 	return SVG_STATUS_SUCCESS;
 }
 
 FUNC(arc_to,
-     double rx,double ry,
+     double rx, double ry,
      double x_axis_rotation,
      int large_arc_flag,
      int sweep_flag,
-     double x,double y)
-
-/*	I;printf("arc_to((%g %i %i),(%g %i %i), %g, %i, %i, (%g %i %i),(%g %i %i))\n",
-		rx->value,rx->unit,rx->orientation,
-		ry->value,ry->unit,ry->orientation,
-		x_axis_rotation,
-		large_arc_flag,
-		sweep_flag,
-		x->value,x->unit,x->orientation,
-		y->value,y->unit,y->orientation
-		);*/
-/*
-	[self arcTo: [self lengthToPoints: rx] : [self lengthToPoints: ry]
-		: x_axis_rotation
-		: large_arc_flag
-		: sweep_flag
-		: [self lengthToPoints: x] : [self lengthToPoints: y]];
-*/
+     double x, double y)
 	[self arcTo: rx 
 		: ry 
 		: x_axis_rotation
@@ -922,88 +913,75 @@ FUNC(arc_to,
 }
 
 FUNC(close_path)
-//	I;printf("close_path()\n");
-
 	CGContextClosePath(CGCtx);
 	return SVG_STATUS_SUCCESS;
 }
 
 
-FUNC(set_color,const svg_color_t *color)
-//	I;printf("set_color(%08x)\n",color->rgb);
-	[self current].color=*color;
+FUNC(set_color, const svg_color_t *color)
+	[self current].color = *color;
 	return SVG_STATUS_SUCCESS;
 }
 
-FUNC(set_fill_opacity,double opacity)
-//	I;printf("set_fill_opacity(%g)\n",opacity);
-	[self current].fill_opacity=opacity;
+FUNC(set_fill_opacity, double opacity)
+	[self current].fill_opacity = opacity;
 	return SVG_STATUS_SUCCESS;
 }
 
-FUNC(set_fill_paint,const svg_paint_t *paint)
-//	I;printf("set_fill_paint((%i %08x))\n",paint->type,paint->p.color.rgb);
-	[self current].fill_paint=*paint;
+FUNC(set_fill_paint, const svg_paint_t *paint)
+	[self current].fill_paint = *paint;
 	return SVG_STATUS_SUCCESS;
 }
 
-FUNC(set_fill_rule,svg_fill_rule_t fill_rule)
-//	I;printf("set_fill_rule(%i)\n",fill_rule);
-	if (fill_rule==SVG_FILL_RULE_NONZERO)
-		[self current].fill_rule=0;
+FUNC(set_fill_rule, svg_fill_rule_t fill_rule)
+	if (fill_rule == SVG_FILL_RULE_NONZERO)
+		[self current].fill_rule = 0;
 	else
-		[self current].fill_rule=1;
+		[self current].fill_rule = 1;
 	return SVG_STATUS_SUCCESS;
 }
 
-FUNC(set_font_family,const char *family)
-//	I;printf("set_font_family(%s)\n",family);
-	[self current].font_family =[NSString stringWithUTF8String: family];
+FUNC(set_font_family, const char *family)
+	[self current].font_family = [NSString stringWithUTF8String: family];
 	return SVG_STATUS_SUCCESS;
 }
 
-FUNC(set_font_size,double size)
-//	I;printf("set_font_size(%g)\n",size);
-	[self current].font_size=size;
+FUNC(set_font_size, double size)
+	[self current].font_size = size;
 	return SVG_STATUS_SUCCESS;
 }
 
-FUNC(set_font_style,svg_font_style_t style)
-//	I;printf("set_font_style(%i)\n",style);
-	[self current].font_style=style;
+FUNC(set_font_style, svg_font_style_t style)
+	[self current].font_style = style;
 	return SVG_STATUS_SUCCESS;
 }
 
-FUNC(set_font_weight,unsigned int weight)
-//	I;printf("set_font_weight(%i)\n",weight);
-	[self current].font_weight=weight;
+FUNC(set_font_weight, unsigned int weight)
+	[self current].font_weight = weight;
 	return SVG_STATUS_SUCCESS;
 }
 
-FUNC(set_opacity,double opacity)
-//	I;printf("set_opacity(%g)\n",opacity);
-	[self current].opacity=opacity;
+FUNC(set_opacity, double opacity)
+	[self current].opacity = opacity;
 	return SVG_STATUS_SUCCESS;
 }
 
-FUNC(set_stroke_dash_array,double *dashes,int num_dashes)
-/*	I;printf("set_stroke_dash_array(%p,%i)\n",
-		dashes,num_dashes);*/
+FUNC(set_stroke_dash_array, double *dashes, int num_dashes)
 
 	if ([self current].dash)
 		free([self current].dash);
-	[self current].dash=NULL;
-	[self current].num_dash=0;
+	[self current].dash = NULL;
+	[self current].num_dash = 0;
 
 	if (dashes && num_dashes)
 	{
 		CGFloat *dash = malloc(sizeof(CGFloat) * num_dashes);
-		int i;
-		for (i=0;i<num_dashes;i++)
-			dash[i]=dashes[i];
-		[self current].dash=dash;
-		[self current].num_dash=num_dashes;
-		CGContextSetLineDash(CGCtx, [self current].dash_offset, [self current].dash, [self current].num_dash);
+		size_t i;
+		for (i = 0;i < num_dashes;i++)
+			dash[i] = dashes[i];
+		[self current].dash = dash;
+		[self current].num_dash = num_dashes;
+		CGContextSetLineDash(CGCtx, [[self current] dash_offset], [[self current] dash], [[self current] num_dash]);
 	}
 	else
 		CGContextSetLineDash(CGCtx, 0.0, NULL, 0);
@@ -1011,18 +989,14 @@ FUNC(set_stroke_dash_array,double *dashes,int num_dashes)
 	return SVG_STATUS_SUCCESS;
 }
 
-FUNC(set_stroke_dash_offset,svg_length_t *offset)
-/*	I;printf("set_stroke_dash_offset((%g %i %i))\n",
-		offset->value,offset->unit,offset->orientation
-		);*/
-	[self current].dash_offset=[self lengthToPoints: offset];
-	CGContextSetLineDash(CGCtx, [self current].dash_offset, [self current].dash, [self current].num_dash);
+FUNC(set_stroke_dash_offset, svg_length_t *offset)
+	[self current].dash_offset = [self lengthToPoints: offset];
+	CGContextSetLineDash(CGCtx, [[self current] dash_offset], [[self current] dash], [[self current] num_dash]);
 	return SVG_STATUS_SUCCESS;
 }
 
-FUNC(set_stroke_line_cap,svg_stroke_line_cap_t line_cap)
+FUNC(set_stroke_line_cap, svg_stroke_line_cap_t line_cap)
 	CGLineCap i;
-//	I;printf("set_stroke_line_cap(%i)\n",line_cap);
 
 	switch (line_cap)
 	{
@@ -1031,7 +1005,7 @@ FUNC(set_stroke_line_cap,svg_stroke_line_cap_t line_cap)
 		i = kCGLineCapButt;
 		break;
 	case SVG_STROKE_LINE_CAP_ROUND:
-		i=kCGLineCapRound;
+		i = kCGLineCapRound;
 		break;
 	case SVG_STROKE_LINE_CAP_SQUARE:
 		i = kCGLineCapSquare;
@@ -1042,9 +1016,8 @@ FUNC(set_stroke_line_cap,svg_stroke_line_cap_t line_cap)
 	return SVG_STATUS_SUCCESS;
 }
 
-FUNC(set_stroke_line_join,svg_stroke_line_join_t line_join)
+FUNC(set_stroke_line_join, svg_stroke_line_join_t line_join)
 	CGLineJoin i;
-//	I;printf("set_stroke_line_join(%i)\n",line_join);
 
 	switch (line_join)
 	{
@@ -1064,62 +1037,43 @@ FUNC(set_stroke_line_join,svg_stroke_line_join_t line_join)
 	return SVG_STATUS_SUCCESS;
 }
 
-FUNC(set_stroke_miter_limit,double miter_limit)
-//	I;printf("set_stroke_miter_limit(%g)\n",miter_limit);
+FUNC(set_stroke_miter_limit, double miter_limit)
 	CGContextSetMiterLimit(CGCtx, miter_limit);
 	return SVG_STATUS_SUCCESS;
 }
 
-FUNC(set_stroke_opacity,double opacity)
-//	I;printf("set_stroke_opacity(%g)\n",opacity);
-	[self current].stroke_opacity=opacity;
+FUNC(set_stroke_opacity, double opacity)
+	[self current].stroke_opacity = opacity;
 	return SVG_STATUS_SUCCESS;
 }
 
-FUNC(set_stroke_paint,const svg_paint_t *paint)
-//	I;printf("set_stroke_paint((%i %08x))\n",paint->type,paint->p.color.rgb);
-	[self current].stroke_paint=*paint;
+FUNC(set_stroke_paint, const svg_paint_t *paint)
+	[self current].stroke_paint = *paint;
 	return SVG_STATUS_SUCCESS;
 }
 
-FUNC(set_stroke_width,svg_length_t *width)
-/*	I;printf("set_stroke_width((%g %i %i)\n",
-		width->value,width->unit,width->orientation
-		);*/
+FUNC(set_stroke_width, svg_length_t *width)
 	CGContextSetLineWidth(CGCtx, [self lengthToPoints: width]);
 	return SVG_STATUS_SUCCESS;
 }
 
-FUNC(set_text_anchor,svg_text_anchor_t anchor)
-//	I;printf("set_text_anchor(%i)\n",anchor);
-	[self current].text_anchor=anchor;
+FUNC(set_text_anchor, svg_text_anchor_t anchor)
+	[self current].text_anchor = anchor;
 	return SVG_STATUS_SUCCESS;
 }
 
 
-FUNC(transform,double a,double b,double c,double d,double e,double f)
-//	I;printf("transform(%g,%g,%g,%g,%g,%g)\n",a,b,c,d,e,f);
+FUNC(transform, double a, double b, double c, double d, double e, double f)
 	CGContextConcatCTM(CGCtx, CGAffineTransformMake(a, b, c, d, e, f));
 	return SVG_STATUS_SUCCESS;
 }
 
-FUNC(apply_viewbox,svg_view_box_t viewbox,svg_length_t *width,svg_length_t *height)
-/*	I;printf("apply_viewbox(((%g %g)+(%g %g),%i,%i),(%g %i %i),(%g %i %i))\n",
-		viewbox.box.x,viewbox.box.y,viewbox.box.width,viewbox.box.height,
-		viewbox.aspectratio,viewbox.meet_or_slice,
-
-		width->value,width->unit,width->orientation,
-		height->value,height->unit,height->orientation
-		);*/
-	return [self applyViewbox: viewbox :width:height];
+FUNC(apply_viewbox, svg_view_box_t viewbox, svg_length_t *width, svg_length_t *height)
+	return [self applyViewbox: viewbox :width :height];
 }
 
-FUNC(set_viewport_dimension,svg_length_t *width,svg_length_t *height)
-/*	I;printf("set_viewport_dimension((%g %i %i),(%g %i %i))\n",
-		width->value,width->unit,width->orientation,
-		height->value,height->unit,height->orientation
-		);*/
-	return [self setViewportDimension: width:height];
+FUNC(set_viewport_dimension, svg_length_t *width, svg_length_t *height)
+	return [self setViewportDimension: width: height];
 }
 
 FUNC(render_line,
@@ -1127,7 +1081,6 @@ FUNC(render_line,
         svg_length_t *y1, 
         svg_length_t *x2,
         svg_length_t *y2)
-//	I;printf("is this right? x1 %g y1 %g x2 %g y2 %g\n",[self lengthToPoints:x1],[self lengthToPoints:y1],[self lengthToPoints:x2],[self lengthToPoints:y2]);
 	CGContextMoveToPoint(CGCtx, [self lengthToPoints:x1], [self lengthToPoints:y1]);
 	CGContextAddLineToPoint(CGCtx, [self lengthToPoints:x2], [self lengthToPoints:y2]);
 	[self renderPath];
@@ -1135,68 +1088,42 @@ FUNC(render_line,
 }
 
 FUNC(render_path)
-//	I;printf("render_path()\n");
 	return [self renderPath];
 }
 
 FUNC(render_ellipse,
      svg_length_t *cx,svg_length_t *cy,
 	  svg_length_t *rx,svg_length_t *ry)
-/*	I;printf("render_ellipse((%g %i %i),(%g %i %i), (%g %i %i),(%g %i %i))\n",
-		cx->value,cx->unit,cx->orientation,
-		cy->value,cy->unit,cy->orientation,
-		rx->value,rx->unit,rx->orientation,
-		ry->value,ry->unit,ry->orientation);*/
-
 	return [self renderEllipse: cx : cy : rx : ry];
 }
 
 FUNC(render_rect,
-     svg_length_t *x,svg_length_t *y,
-	  svg_length_t *width,svg_length_t *height,
-	  svg_length_t *rx,svg_length_t *ry)
-
-/*	I;printf("render_rect((%g %i %i),(%g %i %i), (%g %i %i),(%g %i %i), (%g %i %i),(%g %i %i))\n",
-		x->value,x->unit,x->orientation,
-		y->value,y->unit,y->orientation,
-		width->value,width->unit,width->orientation,
-		height->value,height->unit,height->orientation,
-		rx->value,rx->unit,rx->orientation,
-		ry->value,ry->unit,ry->orientation);*/
-
+     svg_length_t *x, svg_length_t *y,
+	  svg_length_t *width, svg_length_t *height,
+	  svg_length_t *rx, svg_length_t *ry)
 	return [self renderRect: x:y :width:height :rx:ry];
 }
 
-FUNC(render_text,svg_length_t *x,svg_length_t *y,const char *utf8)
-//	I;printf("render_text(\"%s\")\n",utf8);
-	
+FUNC(render_text, svg_length_t *x, svg_length_t *y, const char *utf8)
 	CGContextSetTextPosition(CGCtx, [self lengthToPoints:x], [self lengthToPoints:y]);
 	return [self renderText: utf8];
 }
 
 FUNC(render_image,
      unsigned char *data,
-     unsigned int data_width,unsigned int data_height,
-     svg_length_t *x,svg_length_t *y,
-     svg_length_t *width,svg_length_t *height)
-
-/*	I;printf("render_image(%p,%ix%i,(%g %i %i),(%g %i %i),(%g %i %i),(%g %i %i))\n",
-		data,data_width,data_height,
-		x->value,x->unit,x->orientation,
-		y->value,y->unit,y->orientation,
-		width->value,width->unit,width->orientation,
-		height->value,height->unit,height->orientation);*/
-
+     unsigned int data_width, unsigned int data_height,
+     svg_length_t *x, svg_length_t *y,
+     svg_length_t *width, svg_length_t *height)
 	{
 		CGFloat cx,cy,cw,ch;
-		cx=[self lengthToPoints: x];
-		cy=[self lengthToPoints: y];
-		cw=[self lengthToPoints: width];
-		ch=[self lengthToPoints: height];
+		cx = [self lengthToPoints:x];
+		cy = [self lengthToPoints:y];
+		cw = [self lengthToPoints:width];
+		ch = [self lengthToPoints:height];
 		NSDrawBitmap(
-			NSMakeRect(cx,cy,cw,ch),
-			data_width,data_height,
-			8,4,32,data_width*4,NO,YES,NSCalibratedRGBColorSpace,
+			NSMakeRect(cx, cy, cw, ch),
+			data_width, data_height,
+			8, 4, 32, data_width * 4, NO, YES, NSCalibratedRGBColorSpace,
 			(const unsigned char * const *)&data);
 	}
 
@@ -1251,12 +1178,11 @@ r_render_image
 
 @implementation SVGImageRep
 
-+(NSArray *) imageUnfilteredFileTypes
++ (NSArray *)imageUnfilteredFileTypes
 {
-static NSArray *list = nil;
-//	printf("%s\n",__PRETTY_FUNCTION__);
+	static NSArray *list = nil;
 	if (!list)
-		list=[[NSArray arrayWithObject: @"svg"] retain];
+		list = [[NSArray arrayWithObject: @"svg"] retain];
 	return list;
 }
 
@@ -1265,18 +1191,16 @@ static NSArray *list = nil;
 	return [NSArray arrayWithObject:@"public.svg-image"];
 }
 
-+(NSArray *) imageUnfilteredPasteboardTypes
++ (NSArray *)imageUnfilteredPasteboardTypes
 {
-//	printf("%s\n",__PRETTY_FUNCTION__);
 	/* TODO */
 	return nil;
 }
 
-+(BOOL) canInitWithData: (NSData *)d
++ (BOOL)canInitWithData:(NSData *)d
 {
 	svg_t *svg_test;
 	svg_status_t status;
-//	printf("%s\n",__PRETTY_FUNCTION__);
 	svg_create(&svg_test);
 	status = svg_parse_buffer(svg_test,[d bytes],[d length]);
 	svg_destroy(svg_test);
@@ -1284,18 +1208,16 @@ static NSArray *list = nil;
 }
 
 
-+(NSImageRep *) imageRepWithData: (NSData *)d
++ (NSImageRep *)imageRepWithData:(NSData *)d
 {
-//	printf("%s\n",__PRETTY_FUNCTION__);
 	return [[self alloc] initWithData: d];
 }
 
 
-- initWithData: (NSData *)d
+- (id)initWithData:(NSData *)d
 {
 	svg_status_t status;
 
-//	printf("%s\n",__PRETTY_FUNCTION__);
 	if (!(self=[super init]))
 		return nil;
 
@@ -1316,20 +1238,19 @@ static NSArray *list = nil;
 	{
 		SVGRenderContext *svg_render_context = [[SVGRenderContext alloc] init];
 		[svg_render_context prepareRender: 1.0];
-		svg_render(svg,&cocoa_svg_engine,svg_render_context);
+		svg_render(svg, &cocoa_svg_engine, svg_render_context);
 		[svg_render_context finishRender];
 		[self setSize: [svg_render_context size]];
 		[svg_render_context release];
-//		printf("size %gx%g\n",[self size].width,[self size].height);
 	}
 
 	return self;
 }
 
--(void) dealloc
+- (void)dealloc
 {
-//	printf("%s\n",__PRETTY_FUNCTION__);
 	svg_destroy(svg);
+	
 	[super dealloc];
 }
 
@@ -1341,27 +1262,23 @@ static NSArray *list = nil;
 }
 
 
--(BOOL) draw
+- (BOOL)draw
 {
 	SVGRenderContext *svg_render_context;
-	NSGraphicsContext *ctxt=[NSGraphicsContext currentContext];
+	NSGraphicsContext *ctxt = [NSGraphicsContext currentContext];
 	CGContextRef CGCtx = (CGContextRef)[ctxt graphicsPort];
 
 	CGAffineTransform ctm;
 
-//	printf("%s\n",__PRETTY_FUNCTION__);
 	ctm = CGContextGetCTM(CGCtx);
 	
-	svg_render_context=[[SVGRenderContext alloc] init];
+	svg_render_context = [[SVGRenderContext alloc] init];
 
 	[svg_render_context prepareRender:
-		sqrt(ctm.a*ctm.b+ctm.c*ctm.d)];
-	svg_render(svg,&cocoa_svg_engine,svg_render_context);
+		sqrt(ctm.a * ctm.b + ctm.c * ctm.d)];
+	svg_render(svg, &cocoa_svg_engine, svg_render_context);
 	[svg_render_context finishRender];
 
-/*	printf("got %@  %gx%g\n",
-		svg_render_context->result,
-		svg_render_context->size.width,svg_render_context->size.height);*/
 	/*DPScomposite(ctxt,
 		0,0,svg_render_context->size.width,svg_render_context->size.height,
 		[svg_render_context->result gState],0,0,NSCompositeSourceOver);*/
@@ -1376,7 +1293,7 @@ static NSArray *list = nil;
 
 extern void InitSVGImageRep()
 {
-	[NSImageRep registerImageRepClass: [SVGImageRep class]];
+	[NSImageRep registerImageRepClass:[SVGImageRep class]];
 }
 
 
@@ -1385,9 +1302,9 @@ extern void InitSVGImageRep()
 
 @implementation SVGImageRepDelegate
 
-- init
+- (id)init
 {
-	[NSImageRep registerImageRepClass: [SVGImageRep class]];
+	[NSImageRep registerImageRepClass:[SVGImageRep class]];
 	return self;
 }
 
