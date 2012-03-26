@@ -107,7 +107,6 @@
 		55371468151BD40500F8848A /* pngwtran.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713D5151BD40500F8848A /* pngwtran.c */; };
 		55371469151BD40500F8848A /* pngwutil.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713D6151BD40500F8848A /* pngwutil.c */; };
 		5537146E151BD54A00F8848A /* pnglibconf.h in Headers */ = {isa = PBXBuildFile; fileRef = 5537146D151BD54A00F8848A /* pnglibconf.h */; };
-		5537146F151BD60B00F8848A /* SVGImageRep.m in Sources */ = {isa = PBXBuildFile; fileRef = 55AFA529151AABB700B5351D /* SVGImageRep.m */; };
 		55AFA494151AA3BC00B5351D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55AFA493151AA3BC00B5351D /* Cocoa.framework */; };
 		55AFA49E151AA3BC00B5351D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 55AFA49C151AA3BC00B5351D /* InfoPlist.strings */; };
 		55AFA4AB151AA3FB00B5351D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55AFA493151AA3BC00B5351D /* Cocoa.framework */; };
@@ -1013,7 +1012,6 @@
 			files = (
 				55AFA4C6151AA43700B5351D /* Document.m in Sources */,
 				55AFA4C8151AA5E500B5351D /* main.m in Sources */,
-				5537146F151BD60B00F8848A /* SVGImageRep.m in Sources */,
 				55F0FA8F151FBAB6006426B8 /* SVGViewer.m in Sources */,
 				55F0FAC91520E925006426B8 /* SVGRenderState.m in Sources */,
 				55F0FACD1520E9F8006426B8 /* SVGRenderContext.m in Sources */,

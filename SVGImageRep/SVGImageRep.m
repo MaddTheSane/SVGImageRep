@@ -25,10 +25,7 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 
 + (NSArray *)imageUnfilteredFileTypes
 {
-	static NSArray *list = nil;
-	if (!list)
-		list = [[NSArray arrayWithObject: @"svg"] retain];
-	return list;
+	return [NSArray arrayWithObject:@"svg"];
 }
 
 + (NSArray *)imageUnfilteredTypes
@@ -47,9 +44,9 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 	svg_t *svg_test;
 	svg_status_t status;
 	svg_create(&svg_test);
-	status = svg_parse_buffer(svg_test,[d bytes],[d length]);
+	status = svg_parse_buffer(svg_test, [d bytes], [d length]);
 	svg_destroy(svg_test);
-	return status==SVG_STATUS_SUCCESS;
+	return status == SVG_STATUS_SUCCESS;
 }
 
 
@@ -63,7 +60,7 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 {
 	svg_status_t status;
 
-	if (!(self=[super init]))
+	if (!(self = [super init]))
 		return nil;
 
 	svg_create(&svg);
@@ -82,10 +79,10 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 	/* TODO: figure out the size without actually rendering everything */
 	{
 		SVGRenderContext *svg_render_context = [[SVGRenderContext alloc] init];
-		[svg_render_context prepareRender: 1.0];
+		[svg_render_context prepareRender:1.0];
 		svg_render(svg, &cocoa_svg_engine, svg_render_context);
 		[svg_render_context finishRender];
-		[self setSize: [svg_render_context size]];
+		[self setSize:[svg_render_context size]];
 		[svg_render_context release];
 	}
 
