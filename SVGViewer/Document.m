@@ -18,7 +18,7 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 
 @implementation SVGView
 
--(void) setSVGRenderContext: (SVGRenderContext *)s
+- (void)setSVGRenderContext:(SVGRenderContext *)s
 {
 	if(s != svg)
 	{
@@ -28,18 +28,18 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 	[self setNeedsDisplay: YES];
 }
 
--(void) dealloc
+- (void)dealloc
 {
 	[svg release];
 	[super dealloc];
 }
 
--(BOOL) isOpaque
+- (BOOL)isOpaque
 {
 	return YES;
 }
 
--(void) drawRect: (NSRect)r
+- (void)drawRect:(NSRect)r
 {
 	[super drawRect:r];
 	NSGraphicsContext *ctxt = [NSGraphicsContext currentContext];
@@ -61,13 +61,13 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 
 @implementation Document
 
-+(void) openFile: (NSString *)apath
++ (void)openFile:(NSString *)apath
 {
 	[[self alloc] initWithFile: apath];
 }
 
 
--(IBAction) reload: (id)sender
+- (IBAction)reload:(id)sender
 {
 	{
 		svg_t *svg;
@@ -96,7 +96,7 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 }
 
 
-- (id)initWithFile: (NSString *)apath
+- (id)initWithFile:(NSString *)apath
 {
 	//NSWindow *win;
 
@@ -119,12 +119,12 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 }
 
 
--(void) windowWillClose: (NSNotification *)n
+- (void)windowWillClose:(NSNotification *)n
 {
 	[self autorelease];
 }
 
--(void) dealloc
+- (void)dealloc
 {
 	[path release];
 	[super dealloc];
@@ -132,11 +132,12 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 
 
 #define SCALE(a,b) \
-	-(IBAction) scale_##a##_##b: (id)sender \
+	- (IBAction)scale_##a##_##b:(id)sender \
 	{ \
 		scale=a##.##b; \
 		[self reload: nil]; \
-	}
+	} \
+
 
 SCALE(0,1)
 SCALE(0,25)

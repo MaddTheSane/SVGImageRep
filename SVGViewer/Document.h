@@ -5,7 +5,8 @@ copyright 2003 Alexander Malmberg <alexander@malmberg.org>
 #ifndef Document_h
 #define Document_h
 
-#include <AppKit/NSWindowController.h>
+#import <AppKit/NSWindowController.h>
+#import <AppKit/NSView.h>
 
 @class NSString,NSScrollView;
 @class SVGRenderContext;
@@ -15,7 +16,7 @@ copyright 2003 Alexander Malmberg <alexander@malmberg.org>
 	SVGRenderContext *svg;
 }
 
--(void) setSVGRenderContext: (SVGRenderContext *)s;
+- (void)setSVGRenderContext:(SVGRenderContext *)s;
 
 @end
 
@@ -28,14 +29,14 @@ copyright 2003 Alexander Malmberg <alexander@malmberg.org>
 
 	double scale;
 }
-- (IBAction) reload: (id)sender;
+- (IBAction)reload:(id)sender;
 
-+ (void) openFile: (NSString *)path;
++ (void)openFile:(NSString *)path;
 
-- (id)initWithFile: (NSString *)path;
+- (id)initWithFile:(NSString *)path;
 
 #define SCALESET(a,b) \
--(IBAction) scale_##a##_##b: (id)sender;
+- (IBAction)scale_##a##_##b:(id)sender;
 
 SCALESET(0,1)
 SCALESET(0,25)

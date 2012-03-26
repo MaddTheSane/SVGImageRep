@@ -33,7 +33,7 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 
 	if ([new dash])
 	{
-		new.dash = malloc(sizeof(CGFloat)*new->num_dash);
+		new.dash = malloc(sizeof(CGFloat) * new.num_dash);
 		memcpy(new.dash, dash, sizeof(CGFloat) * new.num_dash);
 	}
 
@@ -61,7 +61,7 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 
 @implementation SVGRenderContext
 
-@synthesize size, states, current, result;
+@synthesize size, states, current, result, scale;
 
 - (void)prepareRender:(double)a_scale
 {
@@ -131,13 +131,7 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 
 - (void)setColor:(svg_color_t *)c
 {
-	CGContextRef tempCtx =(CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
-	
-	//Which color is being set? Set them both!
-	CGColorRef tempColor = CGColorCreateGenericRGB(svg_color_get_red(c)/255.0, svg_color_get_green(c)/255.0, svg_color_get_blue(c)/255.0, 1.0);
-	CGContextSetFillColorWithColor(tempCtx, tempColor);
-	CGContextSetStrokeColorWithColor(tempCtx, tempColor);
-	CGColorRelease(tempColor);
+	[self setColor:c alpha:1.0];
 }
 
 - (void)setColor:(svg_color_t *)c alpha:(CGFloat)alph
@@ -1304,6 +1298,7 @@ extern void InitSVGImageRep()
 
 - (id)init
 {
+	self = [super init];
 	[NSImageRep registerImageRepClass:[SVGImageRep class]];
 	return self;
 }

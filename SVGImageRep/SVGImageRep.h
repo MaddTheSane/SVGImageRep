@@ -10,6 +10,7 @@
 #define SVGImageRep_SVGImageRep_h
 
 #include <svg.h>
+#import <Foundation/NSObject.h>
 #import <AppKit/NSImageRep.h>
 
 extern svg_render_engine_t cocoa_svg_engine;
@@ -83,10 +84,12 @@ extern svg_render_engine_t cocoa_svg_engine;
 @property (readwrite, retain) NSMutableArray *states;
 @property (readonly) NSWindow *result;
 @property (readonly) NSSize size;
+@property (readwrite) double scale;
 
 -(void) prepareRender: (double)a_scale;
 -(void) finishRender;
 
+- (void)setColor:(svg_color_t *)c alpha:(CGFloat)alph;
 
 -(double) lengthToPoints: (svg_length_t *)l;
 

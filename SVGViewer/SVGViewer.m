@@ -11,19 +11,20 @@
 
 @implementation SVGViewer
 
--(void) dealloc
+- (void)dealloc
 {
 	[super dealloc];
 }
 
--(void) applicationWillFinishLaunching: (NSNotification *)n
+- (void)applicationWillFinishLaunching:(NSNotification *)n
 {
 
 }
 
 
--(void) applicationDidFinishLaunching: (NSNotification *)n
+- (void)applicationDidFinishLaunching:(NSNotification *)n
 {
+	
 }
 
 
@@ -37,27 +38,20 @@
 	NSOpenPanel *op;
 	int i;
 	NSArray *filenames;
-	if ([sender representedObject])
+	op = [NSOpenPanel openPanel];
+	[op setTitle: @"Open svg file"];
+	[op setAllowsMultipleSelection: YES];
+	[op setAllowedFileTypes:[NSArray arrayWithObject:@"public.svg-image"]];
+	[op setCanChooseDirectories: NO];
+	[op setCanChooseFiles: YES];
+	
+	if ([op runModal]!=NSOKButton)
+		return;
+	filenames = [op filenames];
+	for (i=0;i < [filenames count]; i++)
 	{
-		[Document openFile: [sender representedObject]];
-	}
-	else
-	{
-	    op = [NSOpenPanel openPanel];
-	    [op setTitle: @"Open svg file"];
-	    [op setAllowsMultipleSelection: YES];
-		[op setAllowedFileTypes:[NSArray arrayWithObject:@"public.svg-image"]];
-	    [op setCanChooseDirectories: NO];
-	    [op setCanChooseFiles: YES];
-		
-	    if ([op runModal]!=NSOKButton)
-			return;
-		filenames = [op filenames];
-	    for (i=0;i < [filenames count]; i++)
-		{
-			NSString *filepath = [filenames objectAtIndex:i];
-			[Document openFile: filepath];
-		}
+		NSString *filepath = [filenames objectAtIndex:i];
+		[Document openFile: filepath];
 	}
 }
 
