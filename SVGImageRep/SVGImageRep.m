@@ -25,10 +25,7 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 
 + (NSArray *)imageUnfilteredFileTypes
 {
-	static NSArray *list = nil;
-	if (!list)
-		list = [NSArray arrayWithObject: @"svg"];
-	return list;
+	return [NSArray arrayWithObject:@"svg"];
 }
 
 + (NSArray *)imageUnfilteredTypes
