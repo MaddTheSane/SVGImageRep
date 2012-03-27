@@ -7,7 +7,7 @@
 //
 
 #import "SVGViewer.h"
-#import "Document.h"
+#import "SVGDocument.h"
 
 @implementation SVGViewer
 
