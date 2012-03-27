@@ -95,12 +95,9 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 - (BOOL)draw
 {
 	SVGRenderContext *svg_render_context;
-	NSGraphicsContext *ctxt = [NSGraphicsContext currentContext];
-	CGContextRef CGCtx = (CGContextRef)[ctxt graphicsPort];
+	CGContextRef CGCtx = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
 
-	CGAffineTransform ctm;
-
-	ctm = CGContextGetCTM(CGCtx);
+	CGAffineTransform ctm = CGContextGetCTM(CGCtx);
 	
 	svg_render_context = [[SVGRenderContext alloc] init];
 
