@@ -107,7 +107,7 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 
 	scale = 1.0;
 	[self reload:nil];
-	[self showWindow: nil];
+	[self showWindow:nil];
 
 	return self;
 }
