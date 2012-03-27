@@ -28,6 +28,8 @@
 - (void)finishRender
 {
 	states = nil;
+	CGLayerRelease(renderLayer);
+	renderLayer = NULL;
 }
 
 - (double)lengthToPoints:(svg_length_t *)l
@@ -420,7 +422,6 @@
 			//NSAffineTransform *ctm=GSCurrentCTM(ctxt);
 			//NSAffineTransform *ctm = [NSAffineTransform transform];
 			
-			current.window = nil;
 			current.window = [[NSWindow alloc]
 							  initWithContentRect: NSMakeRect(0,0,size.width,size.height)
 							  styleMask: 0
@@ -758,7 +759,7 @@ static int indent=1;
 static svg_status_t r_begin_group(void *closure, double opacity)
 {
 	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
-	indent+=3;
+	indent += 3;
 	
 	return [self beginGroup: opacity];
 }
@@ -767,7 +768,7 @@ static svg_status_t r_begin_element(void *closure)
 {
 	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
 	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
-	indent+=3;
+	indent += 3;
 	
 	CGContextSaveGState(CGCtx);
 	SVGRenderState *tempState = [[self current] copy];
@@ -781,7 +782,7 @@ static svg_status_t r_end_element(void *closure)
 {
 	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
 	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
-	indent-=3;
+	indent -= 3;
 	
 	CGContextRestoreGState(CGCtx);
 	[[self states] removeObjectAtIndex:[[self states] count] - 1];
@@ -796,7 +797,7 @@ static svg_status_t r_end_element(void *closure)
 static svg_status_t r_end_group(void *closure, double opacity)
 {
 	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
-	indent-=3;
+	indent -= 3;
 	
 	return [self endGroup: opacity];
 }
@@ -827,6 +828,7 @@ FUNC(quadratic_curve_to,
 	 double x2,
 	 double y2)
 	CGContextAddQuadCurveToPoint(CGCtx, x2, y2, x1, y1);
+	//CGContextAddQuadCurveToPoint(CGCtx, x1, y1, x2, y2);
 	return SVG_STATUS_SUCCESS;
 }
 
@@ -986,7 +988,7 @@ FUNC(set_stroke_paint, const svg_paint_t *paint)
 }
 
 FUNC(set_stroke_width, svg_length_t *width)
-	CGContextSetLineWidth(CGCtx, [self lengthToPoints: width]);
+	CGContextSetLineWidth(CGCtx, [self lengthToPoints:width]);
 	return SVG_STATUS_SUCCESS;
 }
 

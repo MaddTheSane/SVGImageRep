@@ -24,7 +24,6 @@ copyright 2003 Alexander Malmberg <alexander@malmberg.org>
 {
 	NSData *documentData;
 
-	IBOutlet NSScrollView *scroll_view;
 	IBOutlet SVGView *svg_view;
 
 	double scale;
