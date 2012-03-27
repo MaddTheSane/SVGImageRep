@@ -109,6 +109,8 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 	svg_render(svg, &cocoa_svg_engine,  (__bridge void*)svg_render_context);
 	[svg_render_context finishRender];
 
+	CGContextDrawLayerInRect(CGCtx, CGRectMake(0, 0, [svg_render_context size].width, [svg_render_context size].height), svg_render_context.renderLayer);
+
 	/*DPScomposite(ctxt,
 		0,0,svg_render_context->size.width,svg_render_context->size.height,
 		[svg_render_context->result gState],0,0,NSCompositeSourceOver);*/
