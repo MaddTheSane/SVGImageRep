@@ -64,7 +64,7 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 		return nil;
 
 	svg_create(&svg);
-	status = svg_parse_buffer(svg,[d bytes],[d length]);
+	status = svg_parse_buffer(svg, [d bytes], [d length]);
 	if (status != SVG_STATUS_SUCCESS)
 	{
 		return nil;
@@ -81,7 +81,8 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 		[svg_render_context prepareRender: 1.0];
 		svg_render(svg, &cocoa_svg_engine,  (__bridge void*)svg_render_context);
 		[svg_render_context finishRender];
-		[self setSize: [svg_render_context size]];
+		[self setPixelsHigh:[svg_render_context size].height];
+		[self setPixelsWide:[svg_render_context size].width];
 	}
 
 	return self;
@@ -108,13 +109,12 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 
 	CGContextDrawLayerInRect(CGCtx, CGRectMake(0, 0, [svg_render_context size].width, [svg_render_context size].height), svg_render_context.renderLayer);
 
-	/*DPScomposite(ctxt,
-		0,0,svg_render_context->size.width,svg_render_context->size.height,
-		[svg_render_context->result gState],0,0,NSCompositeSourceOver);*/
-	
-
-
 	return YES;
+}
+
++ (void)load
+{
+	[NSImageRep registerImageRepClass:[SVGImageRep class]];
 }
 
 @end
@@ -123,19 +123,3 @@ extern void InitSVGImageRep()
 {
 	[NSImageRep registerImageRepClass:[SVGImageRep class]];
 }
-
-
-@interface SVGImageRepDelegate : NSObject
-@end
-
-@implementation SVGImageRepDelegate
-
-- (id)init
-{
-	self = [super init];
-	[NSImageRep registerImageRepClass:[SVGImageRep class]];
-	return self;
-}
-
-@end
-
