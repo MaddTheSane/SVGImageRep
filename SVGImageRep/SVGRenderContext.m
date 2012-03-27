@@ -1053,10 +1053,8 @@ FUNC(render_image,
 		cy = [self lengthToPoints:y];
 		cw = [self lengthToPoints:width];
 		ch = [self lengthToPoints:height];
-		NSDrawBitmap(NSMakeRect(cx, cy, cw, ch),
-					 data_width, data_height,
-					 8, 4, 32, data_width * 4, NO, YES, NSCalibratedRGBColorSpace,
-					 (const unsigned char * const *)&data);
+		NSBitmapImageRep *temprep = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:&data pixelsWide:data_width pixelsHigh:data_height bitsPerSample:8 samplesPerPixel:4 hasAlpha:YES isPlanar:NO colorSpaceName:NSCalibratedRGBColorSpace bytesPerRow:data_width * 4 bitsPerPixel:32];
+		CGContextDrawImage(CGCtx, CGRectMake(cx, cy, cw, ch), [temprep CGImage]);
 	}
 
 	return SVG_STATUS_SUCCESS;
