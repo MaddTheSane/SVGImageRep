@@ -13,20 +13,21 @@
 
 @implementation SVGRenderContext
 
-@synthesize size, states, current, result, scale;
+@synthesize size, states, current, result, scale, renderLayer;
 
 - (void)prepareRender:(double)a_scale
 {
-	 result = nil;
+	result = nil;
 	states = [[NSMutableArray alloc] init];
 	current = nil;
 	scale = a_scale;
 	size = NSMakeSize(500 * scale, 500 * scale);
+	renderLayer = CGLayerCreateWithContext((CGContextRef)[[NSGraphicsContext currentContext] graphicsPort], size, NULL);
 }
 
 - (void)finishRender
 {
-	 states = nil;
+	states = nil;
 }
 
 - (double)lengthToPoints:(svg_length_t *)l
@@ -80,7 +81,7 @@
 
 - (void)setColor:(svg_color_t *)c alpha:(CGFloat)alph
 {
-	CGContextRef tempCtx = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
+	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
 	
 	//Which color is being set? Set them both!
 	CGColorRef tempColor = CGColorCreateGenericRGB(svg_color_get_red(c)/255.0, svg_color_get_green(c)/255.0, svg_color_get_blue(c)/255.0, alph);
@@ -157,7 +158,7 @@
     x2 = x3 + t * sin(th1);
     y2 = y3 - t * cos(th1);
 	
-	CGContextRef tempCtx = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
+	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
 	
 	CGContextAddCurveToPoint(tempCtx, a00 * x1 + a01 * y1, a10 * x1 + a11 * y1, a00 * x2 + a01 * y2, a10 * x2 + a11 * y2, a00 * x3 + a01 * y3, a10 * x3 + a11 * y3);
 	
@@ -193,7 +194,7 @@
     double cury;
 	
 	{
-		CGContextRef tempCtx = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
+		CGContextRef tempCtx = CGLayerGetContext(renderLayer);
 		CGPoint tempPoint = CGContextGetPathCurrentPoint(tempCtx);
 		curx = tempPoint.x;
 		cury = tempPoint.y;
@@ -283,7 +284,7 @@
 	if (crx > cw / 2) crx = cw / 2;
 	if (cry > ch / 2) cry = ch / 2;
 	
-	CGContextRef tempCtx =(CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
+	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
 	
 	switch ([current fill_paint].type)
 	{
@@ -379,7 +380,7 @@
 	rx = [self lengthToPoints:lrx];
 	ry = [self lengthToPoints:lry];
 	
-	CGContextRef tempCtx = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
+	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
 	
 	CGContextMoveToPoint(tempCtx, cx + rx, cy);
 	CGContextAddCurveToPoint(tempCtx, cx + rx, cy + ry * SVG_ARC_MAGIC, cx + rx * SVG_ARC_MAGIC, cy + ry, cx, cy + ry);
@@ -399,7 +400,7 @@
 
 - (svg_status_t)beginGroup:(double)opacity
 {
-	CGContextRef tempCtx =(CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
+	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
 	if (current)
 	{
 		if (!result)
@@ -450,7 +451,7 @@
 
 - (svg_status_t)endGroup:(double)opacity
 {
-	CGContextRef tempCtx = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
+	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
 	
 	CGContextRestoreGState(tempCtx);
 	
@@ -478,7 +479,7 @@
 - (svg_status_t)setViewportDimension:(svg_length_t *)width :(svg_length_t *)height
 {
 	int w,h;
-	CGContextRef tempCtx = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
+	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
 	
 	if (result)
 	{
@@ -514,7 +515,7 @@
 - (svg_status_t)applyViewbox: (svg_view_box_t)viewbox
 							: (svg_length_t *)width : (svg_length_t *)height
 {
-	CGContextRef tempCtx = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
+	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
 	
 	double w,h;
 	w = [self lengthToPoints: width];
@@ -527,7 +528,7 @@
 
 - (svg_status_t)renderPath
 {
-	CGContextRef tempCtx = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
+	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
 	switch ([current fill_paint].type)
 	{
 		case SVG_PAINT_TYPE_GRADIENT:
@@ -598,7 +599,7 @@
 
 - (svg_status_t)renderText:(const unsigned char *)utf8
 {
-	CGContextRef tempCtx = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
+	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
 	NSFont *f;
 	NSFontManager *fm;
 	NSArray *fonts, *font;
@@ -749,7 +750,7 @@
 	static svg_status_t r_##name(void *closure, ##args) \
 	{ \
 		SVGRenderContext *self = (__bridge SVGRenderContext *)closure; \
-		CGContextRef CGCtx = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort]; \
+		CGContextRef CGCtx = CGLayerGetContext(self.renderLayer); \
 
 
 static int indent=1;
@@ -765,13 +766,13 @@ static svg_status_t r_begin_group(void *closure, double opacity)
 static svg_status_t r_begin_element(void *closure)
 {
 	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
-	CGContextRef CGCtx = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
+	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	indent+=3;
 	
 	CGContextSaveGState(CGCtx);
 	SVGRenderState *tempState = [[self current] copy];
 	self.current = tempState;
-	[[self states] addObject: [self current]];
+	[[self states] addObject:[self current]];
 	
 	return SVG_STATUS_SUCCESS;
 }
@@ -779,11 +780,11 @@ static svg_status_t r_begin_element(void *closure)
 static svg_status_t r_end_element(void *closure)
 {
 	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
-	CGContextRef CGCtx = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
+	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	indent-=3;
 	
 	CGContextRestoreGState(CGCtx);
-	[[self states] removeObjectAtIndex: [[self states] count] - 1];
+	[[self states] removeObjectAtIndex:[[self states] count] - 1];
 	if ([[self states] count])
 		self.current = [[self states] objectAtIndex:[[self states] count] - 1];
 	else

@@ -16,6 +16,7 @@ extern svg_render_engine_t cocoa_svg_engine;
 {
 @public
 	NSWindow *__unsafe_unretained result;
+	CGLayerRef renderLayer;
 	NSSize size;
 	
 	double scale;
@@ -29,6 +30,7 @@ extern svg_render_engine_t cocoa_svg_engine;
 @property (unsafe_unretained, readonly) NSWindow *result;
 @property (readonly) NSSize size;
 @property (readwrite) double scale;
+@property (readonly) CGLayerRef renderLayer;
 
 - (void)prepareRender:(double)a_scale;
 - (void)finishRender;
