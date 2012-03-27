@@ -35,9 +35,7 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 
 - (void)drawRect:(NSRect)r
 {
-	NSGraphicsContext *ctxt = [NSGraphicsContext currentContext];
-
-	CGContextRef tempRef = (CGContextRef)[ctxt graphicsPort];
+	CGContextRef tempRef = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
 	
 	if (svg)
 	{
@@ -45,7 +43,6 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 		CGContextSetGrayFillColor(tempRef, 1.0, 1.0);
 		CGContextFillRect(tempRef, CGRectMake(0, 0, SVGSize.width, SVGSize.height));
 		CGContextDrawLayerInRect(tempRef, CGRectMake(0, 0, SVGSize.width, SVGSize.height), svg.renderLayer);
-//		DPScomposite(ctxt,0,0,svg->size.width,svg->size.height,[svg->result gState],0,0,NSCompositeSourceOver);
 	}
 }
 
