@@ -55,92 +55,49 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 
 @implementation SVGDocument
 
-+ (void)openFile:(NSString *)apath
-{
-//	[[self alloc] initWithFile: apath];
-}
-
-
 - (IBAction)reload:(id)sender
 {
 	{
 		svg_t *svg;
-		clock_t t;
 		SVGRenderContext *svg_render_context = [[SVGRenderContext alloc] init];
 
 		svg_create(&svg);
-//		printf("parsing...\n");
 		svg_parse_buffer(svg, [documentData bytes], [documentData length]);
 
-//		printf("rendering...\n");
-		t=clock();
 		[svg_render_context prepareRender: scale];
 		svg_render(svg, &cocoa_svg_engine, (__bridge void*)svg_render_context);
 		[svg_render_context finishRender];
-		t=clock()-t;
-//		printf("done: %15.8f seconds\n",t/(double)CLOCKS_PER_SEC);
 
 		NSSize contextSize = [svg_render_context size];
-		[svg_view setFrame: NSMakeRect(0, 0, contextSize.width, contextSize.height)];
-		[svg_view setSVGRenderContext: svg_render_context];
+		[svg_view setFrame:NSMakeRect(0, 0, contextSize.width, contextSize.height)];
+		[svg_view setSVGRenderContext:svg_render_context];
 
 		svg_destroy(svg);
 	}
 }
-
-#if 0
-- (id)initWithFile:(NSString *)apath
-{
-	//NSWindow *win;
-
-	/*win=[[NSWindow alloc] initWithContentRect: NSMakeRect(100,100,450,300)
-		styleMask: NSClosableWindowMask|NSTitledWindowMask|NSResizableWindowMask|NSMiniaturizableWindowMask
-		backing: NSBackingStoreRetained
-		defer: YES];
-	if (!(self=[super initWithWindow: win])) return nil;*/
-	if (!(self=[super initWithWindowNibName: @"Document"])) return nil;
-	path = [apath copy];
-	[[self window] setTitleWithRepresentedFilename: path];
-
-	//[NSObject enableDoubleReleaseCheck: YES];
-
-	scale = 1.0;
-	[self reload:nil];
-	[self showWindow:nil];
-
-	return self;
-}
-#endif
 
 - (id)init
 {
     self = [super init];
     if (self) {
 		scale = 1.0;
-		// Add your subclass-specific initialization here.
     }
     return self;
 }
 
 - (NSString *)windowNibName
 {
-	// Override returning the nib file name of the document
-	// If you need to use a subclass of NSWindowController or if your document supports multiple NSWindowControllers, you should remove this method and override -makeWindowControllers instead.
 	return @"SVGDocument";
 }
 
 - (void)windowControllerDidLoadNib:(NSWindowController *)aController
 {
 	[super windowControllerDidLoadNib:aController];
-	// Add any code here that needs to be executed once the windowController has loaded the document's window.
 	[self reload:nil];
 }
 
 - (BOOL)readFromData:(NSData *)data ofType:(NSString *)typeName error:(NSError **)outError
 {
-	// Insert code here to read your document from the given data of the specified type. If outError != NULL, ensure that you create and set an appropriate error when returning NO.
-	// You can also choose to override -readFromFileWrapper:ofType:error: or -readFromURL:ofType:error: instead.
-	// If you override either of these, you should also override -isEntireFileLoaded to return NO if the contents are lazily loaded.
 	svg_t *svg;
 	svg_create(&svg);
 

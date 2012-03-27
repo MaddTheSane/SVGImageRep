@@ -5,7 +5,7 @@ copyright 2003 Alexander Malmberg <alexander@malmberg.org>
 #ifndef Document_h
 #define Document_h
 
-#import <AppKit/NSWindowController.h>
+#import <AppKit/NSDocument.h>
 #import <AppKit/NSView.h>
 
 @class NSString,NSScrollView;
@@ -22,7 +22,6 @@ copyright 2003 Alexander Malmberg <alexander@malmberg.org>
 
 @interface SVGDocument : NSDocument
 {
-	//NSString *path;
 	NSData *documentData;
 
 	IBOutlet NSScrollView *scroll_view;
@@ -31,10 +30,6 @@ copyright 2003 Alexander Malmberg <alexander@malmberg.org>
 	double scale;
 }
 - (IBAction)reload:(id)sender;
-
-//+ (void)openFile:(NSString *)path;
-
-//- (id)initWithFile:(NSString *)path;
 
 #define SCALESET(a,b) \
 - (IBAction)scale_##a##_##b:(id)sender;
