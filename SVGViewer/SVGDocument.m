@@ -35,7 +35,6 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 
 - (void)drawRect:(NSRect)r
 {
-	[super drawRect:r];
 	NSGraphicsContext *ctxt = [NSGraphicsContext currentContext];
 
 	CGContextRef tempRef = (CGContextRef)[ctxt graphicsPort];
@@ -103,8 +102,8 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 
 	svg_status_t status = svg_parse_buffer(svg, [data bytes], [data length]);
 	if (status != SVG_STATUS_SUCCESS) {
-		NSError *__autoreleasing error =  [[NSError alloc] initWithDomain:NSCocoaErrorDomain code:NSFileReadCorruptFileError userInfo:nil];
 		if (outError != nil) {
+			NSError *__autoreleasing error =  [[NSError alloc] initWithDomain:NSCocoaErrorDomain code:NSFileReadCorruptFileError userInfo:nil];
 			outError = &error;
 		}
 		svg_destroy(svg);
