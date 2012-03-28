@@ -28,8 +28,9 @@
 - (void)finishRender
 {
 	states = nil;
-	CGLayerRelease(renderLayer);
-	renderLayer = NULL;
+	//TODO: release layer after use.
+	//CGLayerRelease(renderLayer);
+	//renderLayer = NULL;
 }
 
 - (double)lengthToPoints:(svg_length_t *)l
