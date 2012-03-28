@@ -416,7 +416,7 @@
 		current = [oldCurrent copy];
 		oldCurrent = nil;
 		
-		CGContextSaveGState(tempCtx);
+		//CGContextSaveGState(tempCtx);
 		if (opacity < 1.0)
 		{
 			//CGAffineTransform ctm = CGContextGetCTM(tempCtx);
@@ -443,7 +443,7 @@
 	}
 	else
 	{
-		CGContextSaveGState(tempCtx);
+		//CGContextSaveGState(tempCtx);
 		current = [[SVGRenderState alloc] init];
 	}
 	[states addObject: current];
@@ -455,7 +455,7 @@
 {
 	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
 	
-	CGContextRestoreGState(tempCtx);
+	//CGContextRestoreGState(tempCtx);
 	
 	if (opacity != 1.0)
 	{
@@ -480,8 +480,7 @@
 
 - (svg_status_t)setViewportDimension:(svg_length_t *)width :(svg_length_t *)height
 {
-	int w,h;
-	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
+	CGFloat w,h;
 	
 	if (result)
 	{
@@ -493,6 +492,9 @@
 	h = ceil([self lengthToPoints: height]) * scale;
 	size = NSMakeSize(w,h);
 	
+	CGLayerRelease(renderLayer);
+	renderLayer = CGLayerCreateWithContext((CGContextRef)[[NSGraphicsContext currentContext] graphicsPort], size, NULL);
+	
 	result = current.window = [[NSWindow alloc]
 							   initWithContentRect: NSMakeRect(0, 0, size.width, size.height)
 							   styleMask: 0
@@ -500,6 +502,8 @@
 							   defer: NO];
 	[[current window] setReleasedWhenClosed: NO];
 	
+	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
+
 	//[NSCurrentServer() windowdevice: [current->window windowNumber]];
 	//TODO: find replacements for these:
 	//DPSinitmatrix(ctxt);
@@ -818,8 +822,8 @@ FUNC(curve_to,
      double x1, double y1,
      double x2, double y2,
      double x3, double y3)
-	//CGContextAddCurveToPoint(CGCtx, x1, y1, x2, y2, x3, y3);
-	CGContextAddCurveToPoint(CGCtx, x2, y2, x3, y3, x1, y1);
+	CGContextAddCurveToPoint(CGCtx, x1, y1, x2, y2, x3, y3);
+	//CGContextAddCurveToPoint(CGCtx, x2, y2, x3, y3, x1, y1);
 	return SVG_STATUS_SUCCESS;
 }
 
@@ -828,8 +832,8 @@ FUNC(quadratic_curve_to,
 	 double y1,
 	 double x2,
 	 double y2)
-	CGContextAddQuadCurveToPoint(CGCtx, x2, y2, x1, y1);
-	//CGContextAddQuadCurveToPoint(CGCtx, x1, y1, x2, y2);
+	//CGContextAddQuadCurveToPoint(CGCtx, x2, y2, x1, y1);
+	CGContextAddQuadCurveToPoint(CGCtx, x1, y1, x2, y2);
 	return SVG_STATUS_SUCCESS;
 }
 
