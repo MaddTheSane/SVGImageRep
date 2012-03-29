@@ -12,7 +12,9 @@
 
 @implementation SVGRenderState
 
-@synthesize stroke_opacity, dash, color, window, opacity, num_dash, fill_rule, font_size, fill_paint, font_style, dash_offset, font_family, font_weight, text_anchor, fill_opacity, stroke_paint, stroke_width;
+@synthesize stroke_opacity, dash, color, window, opacity, num_dash, fill_rule;
+@synthesize font_size, fill_paint, font_style, dash_offset, font_family, font_weight;
+@synthesize text_anchor, fill_opacity, stroke_paint, stroke_width;
 
 - (id)copyWithZone:(NSZone *)zone
 {

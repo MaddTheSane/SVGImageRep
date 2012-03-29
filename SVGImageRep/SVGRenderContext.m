@@ -312,13 +312,14 @@
 		{
 			
 			CGContextSaveGState(tempCtx);
-			CFMutableArrayRef colorArray = CFArrayCreateMutable(kCFAllocatorDefault, current->fill_paint.p.gradient->num_stops, &kCFTypeArrayCallBacks);
-			CGFloat *GradStops = malloc(sizeof(CGFloat) * current->fill_paint.p.gradient->num_stops);
+			int numStops = current->fill_paint.p.gradient->num_stops;
+			CFMutableArrayRef colorArray = CFArrayCreateMutable(kCFAllocatorDefault, numStops, &kCFTypeArrayCallBacks);
+			CGFloat *GradStops = malloc(sizeof(CGFloat) * numStops);
 			NSInteger i;
-			for (i = 0; i > current->fill_paint.p.gradient->num_stops; i++) {
+			for (i = 0; i < numStops; i++) {
 				
 				CGColorRef tempColor = [SVGRenderContext colorRefFromSVGColor:&current->fill_paint.p.gradient->stops[i].color opacity:current->fill_paint.p.gradient->stops[i].opacity];
-				CFArrayAppendValue(colorArray, tempColor);
+				CFArrayInsertValueAtIndex(colorArray, i, tempColor);
 				CGColorRelease(tempColor);
 				GradStops[i] = current->fill_paint.p.gradient->stops[i].offset;
 			}
@@ -619,7 +620,7 @@
 			for (i = 0; i < numStops; i++) {
 				
 				CGColorRef tempColor = [SVGRenderContext colorRefFromSVGColor:&current->fill_paint.p.gradient->stops[i].color opacity:current->fill_paint.p.gradient->stops[i].opacity];
-				CFArrayAppendValue(colorArray, tempColor);
+				CFArrayInsertValueAtIndex(colorArray, i, tempColor);
 				CGColorRelease(tempColor);
 				GradStops[i] = current->fill_paint.p.gradient->stops[i].offset;
 			}
