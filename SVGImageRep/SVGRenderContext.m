@@ -77,6 +77,18 @@
 	return points * 1.25;
 }
 
+- (void)setStrokeColor:(svg_color_t *)c alpha:(CGFloat)alph
+{
+	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
+	CGContextSetRGBStrokeColor(tempCtx, svg_color_get_red(c)/255.0, svg_color_get_green(c)/255.0, svg_color_get_blue(c)/255.0, alph);
+}
+
+- (void)setFillColor:(svg_color_t *)c alpha:(CGFloat)alph
+{
+	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
+	CGContextSetRGBFillColor(tempCtx, svg_color_get_red(c)/255.0, svg_color_get_green(c)/255.0, svg_color_get_blue(c)/255.0, alph);
+}
+
 - (void)setColor:(svg_color_t *)c
 {
 	[self setColor:c alpha:1.0];
@@ -84,13 +96,9 @@
 
 - (void)setColor:(svg_color_t *)c alpha:(CGFloat)alph
 {
-	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
-	
 	//Which color is being set? Set them both!
-	CGColorRef tempColor = CGColorCreateGenericRGB(svg_color_get_red(c)/255.0, svg_color_get_green(c)/255.0, svg_color_get_blue(c)/255.0, alph);
-	CGContextSetFillColorWithColor(tempCtx, tempColor);
-	CGContextSetStrokeColorWithColor(tempCtx, tempColor);
-	CGColorRelease(tempColor);
+	[self setFillColor:c alpha:alph];
+	[self setStrokeColor:c alpha:alph];
 }
 
 /*
@@ -301,7 +309,7 @@
 			
 			
 		case SVG_PAINT_TYPE_COLOR:
-			[self setColor:&current->fill_paint.p.color alpha:[current fill_opacity]];
+			[self setFillColor:&current->fill_paint.p.color alpha:[current fill_opacity]];
 			if (rx > 0 || ry > 0)
 			{
 				CGContextMoveToPoint(tempCtx, cx + crx, cy);
@@ -356,7 +364,7 @@
 			break;
 			
 		case SVG_PAINT_TYPE_COLOR:
-			[self setColor:&current->stroke_paint.p.color alpha:[current stroke_opacity]];
+			[self setStrokeColor:&current->stroke_paint.p.color alpha:[current stroke_opacity]];
 			CGContextStrokeRect(tempCtx, CGRectMake(cx, cy, cw, ch));
 			break;
 			/*
@@ -546,7 +554,7 @@
 			break;
 			
 		case SVG_PAINT_TYPE_COLOR:
-			[self setColor: &current->fill_paint.p.color alpha:[current fill_opacity]];
+			[self setFillColor: &current->fill_paint.p.color alpha:[current fill_opacity]];
 			if (current->stroke_paint.type != SVG_PAINT_TYPE_NONE)
 				CGContextSaveGState(tempCtx);
 			if ([current fill_rule])
@@ -585,7 +593,7 @@
 			break;
 			
 		case SVG_PAINT_TYPE_COLOR:
-			[self setColor: &current->stroke_paint.p.color alpha:[current stroke_opacity]];
+			[self setStrokeColor: &current->stroke_paint.p.color alpha:[current stroke_opacity]];
 			CGContextStrokePath(tempCtx);
 			break;
 			/*
@@ -625,7 +633,7 @@
 		families = [[current font_family] componentsSeparatedByString: @","];
 		
 		fonts = nil;
-		for (i = 0;i < [families count];i++)
+		for (i = 0; i < [families count]; i++)
 		{
 			family = [families objectAtIndex: i];
 			
@@ -654,6 +662,7 @@
 	
 	f = nil;
 	best = 1e6;
+	//TODO: rewrite this code to for better font finding.
 	for (i = 0; i < [fonts count]; i++)
 	{
 		NSFontTraitMask traits;
@@ -684,12 +693,11 @@
 	if (!f)
 		f = [NSFont userFontOfSize: [current font_size]];
 	
+	NSFontDescriptor *tempDiscriptor = [NSFontDescriptor fontDescriptorWithName:[f fontName] size:[current font_size]];
 	//Should we set the text CTM here?
 	CGContextScaleCTM(tempCtx, 1, -1);
-	CGFontRef tempFontRef = CTFontCopyGraphicsFont((__bridge CTFontRef)f, NULL);
-	CGContextSetFont(tempCtx, tempFontRef);
-	CGFontRelease(tempFontRef);
-	
+	CGContextSelectFont(tempCtx, [[tempDiscriptor postscriptName] UTF8String], [current font_size], kCGEncodingFontSpecific);
+
 	switch ([current fill_paint].type)
 	{
 		case SVG_PAINT_TYPE_GRADIENT:
@@ -701,7 +709,8 @@
 			break;
 			
 		case SVG_PAINT_TYPE_COLOR:
-			[self setColor: &current->fill_paint.p.color alpha:[current fill_opacity]];
+			[self setFillColor: &current->fill_paint.p.color alpha:[current fill_opacity]];
+			CGContextSetTextDrawingMode(tempCtx, kCGTextFill);
 			CGContextShowText(tempCtx, utf8, strlen(utf8));
 			break;
 			/*
@@ -726,10 +735,9 @@
 			break;
 			
 		case SVG_PAINT_TYPE_COLOR:
-			[self setColor: &current->stroke_paint.p.color alpha:[current stroke_opacity]];
-			//TODO: find DPScharpath replacement
-			//DPScharpath(ctxt,utf8,0);
-			CGContextStrokePath(tempCtx);
+			[self setStrokeColor: &current->stroke_paint.p.color alpha:[current stroke_opacity]];
+			CGContextSetTextDrawingMode(tempCtx, kCGTextStroke);
+			CGContextShowText(tempCtx, utf8, strlen(utf8));
 			break;
 			/*
 			 case SVG_PAINT_TYPE_CURRENTCOLOR:
@@ -883,7 +891,7 @@ FUNC(set_fill_rule, svg_fill_rule_t fill_rule)
 }
 
 FUNC(set_font_family, const char *family)
-	[self current].font_family = [NSString stringWithUTF8String: family];
+	[self current].font_family = [NSString stringWithUTF8String:family];
 	return SVG_STATUS_SUCCESS;
 }
 
@@ -1055,7 +1063,7 @@ FUNC(render_image,
      svg_length_t *x, svg_length_t *y,
      svg_length_t *width, svg_length_t *height)
 	{
-		CGFloat cx,cy,cw,ch;
+		CGFloat cx, cy, cw, ch;
 		cx = [self lengthToPoints:x];
 		cy = [self lengthToPoints:y];
 		cw = [self lengthToPoints:width];
