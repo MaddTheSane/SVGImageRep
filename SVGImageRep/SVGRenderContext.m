@@ -311,6 +311,7 @@
 		case SVG_PAINT_TYPE_GRADIENT:
 		{
 			
+			CGContextSaveGState(tempCtx);
 			CFMutableArrayRef colorArray = CFArrayCreateMutable(kCFAllocatorDefault, current->fill_paint.p.gradient->num_stops, &kCFTypeArrayCallBacks);
 			CGFloat *GradStops = malloc(sizeof(CGFloat) * current->fill_paint.p.gradient->num_stops);
 			NSInteger i;
@@ -328,6 +329,24 @@
 			CGColorSpaceRelease(tempCSpace);
 			free(GradStops);
 			
+			if (rx > 0 || ry > 0)
+			{
+				CGContextMoveToPoint(tempCtx, cx + crx, cy);
+				CGContextAddLineToPoint(tempCtx, cx + cw - crx, cy);
+				[self arcTo: crx : cry : 0 : 0 : 1 : cx + cw : cy + cry];
+				CGContextAddLineToPoint(tempCtx, cx + cw, cy + ch - cry);
+				[self arcTo: crx : cry : 0 : 0 : 1 : cx + cw - crx : cy + ch];
+				CGContextAddLineToPoint(tempCtx, cx + crx, cy + ch);
+				[self arcTo: crx : cry : 0 : 0 : 1 : cx : cy + ch - cry];
+				CGContextAddLineToPoint(tempCtx, cx, cy + cry);
+				[self arcTo: crx : cry : 0 : 0 : 1 : cx + crx : cy];
+				CGContextClosePath(tempCtx);
+				CGContextClip(tempCtx);
+			}
+			else
+				CGContextClipToRect(tempCtx, CGRectMake(cx, cy, cw, ch));
+			break;
+
 			
 			switch (current->fill_paint.p.gradient->type) {
 				case SVG_GRADIENT_LINEAR:
@@ -343,6 +362,7 @@
 					break;
 			}
 			CGGradientRelease(gradient);
+			CGContextRestoreGState(tempCtx);
 		}
 			break;
 			
@@ -590,11 +610,13 @@
 	{
 		case SVG_PAINT_TYPE_GRADIENT:
 		{
-			
-			CFMutableArrayRef colorArray = CFArrayCreateMutable(kCFAllocatorDefault, current->fill_paint.p.gradient->num_stops, &kCFTypeArrayCallBacks);
-			CGFloat *GradStops = malloc(sizeof(CGFloat) * current->fill_paint.p.gradient->num_stops);
+			CGContextSaveGState(tempCtx);
+			CGContextClip(tempCtx);
+			int numStops = current->fill_paint.p.gradient->num_stops;
+			CFMutableArrayRef colorArray = CFArrayCreateMutable(kCFAllocatorDefault, numStops, &kCFTypeArrayCallBacks);
+			CGFloat *GradStops = malloc(sizeof(CGFloat) * numStops);
 			NSInteger i;
-			for (i = 0; i < current->fill_paint.p.gradient->num_stops; i++) {
+			for (i = 0; i < numStops; i++) {
 				
 				CGColorRef tempColor = [SVGRenderContext colorRefFromSVGColor:&current->fill_paint.p.gradient->stops[i].color opacity:current->fill_paint.p.gradient->stops[i].opacity];
 				CFArrayAppendValue(colorArray, tempColor);
@@ -602,7 +624,7 @@
 				GradStops[i] = current->fill_paint.p.gradient->stops[i].offset;
 			}
 			//[self setFillGradient:current->fill_paint.p.gradient alpha:[current fill_opacity]];
-			CGColorSpaceRef tempCSpace =CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
+			CGColorSpaceRef tempCSpace = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
 			CGGradientRef gradient = CGGradientCreateWithColors(tempCSpace, colorArray, GradStops);
 			CFRelease(colorArray);
 			CGColorSpaceRelease(tempCSpace);
@@ -623,6 +645,7 @@
 					break;
 			}
 			CGGradientRelease(gradient);
+			CGContextRestoreGState(tempCtx);
 		}
 			break;
 			
