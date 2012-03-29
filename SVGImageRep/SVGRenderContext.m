@@ -318,6 +318,7 @@
 				
 				CGColorRef tempColor = [SVGRenderContext colorRefFromSVGColor:&current->fill_paint.p.gradient->stops[i].color opacity:current->fill_paint.p.gradient->stops[i].opacity];
 				CFArrayAppendValue(colorArray, tempColor);
+				CGColorRelease(tempColor);
 				GradStops[i] = current->fill_paint.p.gradient->stops[i].offset;
 			}
 			//[self setFillGradient:current->fill_paint.p.gradient alpha:[current fill_opacity]];
@@ -597,6 +598,7 @@
 				
 				CGColorRef tempColor = [SVGRenderContext colorRefFromSVGColor:&current->fill_paint.p.gradient->stops[i].color opacity:current->fill_paint.p.gradient->stops[i].opacity];
 				CFArrayAppendValue(colorArray, tempColor);
+				CGColorRelease(tempColor);
 				GradStops[i] = current->fill_paint.p.gradient->stops[i].offset;
 			}
 			//[self setFillGradient:current->fill_paint.p.gradient alpha:[current fill_opacity]];
