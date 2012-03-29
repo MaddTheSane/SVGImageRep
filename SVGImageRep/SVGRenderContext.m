@@ -860,14 +860,6 @@
 
 @end
 
-
-#define FUNC(name,args...) \
-	static svg_status_t r_##name(void *closure, ##args) \
-	{ \
-		SVGRenderContext *self = (__bridge SVGRenderContext *)closure; \
-		CGContextRef CGCtx = CGLayerGetContext(self.renderLayer); \
-
-
 static int indent=1;
 
 static svg_status_t r_begin_group(void *closure, double opacity)
@@ -917,73 +909,91 @@ static svg_status_t r_end_group(void *closure, double opacity)
 }
 
 
-FUNC(move_to, double x, double y)
+static svg_status_t r_move_to(void *closure, double x, double y)
+{
+	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
+	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	CGContextMoveToPoint(CGCtx, x, y);
 	return SVG_STATUS_SUCCESS;
 }
 
-FUNC(line_to, double x, double y)
+static svg_status_t r_line_to(void *closure, double x, double y)
+{
+	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
+	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	CGContextAddLineToPoint(CGCtx, x, y);
 	return SVG_STATUS_SUCCESS;
 }
 
-FUNC(curve_to,
-     double x1, double y1,
-     double x2, double y2,
-     double x3, double y3)
+static svg_status_t r_curve_to(void *closure, double x1, double y1, double x2, double y2, double x3, double y3)
+{
+	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
+	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
+	
 	CGContextAddCurveToPoint(CGCtx, x1, y1, x2, y2, x3, y3);
-	//CGContextAddCurveToPoint(CGCtx, x2, y2, x3, y3, x1, y1);
 	return SVG_STATUS_SUCCESS;
 }
 
-FUNC(quadratic_curve_to,
-	 double x1, 
-	 double y1,
-	 double x2,
-	 double y2)
-	//CGContextAddQuadCurveToPoint(CGCtx, x2, y2, x1, y1);
+static svg_status_t r_quadratic_curve_to(void *closure, double x1, double y1, double x2, double y2)
+{
+	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
+	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
+	
 	CGContextAddQuadCurveToPoint(CGCtx, x1, y1, x2, y2);
 	return SVG_STATUS_SUCCESS;
 }
 
-FUNC(arc_to,
-     double rx, double ry,
-     double x_axis_rotation,
-     int large_arc_flag,
-     int sweep_flag,
-     double x, double y)
-	[self arcTo: rx 
-		: ry 
-		: x_axis_rotation
-		: large_arc_flag
-		: sweep_flag
-		: x
-		: y];
+static svg_status_t r_arc_to(void *closure, double rx, double ry, double x_axis_rotation, int large_arc_flag, int sweep_flag, double x, double y)
+{
+	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
+	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
+	[self arcTo: rx
+			   : ry
+			   : x_axis_rotation
+			   : large_arc_flag
+			   : sweep_flag
+			   : x
+			   : y];
 	return SVG_STATUS_SUCCESS;
 }
 
-FUNC(close_path)
+static svg_status_t r_close_path(void *closure)
+{
+	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
+	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	CGContextClosePath(CGCtx);
 	return SVG_STATUS_SUCCESS;
 }
 
 
-FUNC(set_color, const svg_color_t *color)
+static svg_status_t r_set_color(void *closure, const svg_color_t *color)
+{
+	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
+	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	[self current].color = *color;
 	return SVG_STATUS_SUCCESS;
 }
 
-FUNC(set_fill_opacity, double opacity)
+static svg_status_t r_set_fill_opacity(void *closure, double opacity)
+{
+	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
+	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	[self current].fill_opacity = opacity;
 	return SVG_STATUS_SUCCESS;
 }
 
-FUNC(set_fill_paint, const svg_paint_t *paint)
+static svg_status_t r_set_fill_paint(void *closure, const svg_paint_t *paint)
+{
+	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
+	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	[self current].fill_paint = *paint;
 	return SVG_STATUS_SUCCESS;
 }
 
-FUNC(set_fill_rule, svg_fill_rule_t fill_rule)
+static svg_status_t r_set_fill_rule(void *closure, svg_fill_rule_t fill_rule)
+{
+	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
+	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	if (fill_rule == SVG_FILL_RULE_NONZERO)
 		[self current].fill_rule = 0;
 	else
@@ -991,32 +1001,50 @@ FUNC(set_fill_rule, svg_fill_rule_t fill_rule)
 	return SVG_STATUS_SUCCESS;
 }
 
-FUNC(set_font_family, const char *family)
+static svg_status_t r_set_font_family(void *closure, const char *family)
+{
+	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
+	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	[self current].font_family = [NSString stringWithUTF8String:family];
 	return SVG_STATUS_SUCCESS;
 }
 
-FUNC(set_font_size, double size)
+static svg_status_t r_set_font_size(void *closure, double size)
+{
+	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
+	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	[self current].font_size = size;
 	return SVG_STATUS_SUCCESS;
 }
 
-FUNC(set_font_style, svg_font_style_t style)
+static svg_status_t r_set_font_style(void *closure, svg_font_style_t style)
+{
+	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
+	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	[self current].font_style = style;
 	return SVG_STATUS_SUCCESS;
 }
 
-FUNC(set_font_weight, unsigned int weight)
+static svg_status_t r_set_font_weight(void *closure, unsigned int weight)
+{
+	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
+	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	[self current].font_weight = weight;
 	return SVG_STATUS_SUCCESS;
 }
 
-FUNC(set_opacity, double opacity)
+static svg_status_t r_set_opacity(void *closure, double opacity)
+{
+	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
+	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	[self current].opacity = opacity;
 	return SVG_STATUS_SUCCESS;
 }
 
-FUNC(set_stroke_dash_array, double *dashes, int num_dashes)
+static svg_status_t r_set_stroke_dash_array(void *closure, double *dashes, int num_dashes)
+{
+	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
+	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	if ([self current].dash)
 		free([self current].dash);
 	[self current].dash = NULL;
@@ -1038,13 +1066,19 @@ FUNC(set_stroke_dash_array, double *dashes, int num_dashes)
 	return SVG_STATUS_SUCCESS;
 }
 
-FUNC(set_stroke_dash_offset, svg_length_t *offset)
+static svg_status_t r_set_stroke_dash_offset(void *closure, svg_length_t *offset)
+{
+	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
+	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	[self current].dash_offset = [self lengthToPoints: offset];
 	CGContextSetLineDash(CGCtx, [[self current] dash_offset], [[self current] dash], [[self current] num_dash]);
 	return SVG_STATUS_SUCCESS;
 }
 
-FUNC(set_stroke_line_cap, svg_stroke_line_cap_t line_cap)
+static svg_status_t r_set_stroke_line_cap(void *closure, svg_stroke_line_cap_t line_cap)
+{
+	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
+	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	CGLineCap i;
 
 	switch (line_cap)
@@ -1065,7 +1099,10 @@ FUNC(set_stroke_line_cap, svg_stroke_line_cap_t line_cap)
 	return SVG_STATUS_SUCCESS;
 }
 
-FUNC(set_stroke_line_join, svg_stroke_line_join_t line_join)
+static svg_status_t r_set_stroke_line_join(void *closure, svg_stroke_line_join_t line_join)
+{
+	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
+	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	CGLineJoin i;
 
 	switch (line_join)
@@ -1086,83 +1123,112 @@ FUNC(set_stroke_line_join, svg_stroke_line_join_t line_join)
 	return SVG_STATUS_SUCCESS;
 }
 
-FUNC(set_stroke_miter_limit, double miter_limit)
+static svg_status_t r_set_stroke_miter_limit(void *closure, double miter_limit)
+{
+	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
+	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	CGContextSetMiterLimit(CGCtx, miter_limit);
 	return SVG_STATUS_SUCCESS;
 }
 
-FUNC(set_stroke_opacity, double opacity)
+static svg_status_t r_set_stroke_opacity(void *closure, double opacity)
+{
+	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
+	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	[self current].stroke_opacity = opacity;
 	return SVG_STATUS_SUCCESS;
 }
 
-FUNC(set_stroke_paint, const svg_paint_t *paint)
+static svg_status_t r_set_stroke_paint(void *closure, const svg_paint_t *paint)
+{
+	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
+	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	[self current].stroke_paint = *paint;
 	return SVG_STATUS_SUCCESS;
 }
 
-FUNC(set_stroke_width, svg_length_t *width)
+static svg_status_t r_set_stroke_width(void *closure, svg_length_t *width)
+{
+	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
+	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	CGContextSetLineWidth(CGCtx, [self lengthToPoints:width]);
 	return SVG_STATUS_SUCCESS;
 }
 
-FUNC(set_text_anchor, svg_text_anchor_t anchor)
+static svg_status_t r_set_text_anchor(void *closure, svg_text_anchor_t anchor) 
+{
+	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
+	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	[self current].text_anchor = anchor;
 	return SVG_STATUS_SUCCESS;
 }
 
 
-FUNC(transform, double a, double b, double c, double d, double e, double f)
+static svg_status_t r_transform(void *closure, double a, double b, double c, double d, double e, double f)
+{
+	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
+	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	CGContextConcatCTM(CGCtx, CGAffineTransformMake(a, b, c, d, e, f));
 	return SVG_STATUS_SUCCESS;
 }
 
-FUNC(apply_viewbox, svg_view_box_t viewbox, svg_length_t *width, svg_length_t *height)
+static svg_status_t r_apply_viewbox(void *closure, svg_view_box_t viewbox, svg_length_t *width, svg_length_t *height)
+{
+	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
+	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	return [self applyViewbox: viewbox :width :height];
 }
 
-FUNC(set_viewport_dimension, svg_length_t *width, svg_length_t *height)
+static svg_status_t r_set_viewport_dimension(void *closure, svg_length_t *width, svg_length_t *height)
+{
+	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
+	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	return [self setViewportDimension: width: height];
 }
 
-FUNC(render_line,
-	 svg_length_t *x1,
-	 svg_length_t *y1, 
-	 svg_length_t *x2,
-	 svg_length_t *y2)
+static svg_status_t r_render_line(void *closure, svg_length_t *x1, svg_length_t *y1, svg_length_t *x2, svg_length_t *y2)
+{
+	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
+	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	CGContextMoveToPoint(CGCtx, [self lengthToPoints:x1], [self lengthToPoints:y1]);
 	CGContextAddLineToPoint(CGCtx, [self lengthToPoints:x2], [self lengthToPoints:y2]);
 	[self renderPath];
 	return SVG_STATUS_SUCCESS;
 }
 
-FUNC(render_path)
+static svg_status_t r_render_path(void *closure)
+{
+	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
+	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	return [self renderPath];
 }
 
-FUNC(render_ellipse,
-     svg_length_t *cx, svg_length_t *cy,
-	 svg_length_t *rx, svg_length_t *ry)
+static svg_status_t r_render_ellipse(void *closure, svg_length_t *cx, svg_length_t *cy, svg_length_t *rx, svg_length_t *ry)
+{
+	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
+	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	return [self renderEllipse: cx : cy : rx : ry];
 }
 
-FUNC(render_rect,
-     svg_length_t *x, svg_length_t *y,
-	 svg_length_t *width, svg_length_t *height,
-	 svg_length_t *rx, svg_length_t *ry)
+static svg_status_t r_render_rect(void *closure, svg_length_t *x, svg_length_t *y, svg_length_t *width, svg_length_t *height, svg_length_t *rx, svg_length_t *ry)
+{
+	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
+	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	return [self renderRect: x:y :width:height :rx:ry];
 }
 
-FUNC(render_text, svg_length_t *x, svg_length_t *y, const char *utf8)
+static svg_status_t r_render_text(void *closure, svg_length_t *x, svg_length_t *y, const char *utf8)
+{
+	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
+	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	CGContextSetTextPosition(CGCtx, [self lengthToPoints:x], [self lengthToPoints:y]);
 	return [self renderText: utf8];
 }
 
-FUNC(render_image,
-     unsigned char *data,
-     unsigned int data_width, unsigned int data_height,
-     svg_length_t *x, svg_length_t *y,
-     svg_length_t *width, svg_length_t *height)
+static svg_status_t r_render_image(void *closure, unsigned char *data, unsigned int data_width, unsigned int data_height, svg_length_t *x, svg_length_t *y, svg_length_t *width, svg_length_t *height)
+{ 
+	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
+	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	{
 		CGFloat cx, cy, cw, ch;
 		cx = [self lengthToPoints:x];
