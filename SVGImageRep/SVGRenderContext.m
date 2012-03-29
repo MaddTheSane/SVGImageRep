@@ -33,6 +33,11 @@
 	//renderLayer = NULL;
 }
 
+- (void)dealloc
+{
+	CGLayerRelease(renderLayer);
+}
+
 - (double)lengthToPoints:(svg_length_t *)l
 {
 	double points;
@@ -43,23 +48,23 @@
 			break;
 			
 		case SVG_LENGTH_UNIT_PX:
-			points = l->value/1.25;
+			points = l->value / 1.25;
 			break;
 			
 		case SVG_LENGTH_UNIT_CM:
-			points = l->value/2.54*72;
+			points = l->value / 2.54 * 72;
 			break;
 			
 		case SVG_LENGTH_UNIT_MM:
-			points = l->value/25.4*72;
+			points = l->value / 25.4 * 72;
 			break;
 			
 		case SVG_LENGTH_UNIT_IN:
-			points = l->value*72;
+			points = l->value * 72;
 			break;
 			
 		case SVG_LENGTH_UNIT_PC:
-			points = l->value/6*72;
+			points = l->value / 6 * 72;
 			break;
 			
 		case SVG_LENGTH_UNIT_PCT:
@@ -68,7 +73,7 @@
 			else if (l->orientation == SVG_LENGTH_ORIENTATION_VERTICAL)
 				return l->value / 100 * size.height / scale;
 			else
-				return l->value / 100 * sqrt(size.width * size.width+size.height * size.height) * sqrt(2) / scale;
+				return l->value / 100 * sqrt(size.width * size.width + size.height * size.height) * sqrt(2) / scale;
 			
 		default:
 			printf("unhandled unit %i\n", l->unit);
@@ -87,18 +92,6 @@
 {
 	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
 	CGContextSetRGBFillColor(tempCtx, svg_color_get_red(c)/255.0, svg_color_get_green(c)/255.0, svg_color_get_blue(c)/255.0, alph);
-}
-
-- (void)setColor:(svg_color_t *)c
-{
-	[self setColor:c alpha:1.0];
-}
-
-- (void)setColor:(svg_color_t *)c alpha:(CGFloat)alph
-{
-	//Which color is being set? Set them both!
-	[self setFillColor:c alpha:alph];
-	[self setStrokeColor:c alpha:alph];
 }
 
 /*
@@ -662,7 +655,7 @@
 	
 	f = nil;
 	best = 1e6;
-	//TODO: rewrite this code to for better font finding.
+	//TODO: rewrite this code for better font finding.
 	for (i = 0; i < [fonts count]; i++)
 	{
 		NSFontTraitMask traits;
@@ -1040,8 +1033,8 @@ FUNC(render_path)
 }
 
 FUNC(render_ellipse,
-     svg_length_t *cx,svg_length_t *cy,
-	 svg_length_t *rx,svg_length_t *ry)
+     svg_length_t *cx, svg_length_t *cy,
+	 svg_length_t *rx, svg_length_t *ry)
 	return [self renderEllipse: cx : cy : rx : ry];
 }
 

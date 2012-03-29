@@ -35,8 +35,6 @@ extern svg_render_engine_t cocoa_svg_engine;
 - (void)prepareRender:(double)a_scale;
 - (void)finishRender;
 
-- (void)setColor:(svg_color_t *)c alpha:(CGFloat)alph;
-
 - (double)lengthToPoints: (svg_length_t *)l;
 
 
