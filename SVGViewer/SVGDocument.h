@@ -30,20 +30,16 @@ copyright 2003 Alexander Malmberg <alexander@malmberg.org>
 }
 - (IBAction)reload:(id)sender;
 
-#define SCALESET(a,b) \
-- (IBAction)scale_##a##_##b:(id)sender;
-
-SCALESET(0,1)
-SCALESET(0,25)
-SCALESET(0,5)
-SCALESET(0,75)
-SCALESET(1,0)
-SCALESET(1,5)
-SCALESET(2,0)
-SCALESET(3,0)
-SCALESET(4,0)
-SCALESET(5,0)
-
+- (IBAction)scale_0_1:(id)sender;
+- (IBAction)scale_0_25:(id)sender;
+- (IBAction)scale_0_5:(id)sender;
+- (IBAction)scale_0_75:(id)sender;
+- (IBAction)scale_1_0:(id)sender;
+- (IBAction)scale_1_5:(id)sender;
+- (IBAction)scale_2_0:(id)sender;
+- (IBAction)scale_3_0:(id)sender;
+- (IBAction)scale_4_0:(id)sender;
+- (IBAction)scale_5_0:(id)sender;
 
 @end
 
