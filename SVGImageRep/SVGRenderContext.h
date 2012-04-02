@@ -7,16 +7,19 @@
 //
 
 #import <Foundation/NSObject.h>
+#include <ApplicationServices/ApplicationServices.h>
 #include <svg.h>
-@class SVGRenderState, NSWindow, NSMutableArray;
+@class SVGRenderState, NSMutableArray;
 
 extern svg_render_engine_t cocoa_svg_engine;
 
 @interface SVGRenderContext : NSObject
 {
 @public
-	NSWindow *result;
+	CGLayerRef renderLayer;
+	CGLayerRef unsizedRenderLayer;
 	NSSize size;
+	BOOL hasSize;
 	
 	double scale;
 	
@@ -24,19 +27,18 @@ extern svg_render_engine_t cocoa_svg_engine;
 	NSMutableArray *states;
 }
 
-@property (readwrite, assign) SVGRenderState *current;
-@property (readwrite, retain) NSMutableArray *states;
-@property (readonly) NSWindow *result;
+@property (readwrite) SVGRenderState *current;
+@property (readwrite) NSMutableArray *states;
 @property (readonly) NSSize size;
 @property (readwrite) double scale;
+@property (readonly) CGLayerRef renderLayer;
 
 - (void)prepareRender:(double)a_scale;
 - (void)finishRender;
 
-- (void)setColor:(svg_color_t *)c alpha:(CGFloat)alph;
-
 - (double)lengthToPoints: (svg_length_t *)l;
 
++ (CGGradientRef)gradientFromSVGGradient:(svg_gradient_t *)gradient;
 
 - (void)arcTo: (double)rx : (double) ry
 			 : (double)x_axis_rotation
@@ -56,7 +58,7 @@ extern svg_render_engine_t cocoa_svg_engine;
 						  : (svg_length_t *)width : (svg_length_t *)height
 						  : (svg_length_t *)rx : (svg_length_t *)ry;
 - (svg_status_t)renderPath;
-- (svg_status_t)renderText: (const unsigned char *)utf8;
+- (svg_status_t)renderText: (const char *)utf8;
 - (svg_status_t)renderEllipse: (svg_length_t *)cx : (svg_length_t *)cy
 							 : (svg_length_t *)rx : (svg_length_t *)ry;
 

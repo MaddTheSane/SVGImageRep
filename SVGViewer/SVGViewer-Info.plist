@@ -21,6 +21,8 @@
 			<array>
 				<string>public.svg-image</string>
 			</array>
+			<key>NSDocumentClass</key>
+			<string>SVGDocument</string>
 		</dict>
 	</array>
 	<key>CFBundleExecutable</key>

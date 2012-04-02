@@ -100,7 +100,6 @@
 		55371461151BD40500F8848A /* pngrutil.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713CD151BD40500F8848A /* pngrutil.c */; };
 		55371462151BD40500F8848A /* pngset.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713CE151BD40500F8848A /* pngset.c */; };
 		55371463151BD40500F8848A /* pngstruct.h in Headers */ = {isa = PBXBuildFile; fileRef = 553713CF151BD40500F8848A /* pngstruct.h */; };
-		55371464151BD40500F8848A /* pngtest.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713D0151BD40500F8848A /* pngtest.c */; };
 		55371465151BD40500F8848A /* pngtrans.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713D2151BD40500F8848A /* pngtrans.c */; };
 		55371466151BD40500F8848A /* pngwio.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713D3151BD40500F8848A /* pngwio.c */; };
 		55371467151BD40500F8848A /* pngwrite.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713D4151BD40500F8848A /* pngwrite.c */; };
@@ -112,7 +111,7 @@
 		55AFA4AB151AA3FB00B5351D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55AFA493151AA3BC00B5351D /* Cocoa.framework */; };
 		55AFA4B1151AA3FB00B5351D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 55AFA4AF151AA3FB00B5351D /* InfoPlist.strings */; };
 		55AFA4B7151AA3FB00B5351D /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 55AFA4B5151AA3FB00B5351D /* Credits.rtf */; };
-		55AFA4C6151AA43700B5351D /* Document.m in Sources */ = {isa = PBXBuildFile; fileRef = 55AFA4C5151AA43700B5351D /* Document.m */; };
+		55AFA4C6151AA43700B5351D /* SVGDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 55AFA4C5151AA43700B5351D /* SVGDocument.m */; };
 		55AFA4C8151AA5E500B5351D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 55AFA4C7151AA5E500B5351D /* main.m */; };
 		55AFA4CE151AA7E900B5351D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55AFA493151AA3BC00B5351D /* Cocoa.framework */; };
 		55AFA50C151AA82000B5351D /* svg.c in Sources */ = {isa = PBXBuildFile; fileRef = 55AFA4F1151AA82000B5351D /* svg.c */; };
@@ -148,9 +147,8 @@
 		55AFA535151AB48C00B5351D /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 55AFA534151AB48C00B5351D /* libz.dylib */; };
 		55AFA536151AB4AB00B5351D /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 55AFA534151AB48C00B5351D /* libz.dylib */; };
 		55F0FA88151CDCB6006426B8 /* jmemname.c in Sources */ = {isa = PBXBuildFile; fileRef = 55371263151BD0CD00F8848A /* jmemname.c */; };
-		55F0FA8F151FBAB6006426B8 /* SVGViewer.m in Sources */ = {isa = PBXBuildFile; fileRef = 55F0FA8E151FBAB6006426B8 /* SVGViewer.m */; };
 		55F0FA92151FBB80006426B8 /* SVGViewer.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55F0FA91151FBB80006426B8 /* SVGViewer.xib */; };
-		55F0FA94151FBE4A006426B8 /* Document.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55F0FA93151FBE4A006426B8 /* Document.xib */; };
+		55F0FA94151FBE4A006426B8 /* SVGDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55F0FA93151FBE4A006426B8 /* SVGDocument.xib */; };
 		55F0FAC81520E925006426B8 /* SVGRenderState.m in Sources */ = {isa = PBXBuildFile; fileRef = 55F0FAC71520E925006426B8 /* SVGRenderState.m */; };
 		55F0FAC91520E925006426B8 /* SVGRenderState.m in Sources */ = {isa = PBXBuildFile; fileRef = 55F0FAC71520E925006426B8 /* SVGRenderState.m */; };
 		55F0FACC1520E9F8006426B8 /* SVGRenderContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 55F0FACB1520E9F8006426B8 /* SVGRenderContext.m */; };
@@ -311,8 +309,8 @@
 		55AFA4B0151AA3FB00B5351D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		55AFA4B4151AA3FB00B5351D /* SVGViewer-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SVGViewer-Prefix.pch"; sourceTree = "<group>"; };
 		55AFA4B6151AA3FB00B5351D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
-		55AFA4C4151AA43700B5351D /* Document.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Document.h; sourceTree = "<group>"; };
-		55AFA4C5151AA43700B5351D /* Document.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Document.m; sourceTree = "<group>"; };
+		55AFA4C4151AA43700B5351D /* SVGDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVGDocument.h; sourceTree = "<group>"; };
+		55AFA4C5151AA43700B5351D /* SVGDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVGDocument.m; sourceTree = "<group>"; };
 		55AFA4C7151AA5E500B5351D /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		55AFA4CD151AA7E900B5351D /* libsvg.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libsvg.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		55AFA4D1151AA7E900B5351D /* svg-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "svg-Prefix.pch"; sourceTree = "<group>"; };
@@ -348,7 +346,7 @@
 		55F0FA8D151FBAB6006426B8 /* SVGViewer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVGViewer.h; sourceTree = "<group>"; };
 		55F0FA8E151FBAB6006426B8 /* SVGViewer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVGViewer.m; sourceTree = "<group>"; };
 		55F0FA91151FBB80006426B8 /* SVGViewer.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SVGViewer.xib; sourceTree = "<group>"; };
-		55F0FA93151FBE4A006426B8 /* Document.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Document.xib; sourceTree = "<group>"; };
+		55F0FA93151FBE4A006426B8 /* SVGDocument.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SVGDocument.xib; sourceTree = "<group>"; };
 		55F0FAC61520E925006426B8 /* SVGRenderState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVGRenderState.h; sourceTree = "<group>"; };
 		55F0FAC71520E925006426B8 /* SVGRenderState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVGRenderState.m; sourceTree = "<group>"; };
 		55F0FACA1520E9F8006426B8 /* SVGRenderContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVGRenderContext.h; sourceTree = "<group>"; };
@@ -641,8 +639,8 @@
 		55AFA4AC151AA3FB00B5351D /* SVGViewer */ = {
 			isa = PBXGroup;
 			children = (
-				55AFA4C4151AA43700B5351D /* Document.h */,
-				55AFA4C5151AA43700B5351D /* Document.m */,
+				55AFA4C4151AA43700B5351D /* SVGDocument.h */,
+				55AFA4C5151AA43700B5351D /* SVGDocument.m */,
 				55F0FA8D151FBAB6006426B8 /* SVGViewer.h */,
 				55F0FA8E151FBAB6006426B8 /* SVGViewer.m */,
 				55AFA4AD151AA3FB00B5351D /* Supporting Files */,
@@ -659,7 +657,7 @@
 				55AFA4B4151AA3FB00B5351D /* SVGViewer-Prefix.pch */,
 				55AFA4B5151AA3FB00B5351D /* Credits.rtf */,
 				55F0FA91151FBB80006426B8 /* SVGViewer.xib */,
-				55F0FA93151FBE4A006426B8 /* Document.xib */,
+				55F0FA93151FBE4A006426B8 /* SVGDocument.xib */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -900,7 +898,7 @@
 				55AFA4B1151AA3FB00B5351D /* InfoPlist.strings in Resources */,
 				55AFA4B7151AA3FB00B5351D /* Credits.rtf in Resources */,
 				55F0FA92151FBB80006426B8 /* SVGViewer.xib in Resources */,
-				55F0FA94151FBE4A006426B8 /* Document.xib in Resources */,
+				55F0FA94151FBE4A006426B8 /* SVGDocument.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -987,7 +985,6 @@
 				55371460151BD40500F8848A /* pngrtran.c in Sources */,
 				55371461151BD40500F8848A /* pngrutil.c in Sources */,
 				55371462151BD40500F8848A /* pngset.c in Sources */,
-				55371464151BD40500F8848A /* pngtest.c in Sources */,
 				55371465151BD40500F8848A /* pngtrans.c in Sources */,
 				55371466151BD40500F8848A /* pngwio.c in Sources */,
 				55371467151BD40500F8848A /* pngwrite.c in Sources */,
@@ -1010,9 +1007,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				55AFA4C6151AA43700B5351D /* Document.m in Sources */,
+				55AFA4C6151AA43700B5351D /* SVGDocument.m in Sources */,
 				55AFA4C8151AA5E500B5351D /* main.m in Sources */,
-				55F0FA8F151FBAB6006426B8 /* SVGViewer.m in Sources */,
 				55F0FAC91520E925006426B8 /* SVGRenderState.m in Sources */,
 				55F0FACD1520E9F8006426B8 /* SVGRenderContext.m in Sources */,
 			);
@@ -1189,7 +1185,8 @@
 		55AFA4A3151AA3BC00B5351D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				GCC_ENABLE_OBJC_GC = supported;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SVGImageRep/SVGImageRep-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
@@ -1208,7 +1205,8 @@
 		55AFA4A4151AA3BC00B5351D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				GCC_ENABLE_OBJC_GC = supported;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SVGImageRep/SVGImageRep-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
@@ -1227,6 +1225,8 @@
 		55AFA4C2151AA3FB00B5351D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SVGViewer/SVGViewer-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
@@ -1244,6 +1244,9 @@
 		55AFA4C3151AA3FB00B5351D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				DEAD_CODE_STRIPPING = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SVGViewer/SVGViewer-Prefix.pch";
 				HEADER_SEARCH_PATHS = (

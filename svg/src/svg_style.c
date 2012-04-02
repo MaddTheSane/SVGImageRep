@@ -102,6 +102,9 @@ static svg_status_t
 _svg_style_parse_style_str (svg_style_t		*style,
 			    const char	*str);
 
+static svg_status_t
+_svg_style_parse_color_profile (svg_style_t *style, const char	*str);
+
 typedef struct svg_style_parse_map {
     const char	*name;
     svg_status_t 	(*parse) (svg_style_t *style, const char *value);
@@ -113,7 +116,7 @@ static const svg_style_parse_map_t SVG_STYLE_PARSE_MAP[] = {
     { "color",			_svg_style_parse_color,			"black" },
 /* XXX: { "color-interpolation",_svg_style_parse_color_interpolation,	"sRGB" }, */
 /* XXX: { "color-interpolation-filters",_svg_style_parse_color_interpolation_filters,	"linearRGB" }, */
-/* XXX: { "color-profile",	_svg_style_parse_color_profile,		"auto" }, */
+	{ "color-profile",	_svg_style_parse_color_profile,		"auto" },
 /* XXX: { "color-rendering",	_svg_style_parse_color_rendering,	"auto" }, */
 /* XXX: { "cursor",		_svg_style_parse_cursor,		"auto" }, */
 /* XXX: { "direction",		_svg_style_parse_direction,		"ltr" }, */
@@ -191,49 +194,49 @@ svg_status_t
 _svg_style_init_copy (svg_style_t *style, svg_style_t *other)
 {
     style->svg = other->svg;
-
+	
     style->flags = other->flags;
-
+	
     style->fill_opacity = other->fill_opacity;
     style->fill_paint = other->fill_paint;
     style->fill_rule = other->fill_rule;
-
+	
     if (other->font_family) {
-	style->font_family = strdup (other->font_family);
-	if (style->font_family == NULL)
-	    return SVG_STATUS_NO_MEMORY;
+		style->font_family = strdup (other->font_family);
+		if (style->font_family == NULL)
+			return SVG_STATUS_NO_MEMORY;
     } else {
-	style->font_family = NULL;
+		style->font_family = NULL;
     }
-
+	
     style->font_size = other->font_size;
     style->font_style = other->font_style;
     style->font_weight = other->font_weight;
-
+	
     style->opacity = other->opacity;
-
+	
     style->num_dashes = other->num_dashes;
     if (style->num_dashes) {
-	style->stroke_dash_array = malloc (style->num_dashes * sizeof (double));
-	if (style->stroke_dash_array == NULL)
-	    return SVG_STATUS_NO_MEMORY;
-	memcpy (style->stroke_dash_array, other->stroke_dash_array,
-		style->num_dashes * sizeof (double));
+		style->stroke_dash_array = malloc (style->num_dashes * sizeof (double));
+		if (style->stroke_dash_array == NULL)
+			return SVG_STATUS_NO_MEMORY;
+		memcpy (style->stroke_dash_array, other->stroke_dash_array,
+				style->num_dashes * sizeof (double));
     } else {
-	style->stroke_dash_array = NULL;
+		style->stroke_dash_array = NULL;
     }
     style->stroke_dash_offset = other->stroke_dash_offset;
-
+	
     style->stroke_line_cap = other->stroke_line_cap;
     style->stroke_line_join = other->stroke_line_join;
     style->stroke_miter_limit = other->stroke_miter_limit;
     style->stroke_opacity = other->stroke_opacity;
     style->stroke_paint = other->stroke_paint;
     style->stroke_width = other->stroke_width;
-
+	
     style->color = other->color;
     style->text_anchor = other->text_anchor;
-
+	
     return SVG_STATUS_SUCCESS;
 }
 
@@ -242,20 +245,20 @@ _svg_style_init_defaults (svg_style_t *style, svg_t *svg)
 {
     int i;
     svg_status_t status;
-
+	
     style->svg = svg;
-
+	
     for (i=0; i < SVG_ARRAY_SIZE(SVG_STYLE_PARSE_MAP); i++) {
-	const svg_style_parse_map_t *map;
-	map = &SVG_STYLE_PARSE_MAP[i];
-
-	if (map->default_value) {
-	    status = (map->parse) (style, map->default_value);
-	    if (status)
-		return status;
-	}
+		const svg_style_parse_map_t *map;
+		map = &SVG_STYLE_PARSE_MAP[i];
+		
+		if (map->default_value) {
+			status = (map->parse) (style, map->default_value);
+			if (status)
+				return status;
+		}
     }
-
+	
     return SVG_STATUS_SUCCESS;
 }
 
@@ -319,7 +322,7 @@ _svg_style_parse_fill_opacity (svg_style_t *style, const char *str)
 
     status = _svg_style_str_to_opacity (str, &style->fill_opacity);
     if (status)
-	return status;
+		return status;
 
     style->flags |= SVG_STYLE_FLAG_FILL_OPACITY;
 
@@ -333,7 +336,7 @@ _svg_style_parse_fill_paint (svg_style_t *style, const char *str)
 
     status = _svg_paint_init (&style->fill_paint, style->svg, str);
     if (status)
-	return status;
+		return status;
 
     style->flags |= SVG_STYLE_FLAG_FILL_PAINT;
 
@@ -344,12 +347,12 @@ static svg_status_t
 _svg_style_parse_fill_rule (svg_style_t *style, const char *str)
 {
     if (strcmp (str, "evenodd") == 0)
-	style->fill_rule = SVG_FILL_RULE_EVEN_ODD;
+		style->fill_rule = SVG_FILL_RULE_EVEN_ODD;
     else if (strcmp (str, "nonzero") == 0)
-	style->fill_rule = SVG_FILL_RULE_NONZERO;
+		style->fill_rule = SVG_FILL_RULE_NONZERO;
     else
 	/* XXX: Check SVG spec. for error name conventions */
-	return SVG_STATUS_PARSE_ERROR;
+		return SVG_STATUS_PARSE_ERROR;
 
     style->flags |= SVG_STYLE_FLAG_FILL_RULE;
 
@@ -362,7 +365,7 @@ _svg_style_parse_font_family (svg_style_t *style, const char *str)
     free (style->font_family);
     style->font_family = strdup (str);
     if (style->font_family == NULL)
-	return SVG_STATUS_NO_MEMORY;
+		return SVG_STATUS_NO_MEMORY;
 
     style->flags |= SVG_STYLE_FLAG_FONT_FAMILY;
 
@@ -376,7 +379,7 @@ _svg_style_parse_font_size (svg_style_t *style, const char *str)
 
     status = _svg_length_init_from_str (&style->font_size, str);
     if (status)
-	return status;
+		return status;
 
     style->flags |= SVG_STYLE_FLAG_FONT_SIZE;
 
@@ -387,13 +390,13 @@ static svg_status_t
 _svg_style_parse_font_style (svg_style_t *style, const char *str)
 {
     if (strcmp (str, "normal") == 0)
-	style->font_style = SVG_FONT_STYLE_NORMAL;
+		style->font_style = SVG_FONT_STYLE_NORMAL;
     else if (strcmp (str, "italic") == 0)
-	style->font_style = SVG_FONT_STYLE_ITALIC;
+		style->font_style = SVG_FONT_STYLE_ITALIC;
     else if (strcmp (str, "oblique") == 0)
-	style->font_style = SVG_FONT_STYLE_OBLIQUE;
+		style->font_style = SVG_FONT_STYLE_OBLIQUE;
     else
-	return SVG_STATUS_PARSE_ERROR;
+		return SVG_STATUS_PARSE_ERROR;
 
     style->flags |= SVG_STYLE_FLAG_FONT_STYLE;
 
@@ -404,20 +407,20 @@ static svg_status_t
 _svg_style_parse_font_weight (svg_style_t *style, const char *str)
 {
     if (strcmp (str, "normal") == 0)
-	style->font_weight = 400;
+		style->font_weight = 400;
     else if (strcmp (str, "bold") == 0)
-	style->font_weight = 700;
+		style->font_weight = 700;
     else if (strcmp (str, "lighter") == 0)
-	style->font_weight -= 100;
+		style->font_weight -= 100;
     else if (strcmp (str, "bolder") ==0)
-	style->font_weight += 100;
+		style->font_weight += 100;
     else
-	style->font_weight = _svg_ascii_strtod(str, NULL);
+		style->font_weight = _svg_ascii_strtod(str, NULL);
 
     if (style->font_weight < 100)
-	style->font_weight = 100;
+		style->font_weight = 100;
     if (style->font_weight > 900)
-	style->font_weight = 900;
+		style->font_weight = 900;
 
     style->flags |= SVG_STYLE_FLAG_FONT_WEIGHT;
 
@@ -431,7 +434,7 @@ _svg_style_parse_opacity (svg_style_t *style, const char *str)
 
     status = _svg_style_str_to_opacity (str, &style->opacity);
     if (status)
-	return status;
+		return status;
 
     style->flags |= SVG_STYLE_FLAG_OPACITY;
 
@@ -450,24 +453,24 @@ _svg_style_parse_stroke_dash_array (svg_style_t *style, const char *str)
     style->num_dashes = 0; 
 
     if(strcmp (str, "none") == 0) {
-	style->flags |= SVG_STYLE_FLAG_STROKE_DASH_ARRAY;
-	return SVG_STATUS_SUCCESS;
+		style->flags |= SVG_STYLE_FLAG_STROKE_DASH_ARRAY;
+		return SVG_STATUS_SUCCESS;
     }
 
     status = _svg_str_parse_all_csv_doubles (str, &style->stroke_dash_array, &style->num_dashes, &end);
     if (status)
-	return status;
+		return status;
 
     if (style->num_dashes % 2) {
-	style->num_dashes *= 2;
-
-	new_dash_array = realloc(style->stroke_dash_array, style->num_dashes * sizeof(double));
-	if (new_dash_array == NULL)
-	    return SVG_STATUS_NO_MEMORY;
-	style->stroke_dash_array = new_dash_array;
-
-	for (i=0, j=style->num_dashes / 2; j < style->num_dashes; i++, j++)
-	    style->stroke_dash_array[j] = style->stroke_dash_array[i];
+		style->num_dashes *= 2;
+		
+		new_dash_array = realloc(style->stroke_dash_array, style->num_dashes * sizeof(double));
+		if (new_dash_array == NULL)
+			return SVG_STATUS_NO_MEMORY;
+		style->stroke_dash_array = new_dash_array;
+		
+		for (i=0, j=style->num_dashes / 2; j < style->num_dashes; i++, j++)
+			style->stroke_dash_array[j] = style->stroke_dash_array[i];
     }
 
     style->flags |= SVG_STYLE_FLAG_STROKE_DASH_ARRAY;
@@ -482,7 +485,7 @@ _svg_style_parse_stroke_dash_offset (svg_style_t *style, const char *str)
 
     status = _svg_length_init_from_str (&style->stroke_dash_offset, str);
     if (status)
-	return status;
+		return status;
 
     style->flags |= SVG_STYLE_FLAG_STROKE_DASH_OFFSET;
 
@@ -493,14 +496,14 @@ static svg_status_t
 _svg_style_parse_stroke_line_cap (svg_style_t *style, const char *str)
 {
     if (strcmp (str, "butt") == 0)
-	style->stroke_line_cap = SVG_STROKE_LINE_CAP_BUTT;
+		style->stroke_line_cap = SVG_STROKE_LINE_CAP_BUTT;
     else if (strcmp (str, "round") == 0)
-	style->stroke_line_cap = SVG_STROKE_LINE_CAP_ROUND;
+		style->stroke_line_cap = SVG_STROKE_LINE_CAP_ROUND;
     else if (strcmp (str, "square") == 0)
-	style->stroke_line_cap = SVG_STROKE_LINE_CAP_SQUARE;
+		style->stroke_line_cap = SVG_STROKE_LINE_CAP_SQUARE;
     else
 	/* XXX: Check SVG spec. for error name conventions */
-	return SVG_STATUS_PARSE_ERROR;
+		return SVG_STATUS_PARSE_ERROR;
 
     style->flags |= SVG_STYLE_FLAG_STROKE_LINE_CAP;
 
@@ -511,14 +514,14 @@ static svg_status_t
 _svg_style_parse_stroke_line_join (svg_style_t *style, const char *str)
 {
     if (strcmp (str, "miter") == 0)
-	style->stroke_line_join = SVG_STROKE_LINE_JOIN_MITER;
+		style->stroke_line_join = SVG_STROKE_LINE_JOIN_MITER;
     else if (strcmp (str, "round") == 0)
-	style->stroke_line_join = SVG_STROKE_LINE_JOIN_ROUND;
+		style->stroke_line_join = SVG_STROKE_LINE_JOIN_ROUND;
     else if (strcmp (str, "bevel") == 0)
-	style->stroke_line_join = SVG_STROKE_LINE_JOIN_BEVEL;
+		style->stroke_line_join = SVG_STROKE_LINE_JOIN_BEVEL;
     else
 	/* XXX: Check SVG spec. for error name conventions */
-	return SVG_STATUS_PARSE_ERROR;
+		return SVG_STATUS_PARSE_ERROR;
 
     style->flags |= SVG_STYLE_FLAG_STROKE_LINE_JOIN;
 
@@ -532,7 +535,7 @@ _svg_style_parse_stroke_miter_limit (svg_style_t *style, const char *str)
 
     style->stroke_miter_limit = _svg_ascii_strtod (str, &end);
     if (end == (char *)str)
-	return SVG_STATUS_PARSE_ERROR;
+		return SVG_STATUS_PARSE_ERROR;
 
     style->flags |= SVG_STYLE_FLAG_STROKE_MITER_LIMIT;
 
@@ -546,7 +549,7 @@ _svg_style_parse_stroke_opacity (svg_style_t *style, const char *str)
 
     status =_svg_style_str_to_opacity (str, &style->stroke_opacity);
     if (status)
-	return status;
+		return status;
 
     style->flags |= SVG_STYLE_FLAG_STROKE_OPACITY;
 
@@ -560,7 +563,7 @@ _svg_style_parse_stroke_paint (svg_style_t *style, const char *str)
 
     status = _svg_paint_init (&style->stroke_paint, style->svg, str);
     if (status)
-	return status;
+		return status;
 
     style->flags |= SVG_STYLE_FLAG_STROKE_PAINT;
 
@@ -574,7 +577,7 @@ _svg_style_parse_stroke_width (svg_style_t *style, const char *str)
 
     status = _svg_length_init_from_str (&style->stroke_width, str);
     if (status)
-	return status;
+		return status;
 
     style->flags |= SVG_STYLE_FLAG_STROKE_WIDTH;
 
@@ -585,13 +588,13 @@ static svg_status_t
 _svg_style_parse_text_anchor (svg_style_t *style, const char *str)
 {
     if (strcmp (str, "start") == 0)
-	style->text_anchor = SVG_TEXT_ANCHOR_START;
+		style->text_anchor = SVG_TEXT_ANCHOR_START;
     else if (strcmp (str, "middle") == 0)
-	style->text_anchor = SVG_TEXT_ANCHOR_MIDDLE;
+		style->text_anchor = SVG_TEXT_ANCHOR_MIDDLE;
     else if (strcmp (str, "end") == 0)
-	style->text_anchor = SVG_TEXT_ANCHOR_END;
+		style->text_anchor = SVG_TEXT_ANCHOR_END;
     else
-	return SVG_STATUS_PARSE_ERROR;
+		return SVG_STATUS_PARSE_ERROR;
 
     style->flags |= SVG_STYLE_FLAG_TEXT_ANCHOR;
 
@@ -603,11 +606,11 @@ _svg_style_parse_visibility (svg_style_t *style, const char *str)
 {
     /* XXX: Do we care about the CSS2 definitions for these? */
     if (strcmp (str, "hidden") == 0 || strcmp (str, "collapse") == 0)
-	style->flags &= ~SVG_STYLE_FLAG_VISIBILITY;
+		style->flags &= ~SVG_STYLE_FLAG_VISIBILITY;
     else if (strcmp (str, "visible") == 0)
-	style->flags |= SVG_STYLE_FLAG_VISIBILITY;
+		style->flags |= SVG_STYLE_FLAG_VISIBILITY;
     else if (strcmp (str, "inherit") != 0)
-	return SVG_STATUS_PARSE_ERROR;
+		return SVG_STATUS_PARSE_ERROR;
 
     return SVG_STATUS_SUCCESS;
 }
@@ -628,7 +631,7 @@ _svg_style_parse_display (svg_style_t *style, const char *str)
 	     strcmp (str, "table-cell") == 0 || strcmp (str, "table-caption") == 0)
 	style->flags |= SVG_STYLE_FLAG_DISPLAY;
     else if (strcmp (str, "inherit") != 0)
-	return SVG_STATUS_PARSE_ERROR;
+		return SVG_STATUS_PARSE_ERROR;
 
     return SVG_STATUS_SUCCESS;
 }
@@ -640,7 +643,7 @@ _svg_style_parse_stop_color (svg_style_t *style, const char *str)
 
     status = _svg_color_init_from_str (&style->color, str);
     if (status)
-	return status;
+		return status;
 
     style->flags |= SVG_STYLE_FLAG_COLOR;
 
@@ -656,7 +659,7 @@ _svg_style_parse_stop_opacity (svg_style_t *style, const char *str)
 
     status = _svg_style_str_to_opacity (str, &opacity);
     if (status)
-	return status;
+		return status;
 
 	style->opacity = opacity;
     style->flags |= SVG_STYLE_FLAG_OPACITY;
@@ -672,29 +675,29 @@ _svg_style_split_nv_pair_alloc (const char	*nv_pair,
 {
     char *colon;
     const char *v_start;
-
+	
     *name = strdup (nv_pair);
     if (*name == NULL)
-	return SVG_STATUS_NO_MEMORY;
-
+		return SVG_STATUS_NO_MEMORY;
+	
     colon = strchr (*name, ':');
     if (colon == NULL) {
-	free (*name);
-	*name = NULL;
-	*value = NULL;
-	return SVG_STATUS_PARSE_ERROR;
+		free (*name);
+		*name = NULL;
+		*value = NULL;
+		return SVG_STATUS_PARSE_ERROR;
     }
-
+	
     *colon = '\0';
-
+	
     v_start = nv_pair + (colon - (char *) *name) + 1;
     while (_svg_ascii_isspace (*v_start))
-	v_start++;
-
+		v_start++;
+	
     *value = strdup (v_start);
     if (*value == NULL)
-	return SVG_STATUS_NO_MEMORY;
-
+		return SVG_STATUS_NO_MEMORY;
+	
     return SVG_STATUS_SUCCESS;
 }
 
@@ -709,17 +712,17 @@ _svg_style_parse_nv_pair (svg_style_t	*style,
 
     status = _svg_style_split_nv_pair_alloc (nv_pair, &name, &value);
     if (status)
-	return status;
+		return status;
 
     /* guilty until proven innocent */
     /* XXX: Check SVG spec. for this error condition */
     status = SVG_STATUS_PARSE_ERROR;
 
     for (i=0; i < SVG_ARRAY_SIZE(SVG_STYLE_PARSE_MAP); i++)
-	if (strcmp (SVG_STYLE_PARSE_MAP[i].name, name) == 0) {
-	    status = (SVG_STYLE_PARSE_MAP[i].parse) (style, value);
-	    break;
-	}
+		if (strcmp (SVG_STYLE_PARSE_MAP[i].name, name) == 0) {
+			status = (SVG_STYLE_PARSE_MAP[i].parse) (style, value);
+			break;
+		}
 
     free (name);
     free (value);
@@ -747,23 +750,31 @@ _svg_style_parse_style_str (svg_style_t		*style,
 {
     int start, end;
     char *nv_pair;
-
+	
     start = 0;
     while (str[start] != '\0') {
-	for (end = start; str[end] != '\0' && str[end] != ';'; end++);
-	nv_pair = malloc (1 + end - start);
-	if (nv_pair == NULL)
-	    return SVG_STATUS_NO_MEMORY;
-	memcpy (nv_pair, str + start, end - start);
-	nv_pair[end - start] = '\0';
-	_svg_style_parse_nv_pair (style, nv_pair);
-	free (nv_pair);
-	start = end;
-	if (str[start] == ';') start++;
-	while (str[start] == ' ') start++;
+		for (end = start; str[end] != '\0' && str[end] != ';'; end++);
+		nv_pair = malloc (1 + end - start);
+		if (nv_pair == NULL)
+			return SVG_STATUS_NO_MEMORY;
+		memcpy (nv_pair, str + start, end - start);
+		nv_pair[end - start] = '\0';
+		_svg_style_parse_nv_pair (style, nv_pair);
+		free (nv_pair);
+		start = end;
+		if (str[start] == ';') start++;
+		while (str[start] == ' ') start++;
     }
-
+	
     return SVG_STATUS_SUCCESS;
+}
+
+static svg_status_t
+_svg_style_parse_color_profile (svg_style_t		*style,
+								const char	*str)
+{
+	//TODO: Color Profile support
+	return SVG_STATUS_SUCCESS;
 }
 
 svg_status_t
@@ -773,28 +784,28 @@ _svg_style_apply_attributes (svg_style_t	*style,
     unsigned int i;
     svg_status_t status;
     const char *style_str, *str;
-
+	
     _svg_attribute_get_string (attributes, "style", &style_str, NULL);
-
+	
     if (style_str) {
-	status = _svg_style_parse_style_str (style, style_str);
-	if (status)
-	    return status;
+		status = _svg_style_parse_style_str (style, style_str);
+		if (status)
+			return status;
     }
-
+	
     for (i=0; i < SVG_ARRAY_SIZE(SVG_STYLE_PARSE_MAP); i++) {
-	const svg_style_parse_map_t *map;
-	map = &SVG_STYLE_PARSE_MAP[i];
-
-	_svg_attribute_get_string (attributes, map->name, &str, NULL);
-
-	if (str) {
-	    status = (map->parse) (style, str);
-	    if (status)
-		return status;
-	}
+		const svg_style_parse_map_t *map;
+		map = &SVG_STYLE_PARSE_MAP[i];
+		
+		_svg_attribute_get_string (attributes, map->name, &str, NULL);
+		
+		if (str) {
+			status = (map->parse) (style, str);
+			if (status)
+				return status;
+		}
     }
-
+	
     return SVG_STATUS_SUCCESS;
 }
 
@@ -804,117 +815,117 @@ _svg_style_render (svg_style_t		*style,
 		   void			*closure)
 {
     svg_status_t status;
-
+	
     if (style->flags & SVG_STYLE_FLAG_COLOR) {
-	status = (engine->set_color) (closure, &style->color);
-	if (status)
-	    return status;
+		status = (engine->set_color) (closure, &style->color);
+		if (status)
+			return status;
     }
-
+	
     if (style->flags & SVG_STYLE_FLAG_FILL_OPACITY) {
-	status = (engine->set_fill_opacity) (closure, style->fill_opacity);
-	if (status)
-	    return status;
+		status = (engine->set_fill_opacity) (closure, style->fill_opacity);
+		if (status)
+			return status;
     }
-
+	
     if (style->flags & SVG_STYLE_FLAG_FILL_PAINT) {
-			status = (engine->set_fill_paint) (closure, &style->fill_paint);
-	if (status)
-	    return status;
+		status = (engine->set_fill_paint) (closure, &style->fill_paint);
+		if (status)
+			return status;
     }
-
+	
     if (style->flags & SVG_STYLE_FLAG_FILL_RULE) {
-	status = (engine->set_fill_rule) (closure, style->fill_rule);
-	if (status)
-	    return status;
+		status = (engine->set_fill_rule) (closure, style->fill_rule);
+		if (status)
+			return status;
     }
-
+	
     if (style->flags & SVG_STYLE_FLAG_FONT_FAMILY) {
-	status = (engine->set_font_family) (closure, style->font_family);
-	if (status)
-	    return status;
+		status = (engine->set_font_family) (closure, style->font_family);
+		if (status)
+			return status;
     }
-
+	
     if (style->flags & SVG_STYLE_FLAG_FONT_SIZE) {
-	/* XXX: How to deal with units of svg_length_t ? */
-	status = (engine->set_font_size) (closure, style->font_size.value);
-	if (status)
-	    return status;
+		/* XXX: How to deal with units of svg_length_t ? */
+		status = (engine->set_font_size) (closure, style->font_size.value);
+		if (status)
+			return status;
     }
-
+	
     if (style->flags & SVG_STYLE_FLAG_FONT_STYLE) {
-	status = (engine->set_font_style) (closure, style->font_style);
-	if (status)
-	    return status;
+		status = (engine->set_font_style) (closure, style->font_style);
+		if (status)
+			return status;
     }
-
+	
     if (style->flags & SVG_STYLE_FLAG_FONT_WEIGHT) {
-	status = (engine->set_font_weight) (closure, style->font_weight);
-	if (status)
-	    return status;
+		status = (engine->set_font_weight) (closure, style->font_weight);
+		if (status)
+			return status;
     }
-
+	
     if (style->flags & SVG_STYLE_FLAG_OPACITY) {
-	status = (engine->set_opacity) (closure, style->opacity);
-	if (status)
-	    return status;
+		status = (engine->set_opacity) (closure, style->opacity);
+		if (status)
+			return status;
     }
-
+	
     if (style->flags & SVG_STYLE_FLAG_STROKE_DASH_ARRAY) {
-	/* XXX: How to deal with units of svg_length_t ? */
-	status = (engine->set_stroke_dash_array) (closure, style->stroke_dash_array, style->num_dashes);
-	if (status)
-	    return status;
+		/* XXX: How to deal with units of svg_length_t ? */
+		status = (engine->set_stroke_dash_array) (closure, style->stroke_dash_array, style->num_dashes);
+		if (status)
+			return status;
     }
-
+	
     if (style->flags & SVG_STYLE_FLAG_STROKE_DASH_OFFSET) {
-	status = (engine->set_stroke_dash_offset) (closure, &style->stroke_dash_offset);
-	if (status)
-	    return status;
+		status = (engine->set_stroke_dash_offset) (closure, &style->stroke_dash_offset);
+		if (status)
+			return status;
     }
-
+	
     if (style->flags & SVG_STYLE_FLAG_STROKE_LINE_CAP) {
-	status = (engine->set_stroke_line_cap) (closure, style->stroke_line_cap);
-	if (status)
-	    return status;
+		status = (engine->set_stroke_line_cap) (closure, style->stroke_line_cap);
+		if (status)
+			return status;
     }
-
+	
     if (style->flags & SVG_STYLE_FLAG_STROKE_LINE_JOIN) {
-	status = (engine->set_stroke_line_join) (closure, style->stroke_line_join);
-	if (status)
-	    return status;
+		status = (engine->set_stroke_line_join) (closure, style->stroke_line_join);
+		if (status)
+			return status;
     }
-
+	
     if (style->flags & SVG_STYLE_FLAG_STROKE_MITER_LIMIT) {
-	status = (engine->set_stroke_miter_limit) (closure, style->stroke_miter_limit);
-	if (status)
-	    return status;
+		status = (engine->set_stroke_miter_limit) (closure, style->stroke_miter_limit);
+		if (status)
+			return status;
     }
-
+	
     if (style->flags & SVG_STYLE_FLAG_STROKE_OPACITY) {
-	status = (engine->set_stroke_opacity) (closure, style->stroke_opacity);
-	if (status)
-	    return status;
+		status = (engine->set_stroke_opacity) (closure, style->stroke_opacity);
+		if (status)
+			return status;
     }
-
+	
     if (style->flags & SVG_STYLE_FLAG_STROKE_PAINT) {
-	status = (engine->set_stroke_paint) (closure, &style->stroke_paint);
-	if (status)
-	    return status;
+		status = (engine->set_stroke_paint) (closure, &style->stroke_paint);
+		if (status)
+			return status;
     }
-
+	
     if (style->flags & SVG_STYLE_FLAG_STROKE_WIDTH) {
-	status = (engine->set_stroke_width) (closure, &style->stroke_width);
-	if (status)
-	    return status;
+		status = (engine->set_stroke_width) (closure, &style->stroke_width);
+		if (status)
+			return status;
     }
-
+	
     if (style->flags & SVG_STYLE_FLAG_TEXT_ANCHOR) {
-	status = (engine->set_text_anchor) (closure, style->text_anchor);
-	if (status)
-	    return status;
+		status = (engine->set_text_anchor) (closure, style->text_anchor);
+		if (status)
+			return status;
     }
-
+	
     return SVG_STATUS_SUCCESS;
 }
 
@@ -928,16 +939,16 @@ svg_status_t
 _svg_style_get_display (svg_style_t *style)
 {
     if (style->flags & SVG_STYLE_FLAG_DISPLAY)
-	return SVG_STATUS_SUCCESS;
+		return SVG_STATUS_SUCCESS;
     else
-	return SVG_STATUS_INVALID_VALUE;
+		return SVG_STATUS_INVALID_VALUE;
 }
 
 svg_status_t
 _svg_style_get_visibility (svg_style_t *style)
 {
     if (style->flags & SVG_STYLE_FLAG_VISIBILITY)
-	return SVG_STATUS_SUCCESS;
+		return SVG_STATUS_SUCCESS;
     else
-	return SVG_STATUS_INVALID_VALUE;
+		return SVG_STATUS_INVALID_VALUE;
 }

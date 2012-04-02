@@ -108,7 +108,7 @@ _svg_image_apply_attributes (svg_image_t	*image,
     if (image->width.value < 0 || image->height.value < 0)
 	return SVG_STATUS_PARSE_ERROR;
 
-    /* XXX: We really need to do something like this to resolve
+    /* TODO: We really need to do something like this to resolve
        relative URLs. It involves linking the tree up in the other
        direction. Or, another approach would be to simply throw out
        the SAX parser and use the tree interface of libxml2 which
@@ -161,7 +161,7 @@ _svg_image_read_image (svg_image_t *image)
     if (image->data)
 	return SVG_STATUS_SUCCESS;
 
-    /* XXX: _svg_image_read_png only deals with filenames, not URLs */
+    /* FIXME: _svg_image_read_png only deals with filenames, not URLs */
     status = _svg_image_read_png (image->url,
 				  &image->data,
 				  &image->data_width,
@@ -172,7 +172,7 @@ _svg_image_read_image (svg_image_t *image)
     if (status != SVGINT_STATUS_IMAGE_NOT_PNG)
 	return status;
 
-    /* XXX: _svg_image_read_jpeg only deals with filenames, not URLs */
+    /* FIXME: _svg_image_read_jpeg only deals with filenames, not URLs */
     status = _svg_image_read_jpeg (image->url,
 				   &image->data,
 				   &image->data_width,
@@ -180,7 +180,7 @@ _svg_image_read_image (svg_image_t *image)
     if (status == 0)
 	return SVG_STATUS_SUCCESS;
 
-    /* XXX: need to support SVG images as well */
+    /* TODO: need to support SVG images as well */
 
     if (status != SVGINT_STATUS_IMAGE_NOT_JPEG)
 	return status;

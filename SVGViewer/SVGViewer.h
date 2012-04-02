@@ -6,12 +6,10 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
-#import <Cocoa/Cocoa.h>
+#import <Foundation/NSObject.h>
+#import <AppKit/NSApplication.h>
 
 @interface SVGViewer : NSObject <NSApplicationDelegate>
-{
-
-}
 
 - (IBAction)openSVGDocument:(id)sender;
 

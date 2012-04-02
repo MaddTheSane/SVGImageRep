@@ -64,10 +64,9 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 		return nil;
 
 	svg_create(&svg);
-	status = svg_parse_buffer(svg,[d bytes],[d length]);
+	status = svg_parse_buffer(svg, [d bytes], [d length]);
 	if (status != SVG_STATUS_SUCCESS)
 	{
-		[self release];
 		return nil;
 	}
 
@@ -79,11 +78,12 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 	/* TODO: figure out the size without actually rendering everything */
 	{
 		SVGRenderContext *svg_render_context = [[SVGRenderContext alloc] init];
-		[svg_render_context prepareRender:1.0];
-		svg_render(svg, &cocoa_svg_engine, svg_render_context);
+		[svg_render_context prepareRender: 1.0];
+		svg_render(svg, &cocoa_svg_engine,  (__bridge void*)svg_render_context);
 		[svg_render_context finishRender];
-		[self setSize:[svg_render_context size]];
-		[svg_render_context release];
+		NSSize renderSize = [svg_render_context size];
+		[self setPixelsHigh:renderSize.height];
+		[self setPixelsWide:renderSize.width];
 	}
 
 	return self;
@@ -92,43 +92,30 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 - (void)dealloc
 {
 	svg_destroy(svg);
-	
-	[super dealloc];
 }
-
-- (void)finalize
-{
-	svg_destroy(svg);
-
-	[super finalize];
-}
-
 
 - (BOOL)draw
 {
 	SVGRenderContext *svg_render_context;
-	NSGraphicsContext *ctxt = [NSGraphicsContext currentContext];
-	CGContextRef CGCtx = (CGContextRef)[ctxt graphicsPort];
+	CGContextRef CGCtx = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
 
-	CGAffineTransform ctm;
-
-	ctm = CGContextGetCTM(CGCtx);
+	CGAffineTransform ctm = CGContextGetCTM(CGCtx);
 	
 	svg_render_context = [[SVGRenderContext alloc] init];
 
 	[svg_render_context prepareRender:
 		sqrt(ctm.a * ctm.b + ctm.c * ctm.d)];
-	svg_render(svg, &cocoa_svg_engine, svg_render_context);
+	svg_render(svg, &cocoa_svg_engine,  (__bridge void*)svg_render_context);
 	[svg_render_context finishRender];
 
-	/*DPScomposite(ctxt,
-		0,0,svg_render_context->size.width,svg_render_context->size.height,
-		[svg_render_context->result gState],0,0,NSCompositeSourceOver);*/
-	
-
-	[svg_render_context release];
-
+	NSSize renderSize = [svg_render_context size];
+	CGContextDrawLayerInRect(CGCtx, CGRectMake(0, 0, renderSize.width, renderSize.height), svg_render_context.renderLayer);
 	return YES;
+}
+
++ (void)load
+{
+	[NSImageRep registerImageRepClass:[SVGImageRep class]];
 }
 
 @end
@@ -137,19 +124,3 @@ extern void InitSVGImageRep()
 {
 	[NSImageRep registerImageRepClass:[SVGImageRep class]];
 }
-
-
-@interface SVGImageRepDelegate : NSObject
-@end
-
-@implementation SVGImageRepDelegate
-
-- (id)init
-{
-	self = [super init];
-	[NSImageRep registerImageRepClass:[SVGImageRep class]];
-	return self;
-}
-
-@end
-

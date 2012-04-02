@@ -211,7 +211,7 @@ svg_render (svg_t		*svg,
     if (svg->group_element == NULL)
 	return SVG_STATUS_SUCCESS;
 
-    /* XXX: Currently, the SVG parser doesn't resolve relative URLs
+    /* TODO: Currently, the SVG parser doesn't resolve relative URLs
        properly, so I'll just cheese things in by changing the current
        directory -- at least I'll be nice about it and restore it
        afterwards. */

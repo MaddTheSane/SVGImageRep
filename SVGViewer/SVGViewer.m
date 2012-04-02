@@ -7,14 +7,10 @@
 //
 
 #import "SVGViewer.h"
-#import "Document.h"
+#import "SVGDocument.h"
 
 @implementation SVGViewer
 
-- (void)dealloc
-{
-	[super dealloc];
-}
 
 - (void)applicationWillFinishLaunching:(NSNotification *)n
 {
@@ -36,7 +32,7 @@
 - (IBAction)openSVGDocument:(id)sender
 {
 	NSOpenPanel *op;
-	int i;
+	NSInteger i;
 	NSArray *filenames;
 	op = [NSOpenPanel openPanel];
 	[op setTitle: @"Open svg file"];
@@ -45,13 +41,13 @@
 	[op setCanChooseDirectories: NO];
 	[op setCanChooseFiles: YES];
 	
-	if ([op runModal]!=NSOKButton)
+	if ([op runModal] != NSOKButton)
 		return;
 	filenames = [op filenames];
-	for (i=0;i < [filenames count]; i++)
+	for (i = 0; i < [filenames count]; i++)
 	{
 		NSString *filepath = [filenames objectAtIndex:i];
-		[Document openFile: filepath];
+		[Document openFile:filepath];
 		[[NSDocumentController sharedDocumentController] noteNewRecentDocumentURL:[NSURL fileURLWithPath:filepath]];
 	}
 }

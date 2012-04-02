@@ -7,14 +7,13 @@
 //
 
 #import <Foundation/NSObject.h>
+#include <ApplicationServices/ApplicationServices.h>
 #include <svg.h>
-@class NSWindow, NSString;
+@class NSString;
 
 @interface SVGRenderState : NSObject <NSCopying>
 {
 @public
-	NSWindow *window;
-	
 	svg_paint_t fill_paint,stroke_paint;
 	double fill_opacity,stroke_opacity;
 	
@@ -35,7 +34,6 @@
 	size_t num_dash;
 	CGFloat dash_offset;
 }
-@property (readwrite, retain) NSWindow *window;
 @property (readwrite) svg_paint_t fill_paint;
 @property (readwrite) svg_paint_t stroke_paint;
 @property (readwrite) double fill_opacity;

@@ -10,7 +10,6 @@
 #define SVGImageRep_SVGImageRep_h
 
 #include <svg.h>
-#import <Foundation/NSObject.h>
 #import <AppKit/NSImageRep.h>
 
 @interface SVGImageRep : NSImageRep
