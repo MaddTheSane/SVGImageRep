@@ -5,15 +5,10 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 #include <math.h>
 
 #import <Foundation/NSArray.h>
-#import <Foundation/NSCharacterSet.h>
 #import <Foundation/NSData.h>
-#import <Foundation/NSValue.h>
-#import <AppKit/NSAffineTransform.h>
-#import <AppKit/NSBezierPath.h>
-#import <AppKit/NSFontManager.h>
-#import <AppKit/NSImageRep.h>
+#import <Foundation/NSGeometry.h>
 #import <AppKit/NSGraphics.h>
-#import <AppKit/NSWindow.h>
+#import <AppKit/NSGraphicsContext.h>
 #include <ApplicationServices/ApplicationServices.h>
 
 #import "SVGImageRep.h"
@@ -79,7 +74,7 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 	{
 		SVGRenderContext *svg_render_context = [[SVGRenderContext alloc] init];
 		[svg_render_context prepareRender: 1.0];
-		svg_render(svg, &cocoa_svg_engine,  (__bridge void*)svg_render_context);
+		svg_render(svg, &cocoa_svg_engine, svg_render_context);
 		[svg_render_context finishRender];
 		NSSize renderSize = [svg_render_context size];
 		[self setPixelsHigh:renderSize.height];

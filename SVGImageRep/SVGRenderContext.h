@@ -7,8 +7,11 @@
 //
 
 #import <Foundation/NSObject.h>
+#import <Foundation/NSGeometry.h>
 #include <ApplicationServices/ApplicationServices.h>
+
 #include <svg.h>
+
 @class SVGRenderState, NSMutableArray;
 
 extern svg_render_engine_t cocoa_svg_engine;

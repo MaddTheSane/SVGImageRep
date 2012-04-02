@@ -7,8 +7,15 @@
 //
 
 #import "SVGRenderContext.h"
-#import <AppKit/NSWindow.h>
+#import <Foundation/NSString.h>
 #import <Foundation/NSArray.h>
+#import <Foundation/NSCharacterSet.h>
+#import <AppKit/NSFontManager.h>
+#import <AppKit/NSGraphics.h>
+#import <AppKit/NSBitmapImageRep.h>
+#import <AppKit/NSGraphicsContext.h>
+#import <AppKit/NSFontDescriptor.h>
+#import <AppKit/NSFont.h>
 #import "SVGRenderState.h"
 
 @implementation SVGRenderContext

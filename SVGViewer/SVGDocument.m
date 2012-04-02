@@ -7,11 +7,9 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 #include <math.h>
 #include <time.h>
 
-#import <Foundation/NSFileManager.h>
-#import <AppKit/NSBezierPath.h>
-#import <AppKit/NSFontManager.h>
-#import <AppKit/NSScrollView.h>
-#import <AppKit/NSWindow.h>
+#import <Foundation/NSGeometry.h>
+#import <Foundation/NSData.h>
+#import <AppKit/NSGraphicsContext.h>
 
 #include <svg.h>
 #import "SVGRenderContext.h"
