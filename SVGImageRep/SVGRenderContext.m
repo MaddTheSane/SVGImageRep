@@ -27,7 +27,7 @@
 	hasSize = NO;
 	scale = a_scale;
 	size = NSMakeSize(500 * scale, 500 * scale);
-	unsizedRenderLayer = CGLayerCreateWithContext((CGContextRef)[[NSGraphicsContext currentContext] graphicsPort], size, NULL);
+	unsizedRenderLayer = CGLayerCreateWithContext((CGContextRef)[[NSGraphicsContext currentContext] graphicsPort], NSSizeToCGSize(size), NULL);
 }
 
 - (void)finishRender
@@ -514,7 +514,7 @@
 	size = NSMakeSize(w,h);
 	
 	CGLayerRelease(renderLayer);
-	renderLayer = CGLayerCreateWithContext(CGLayerGetContext(unsizedRenderLayer), size, NULL);
+	renderLayer = CGLayerCreateWithContext(CGLayerGetContext(unsizedRenderLayer), NSSizeToCGSize(size), NULL);
 	
 	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
 	
