@@ -92,7 +92,17 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 - (void)dealloc
 {
 	svg_destroy(svg);
+	
+	[super dealloc];
 }
+
+- (void)finalize
+{
+	svg_destroy(svg);
+	
+	[super finalize];
+}
+
 
 - (BOOL)draw
 {
@@ -105,11 +115,12 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 
 	[svg_render_context prepareRender:
 		sqrt(ctm.a * ctm.b + ctm.c * ctm.d)];
-	svg_render(svg, &cocoa_svg_engine,  (__bridge void*)svg_render_context);
+	svg_render(svg, &cocoa_svg_engine, svg_render_context);
 	[svg_render_context finishRender];
 
 	NSSize renderSize = [svg_render_context size];
 	CGContextDrawLayerInRect(CGCtx, CGRectMake(0, 0, renderSize.width, renderSize.height), svg_render_context.renderLayer);
+	[svg_render_context release];
 	return YES;
 }
 

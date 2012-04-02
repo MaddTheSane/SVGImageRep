@@ -177,6 +177,13 @@
 			remoteGlobalIDString = 55AFA4CC151AA7E900B5351D;
 			remoteInfo = svg;
 		};
+		55C87413152A343C00710A01 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 55AFA487151AA3BC00B5351D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 55AFA4CC151AA7E900B5351D;
+			remoteInfo = svg;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -828,6 +835,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				55C87414152A343C00710A01 /* PBXTargetDependency */,
 			);
 			name = SVGViewer;
 			productName = SVGViewer;
@@ -1058,6 +1066,11 @@
 			target = 55AFA4CC151AA7E900B5351D /* svg */;
 			targetProxy = 55AFA52B151AACE200B5351D /* PBXContainerItemProxy */;
 		};
+		55C87414152A343C00710A01 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 55AFA4CC151AA7E900B5351D /* svg */;
+			targetProxy = 55C87413152A343C00710A01 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
@@ -1157,7 +1170,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 			};
@@ -1177,7 +1190,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				SDKROOT = macosx;
 			};
 			name = Release;
@@ -1185,8 +1198,7 @@
 		55AFA4A3151AA3BC00B5351D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
-				CLANG_ENABLE_OBJC_ARC = YES;
+				GCC_ENABLE_OBJC_GC = supported;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SVGImageRep/SVGImageRep-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
@@ -1205,8 +1217,7 @@
 		55AFA4A4151AA3BC00B5351D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
-				CLANG_ENABLE_OBJC_ARC = YES;
+				GCC_ENABLE_OBJC_GC = supported;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SVGImageRep/SVGImageRep-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
@@ -1225,8 +1236,6 @@
 		55AFA4C2151AA3FB00B5351D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
-				CLANG_ENABLE_OBJC_ARC = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SVGViewer/SVGViewer-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
@@ -1244,8 +1253,6 @@
 		55AFA4C3151AA3FB00B5351D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
-				CLANG_ENABLE_OBJC_ARC = YES;
 				DEAD_CODE_STRIPPING = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SVGViewer/SVGViewer-Prefix.pch";

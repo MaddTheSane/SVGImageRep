@@ -34,7 +34,7 @@
 	new.fill_opacity = fill_opacity;
 	new.stroke_paint = stroke_paint;
 	new.stroke_width = stroke_width;
-	new.font_family = [font_family copyWithZone:zone];
+	new.font_family = [[font_family copyWithZone:zone] autorelease];
 	
 	if (dash)
 	{
@@ -49,7 +49,17 @@
 {
 	if (dash)
 		free(dash);
+	[font_family release];
+	
+	[super dealloc];
 }
 
+- (void)finalize
+{
+	if (dash)
+		free(dash);
+	
+	[super finalize];
+}
 
 @end

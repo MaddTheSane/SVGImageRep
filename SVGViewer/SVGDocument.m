@@ -22,6 +22,8 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 {
 	if(s != svg)
 	{
+		[svg release];
+		[s retain];
 		svg = s;
 	}
 	[self setNeedsDisplay: YES];
@@ -46,6 +48,13 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 	}
 }
 
+- (void)dealloc
+{
+	[svg release];
+	
+	[super dealloc];
+}
+
 @end
 
 
@@ -61,12 +70,13 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 		svg_parse_buffer(svg, [documentData bytes], [documentData length]);
 
 		[svg_render_context prepareRender: scale];
-		svg_render(svg, &cocoa_svg_engine, (__bridge void*)svg_render_context);
+		svg_render(svg, &cocoa_svg_engine, svg_render_context);
 		[svg_render_context finishRender];
 
 		NSSize contextSize = [svg_render_context size];
 		[svg_view setFrame:NSMakeRect(0, 0, contextSize.width, contextSize.height)];
 		[svg_view setSVGRenderContext:svg_render_context];
+		[svg_render_context release];
 
 		svg_destroy(svg);
 	}
@@ -100,7 +110,7 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 	svg_status_t status = svg_parse_buffer(svg, [data bytes], [data length]);
 	if (status != SVG_STATUS_SUCCESS) {
 		if (outError != nil) {
-			NSError *__autoreleasing error =  [[NSError alloc] initWithDomain:NSCocoaErrorDomain code:NSFileReadCorruptFileError userInfo:nil];
+			NSError *error =  [NSError errorWithDomain:NSCocoaErrorDomain code:NSFileReadCorruptFileError userInfo:nil];
 			outError = &error;
 		}
 		svg_destroy(svg);
@@ -113,6 +123,12 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 	return YES;
 }
 
+- (void)dealloc
+{
+	[documentData release];
+	
+	[super dealloc];
+}
 
 #define SCALE(a,b) \
 	- (IBAction)scale_##a##_##b:(id)sender \
