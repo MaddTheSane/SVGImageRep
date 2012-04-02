@@ -13,7 +13,7 @@
 
 @implementation SVGRenderContext
 
-@synthesize size, states, current, result, scale, renderLayer;
+@synthesize size, states, current, scale, renderLayer;
 
 + (CGColorRef)colorRefFromSVGColor:(svg_color_t *)c opacity:(CGFloat)alpha
 {
@@ -22,9 +22,9 @@
 
 - (void)prepareRender:(double)a_scale
 {
-	result = nil;
 	states = [[NSMutableArray alloc] init];
 	current = nil;
+	hasSize = NO;
 	scale = a_scale;
 	size = NSMakeSize(500 * scale, 500 * scale);
 	unsizedRenderLayer = CGLayerCreateWithContext((CGContextRef)[[NSGraphicsContext currentContext] graphicsPort], size, NULL);
@@ -33,6 +33,7 @@
 - (void)finishRender
 {
 	states = nil;
+	hasSize = NO;
 	//TODO: release renderLayer after use.
 	CGLayerRelease(unsizedRenderLayer);
 	unsizedRenderLayer = NULL;
@@ -425,7 +426,7 @@
 - (svg_status_t)renderEllipse:(svg_length_t *)lcx : (svg_length_t *)lcy
 							 : (svg_length_t *)lrx : (svg_length_t *)lry
 {
-	double cx,cy,rx,ry;
+	double cx, cy, rx, ry;
 	
 	cx = [self lengthToPoints:lcx];
 	cy = [self lengthToPoints:lcy];
@@ -455,47 +456,19 @@
 	CGContextRef tempCtx = CGLayerGetContext(unsizedRenderLayer);
 	if (current)
 	{
-		if (!result)
-		{
-			printf("beginGroup: with current but no result\n");
-			return SVG_STATUS_INVALID_CALL;
-		}
 		SVGRenderState *oldCurrent = current;
 		current = nil;
 		current = [oldCurrent copy];
 		oldCurrent = nil;
 		
 		CGContextSaveGState(tempCtx);
-		if (opacity < 1.0)
-		{
-			//CGAffineTransform ctm = CGContextGetCTM(tempCtx);
-			//NSAffineTransform *ctm=GSCurrentCTM(ctxt);
-			//NSAffineTransform *ctm = [NSAffineTransform transform];
-			
-			current.window = [[NSWindow alloc]
-							  initWithContentRect: NSMakeRect(0,0,size.width,size.height)
-							  styleMask: 0
-							  backing: NSBackingStoreRetained
-							  defer: NO];
-			[current.window setReleasedWhenClosed: NO];
-			//[GSCurrentServer() windowdevice: [current->window windowNumber]];
-			//GSSetCTM(ctxt,ctm);
-			//CGContextConcatCTM(tempCtx, ctm);
-			
-			//CGContextSaveGState(tempCtx);
-			//TODO: find out what these do and find substitutes.
-			//DPSinitmatrix(ctxt);
-			//DPSinitclip(ctxt);
-			//DPScompositerect(ctxt,0,0,size.width,size.height,NSCompositeClear);
-			//CGContextRestoreGState(tempCtx);
-		}
 	}
 	else
 	{
 		CGContextSaveGState(tempCtx);
 		current = [[SVGRenderState alloc] init];
 	}
-	[states addObject: current];
+	[states addObject:current];
 	
 	return SVG_STATUS_SUCCESS;
 }
@@ -505,19 +478,6 @@
 	CGContextRef tempCtx = CGLayerGetContext(unsizedRenderLayer);
 	
 	CGContextRestoreGState(tempCtx);
-	
-#if 0
-	if (opacity != 1.0)
-	{
-		NSWindow *w = [current window];
-		CGContextSaveGState(tempCtx);
-		//TODO: Find out how to do this in CG
-		//DPSinitmatrix(ctxt);
-		//DPSinitclip(ctxt);
-		//DPSdissolve(ctxt,0,0,size.width,size.height,[w gState],0,0,opacity);
-		CGContextRestoreGState(tempCtx);
-	}
-#endif
 	
 	[states removeObjectAtIndex:[states count] - 1];
 	if ([states count])
@@ -533,7 +493,7 @@
 {
 	CGFloat w, h;
 	
-	if (result)
+	if (hasSize)
 	{
 		NSLog(@"setViewportDimension: Already have size, ignoring.");
 		return SVG_STATUS_SUCCESS;
@@ -546,25 +506,11 @@
 	CGLayerRelease(renderLayer);
 	renderLayer = CGLayerCreateWithContext(CGLayerGetContext(unsizedRenderLayer), size, NULL);
 	
-	result = current.window = [[NSWindow alloc]
-							   initWithContentRect: NSMakeRect(0, 0, size.width, size.height)
-							   styleMask: 0
-							   backing: NSBackingStoreRetained
-							   defer: NO];
-	[[current window] setReleasedWhenClosed: NO];
-	
 	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
-
-	//[NSCurrentServer() windowdevice: [current->window windowNumber]];
-	//TODO: find replacements for these:
-	//DPSinitmatrix(ctxt);
-	//DPSinitclip(ctxt);
-	//DPScompositerect(ctxt,0,0,size.width,size.height,NSCompositeClear);
-	//DPStranslate(ctxt,0,size.height);
-	//DPSscale(ctxt,scale,-scale);
 	
 	CGContextTranslateCTM(tempCtx, 0, size.height);
 	CGContextScaleCTM(tempCtx, scale, -scale);
+	hasSize = YES;
 	
 	return SVG_STATUS_SUCCESS;
 }
@@ -590,6 +536,8 @@
 	{
 		case SVG_PAINT_TYPE_GRADIENT:
 		{
+			//TODO: handle stuff like this method's case SVG_PAINT_TYPE_COLOR does.
+			//I.E.: handle fill_rule.
 			CGContextSaveGState(tempCtx);
 			CGContextClip(tempCtx);
 			CGGradientRef gradient = [SVGRenderContext gradientFromSVGGradient:current->fill_paint.p.gradient];
@@ -642,7 +590,6 @@
 			CGGradientRelease(gradient);
 		}
 			CGContextRestoreGState(tempCtx);
-
 			break;
 			
 		case SVG_PAINT_TYPE_PATTERN:
@@ -662,7 +609,7 @@
 }
 
 
-- (svg_status_t)renderText:(const unsigned char *)utf8
+- (svg_status_t)renderText:(const char *)utf8
 {
 	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
 	NSFont *f;
@@ -753,7 +700,7 @@
 	{
 		case SVG_PAINT_TYPE_GRADIENT:
 			CGContextSaveGState(tempCtx);
-			CGContextSetTextDrawingMode(tempCtx, kCGTextClip);
+			CGContextSetTextDrawingMode(tempCtx, kCGTextFillClip);
 			CGContextShowText(tempCtx, utf8, strlen(utf8));
 		{
 			//CGContextClip(tempCtx);
@@ -833,22 +780,22 @@
 			break;
 	}
 	
+	//Again, set the text CTM?
 	CGContextScaleCTM(tempCtx,1,-1);
 	
 	return SVG_STATUS_SUCCESS;
 }
 
-
 @end
 
-static int indent=1;
+static int indent = 1;
 
 static svg_status_t r_begin_group(void *closure, double opacity)
 {
 	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
 	indent += 3;
 	
-	return [self beginGroup: opacity];
+	return [self beginGroup:opacity];
 }
 
 static svg_status_t r_begin_element(void *closure)
@@ -886,7 +833,7 @@ static svg_status_t r_end_group(void *closure, double opacity)
 	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
 	indent -= 3;
 	
-	return [self endGroup: opacity];
+	return [self endGroup:opacity];
 }
 
 
@@ -1250,7 +1197,7 @@ static svg_status_t r_render_image(void *closure, unsigned char *data, unsigned 
 }
 
 
-svg_render_engine_t cocoa_svg_engine=
+svg_render_engine_t cocoa_svg_engine =
 {
 	r_begin_group,
 	r_begin_element,

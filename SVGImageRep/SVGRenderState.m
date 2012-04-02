@@ -12,7 +12,7 @@
 
 @implementation SVGRenderState
 
-@synthesize stroke_opacity, dash, color, window, opacity, num_dash, fill_rule;
+@synthesize stroke_opacity, dash, color, opacity, num_dash, fill_rule;
 @synthesize font_size, fill_paint, font_style, dash_offset, font_family, font_weight;
 @synthesize text_anchor, fill_opacity, stroke_paint, stroke_width;
 
@@ -23,7 +23,6 @@
 	new.num_dash = num_dash;
 	new.stroke_opacity = stroke_opacity;
 	new.color = color;
-	new.window = window;
 	new.opacity = opacity;
 	new.fill_rule = fill_rule;
 	new.font_size = font_size;

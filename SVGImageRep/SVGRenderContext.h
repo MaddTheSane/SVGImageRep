@@ -9,17 +9,17 @@
 #import <Foundation/NSObject.h>
 #include <ApplicationServices/ApplicationServices.h>
 #include <svg.h>
-@class SVGRenderState, NSWindow, NSMutableArray;
+@class SVGRenderState, NSMutableArray;
 
 extern svg_render_engine_t cocoa_svg_engine;
 
 @interface SVGRenderContext : NSObject
 {
 @public
-	NSWindow *__unsafe_unretained result;
 	CGLayerRef renderLayer;
 	CGLayerRef unsizedRenderLayer;
 	NSSize size;
+	BOOL hasSize;
 	
 	double scale;
 	
@@ -29,7 +29,6 @@ extern svg_render_engine_t cocoa_svg_engine;
 
 @property (readwrite) SVGRenderState *current;
 @property (readwrite) NSMutableArray *states;
-@property (unsafe_unretained, readonly) NSWindow *result;
 @property (readonly) NSSize size;
 @property (readwrite) double scale;
 @property (readonly) CGLayerRef renderLayer;
@@ -59,7 +58,7 @@ extern svg_render_engine_t cocoa_svg_engine;
 						  : (svg_length_t *)width : (svg_length_t *)height
 						  : (svg_length_t *)rx : (svg_length_t *)ry;
 - (svg_status_t)renderPath;
-- (svg_status_t)renderText: (const unsigned char *)utf8;
+- (svg_status_t)renderText: (const char *)utf8;
 - (svg_status_t)renderEllipse: (svg_length_t *)cx : (svg_length_t *)cy
 							 : (svg_length_t *)rx : (svg_length_t *)ry;
 
