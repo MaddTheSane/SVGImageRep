@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		553711AB151BCF7300F8848A /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 553711AA151BCF7300F8848A /* ApplicationServices.framework */; };
-		553711C0151BCF9A00F8848A /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55AFA493151AA3BC00B5351D /* Cocoa.framework */; };
 		553712C8151BD0CD00F8848A /* cderror.h in Headers */ = {isa = PBXBuildFile; fileRef = 55371210151BD0CD00F8848A /* cderror.h */; };
 		553712C9151BD0CD00F8848A /* cdjpeg.c in Sources */ = {isa = PBXBuildFile; fileRef = 55371211151BD0CD00F8848A /* cdjpeg.c */; };
 		553712CA151BD0CD00F8848A /* cdjpeg.h in Headers */ = {isa = PBXBuildFile; fileRef = 55371212151BD0CD00F8848A /* cdjpeg.h */; };
@@ -25,7 +24,7 @@
 		553712D9151BD0CD00F8848A /* jcmarker.c in Sources */ = {isa = PBXBuildFile; fileRef = 5537122F151BD0CD00F8848A /* jcmarker.c */; };
 		553712DA151BD0CD00F8848A /* jcmaster.c in Sources */ = {isa = PBXBuildFile; fileRef = 55371230151BD0CD00F8848A /* jcmaster.c */; };
 		553712DB151BD0CD00F8848A /* jcomapi.c in Sources */ = {isa = PBXBuildFile; fileRef = 55371231151BD0CD00F8848A /* jcomapi.c */; };
-		553712DC151BD0CD00F8848A /* jconfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 55371235151BD0CD00F8848A /* jconfig.h */; };
+		553712DC151BD0CD00F8848A /* jconfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 55371235151BD0CD00F8848A /* jconfig.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		553712DD151BD0CD00F8848A /* jcparam.c in Sources */ = {isa = PBXBuildFile; fileRef = 5537123F151BD0CD00F8848A /* jcparam.c */; };
 		553712DE151BD0CD00F8848A /* jcprepct.c in Sources */ = {isa = PBXBuildFile; fileRef = 55371240151BD0CD00F8848A /* jcprepct.c */; };
 		553712DF151BD0CD00F8848A /* jcsample.c in Sources */ = {isa = PBXBuildFile; fileRef = 55371241151BD0CD00F8848A /* jcsample.c */; };
@@ -49,25 +48,25 @@
 		553712F1151BD0CD00F8848A /* jdsample.c in Sources */ = {isa = PBXBuildFile; fileRef = 55371253151BD0CD00F8848A /* jdsample.c */; };
 		553712F2151BD0CD00F8848A /* jdtrans.c in Sources */ = {isa = PBXBuildFile; fileRef = 55371254151BD0CD00F8848A /* jdtrans.c */; };
 		553712F3151BD0CD00F8848A /* jerror.c in Sources */ = {isa = PBXBuildFile; fileRef = 55371255151BD0CD00F8848A /* jerror.c */; };
-		553712F4151BD0CD00F8848A /* jerror.h in Headers */ = {isa = PBXBuildFile; fileRef = 55371256151BD0CD00F8848A /* jerror.h */; };
+		553712F4151BD0CD00F8848A /* jerror.h in Headers */ = {isa = PBXBuildFile; fileRef = 55371256151BD0CD00F8848A /* jerror.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		553712F5151BD0CD00F8848A /* jfdctflt.c in Sources */ = {isa = PBXBuildFile; fileRef = 55371257151BD0CD00F8848A /* jfdctflt.c */; };
 		553712F6151BD0CD00F8848A /* jfdctfst.c in Sources */ = {isa = PBXBuildFile; fileRef = 55371258151BD0CD00F8848A /* jfdctfst.c */; };
 		553712F7151BD0CD00F8848A /* jfdctint.c in Sources */ = {isa = PBXBuildFile; fileRef = 55371259151BD0CD00F8848A /* jfdctint.c */; };
 		553712F8151BD0CD00F8848A /* jidctflt.c in Sources */ = {isa = PBXBuildFile; fileRef = 5537125A151BD0CD00F8848A /* jidctflt.c */; };
 		553712F9151BD0CD00F8848A /* jidctfst.c in Sources */ = {isa = PBXBuildFile; fileRef = 5537125B151BD0CD00F8848A /* jidctfst.c */; };
 		553712FA151BD0CD00F8848A /* jidctint.c in Sources */ = {isa = PBXBuildFile; fileRef = 5537125C151BD0CD00F8848A /* jidctint.c */; };
-		553712FB151BD0CD00F8848A /* jinclude.h in Headers */ = {isa = PBXBuildFile; fileRef = 5537125D151BD0CD00F8848A /* jinclude.h */; };
+		553712FB151BD0CD00F8848A /* jinclude.h in Headers */ = {isa = PBXBuildFile; fileRef = 5537125D151BD0CD00F8848A /* jinclude.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		553712FC151BD0CD00F8848A /* jmemansi.c in Sources */ = {isa = PBXBuildFile; fileRef = 5537125E151BD0CD00F8848A /* jmemansi.c */; };
 		55371300151BD0CD00F8848A /* jmemmgr.c in Sources */ = {isa = PBXBuildFile; fileRef = 55371262151BD0CD00F8848A /* jmemmgr.c */; };
 		55371302151BD0CD00F8848A /* jmemnobs.c in Sources */ = {isa = PBXBuildFile; fileRef = 55371264151BD0CD00F8848A /* jmemnobs.c */; };
-		55371303151BD0CD00F8848A /* jmemsys.h in Headers */ = {isa = PBXBuildFile; fileRef = 55371265151BD0CD00F8848A /* jmemsys.h */; };
-		55371304151BD0CD00F8848A /* jmorecfg.h in Headers */ = {isa = PBXBuildFile; fileRef = 55371266151BD0CD00F8848A /* jmorecfg.h */; };
+		55371303151BD0CD00F8848A /* jmemsys.h in Headers */ = {isa = PBXBuildFile; fileRef = 55371265151BD0CD00F8848A /* jmemsys.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		55371304151BD0CD00F8848A /* jmorecfg.h in Headers */ = {isa = PBXBuildFile; fileRef = 55371266151BD0CD00F8848A /* jmorecfg.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		55371305151BD0CD00F8848A /* jpegint.h in Headers */ = {isa = PBXBuildFile; fileRef = 55371267151BD0CD00F8848A /* jpegint.h */; };
-		55371306151BD0CD00F8848A /* jpeglib.h in Headers */ = {isa = PBXBuildFile; fileRef = 55371268151BD0CD00F8848A /* jpeglib.h */; };
+		55371306151BD0CD00F8848A /* jpeglib.h in Headers */ = {isa = PBXBuildFile; fileRef = 55371268151BD0CD00F8848A /* jpeglib.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		55371308151BD0CD00F8848A /* jquant1.c in Sources */ = {isa = PBXBuildFile; fileRef = 5537126B151BD0CD00F8848A /* jquant1.c */; };
 		55371309151BD0CD00F8848A /* jquant2.c in Sources */ = {isa = PBXBuildFile; fileRef = 5537126C151BD0CD00F8848A /* jquant2.c */; };
 		5537130A151BD0CD00F8848A /* jutils.c in Sources */ = {isa = PBXBuildFile; fileRef = 5537126D151BD0CD00F8848A /* jutils.c */; };
-		5537130B151BD0CD00F8848A /* jversion.h in Headers */ = {isa = PBXBuildFile; fileRef = 5537126E151BD0CD00F8848A /* jversion.h */; };
+		5537130B151BD0CD00F8848A /* jversion.h in Headers */ = {isa = PBXBuildFile; fileRef = 5537126E151BD0CD00F8848A /* jversion.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5537130D151BD0CD00F8848A /* rdbmp.c in Sources */ = {isa = PBXBuildFile; fileRef = 553712AA151BD0CD00F8848A /* rdbmp.c */; };
 		5537130E151BD0CD00F8848A /* rdcolmap.c in Sources */ = {isa = PBXBuildFile; fileRef = 553712AB151BD0CD00F8848A /* rdcolmap.c */; };
 		5537130F151BD0CD00F8848A /* rdgif.c in Sources */ = {isa = PBXBuildFile; fileRef = 553712AC151BD0CD00F8848A /* rdgif.c */; };
@@ -85,12 +84,12 @@
 		55371324151BD1AD00F8848A /* libpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 553711BF151BCF9A00F8848A /* libpng.a */; };
 		55371437151BD40500F8848A /* config.h in Headers */ = {isa = PBXBuildFile; fileRef = 55371341151BD40500F8848A /* config.h */; };
 		55371454151BD40500F8848A /* png.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713BD151BD40500F8848A /* png.c */; };
-		55371455151BD40500F8848A /* png.h in Headers */ = {isa = PBXBuildFile; fileRef = 553713BE151BD40500F8848A /* png.h */; };
-		55371456151BD40500F8848A /* pngconf.h in Headers */ = {isa = PBXBuildFile; fileRef = 553713C1151BD40500F8848A /* pngconf.h */; };
+		55371455151BD40500F8848A /* png.h in Headers */ = {isa = PBXBuildFile; fileRef = 553713BE151BD40500F8848A /* png.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		55371456151BD40500F8848A /* pngconf.h in Headers */ = {isa = PBXBuildFile; fileRef = 553713C1151BD40500F8848A /* pngconf.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		55371457151BD40500F8848A /* pngdebug.h in Headers */ = {isa = PBXBuildFile; fileRef = 553713C2151BD40500F8848A /* pngdebug.h */; };
 		55371458151BD40500F8848A /* pngerror.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713C3151BD40500F8848A /* pngerror.c */; };
 		55371459151BD40500F8848A /* pngget.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713C4151BD40500F8848A /* pngget.c */; };
-		5537145A151BD40500F8848A /* pnginfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 553713C5151BD40500F8848A /* pnginfo.h */; };
+		5537145A151BD40500F8848A /* pnginfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 553713C5151BD40500F8848A /* pnginfo.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5537145B151BD40500F8848A /* pngmem.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713C6151BD40500F8848A /* pngmem.c */; };
 		5537145C151BD40500F8848A /* pngpread.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713C8151BD40500F8848A /* pngpread.c */; };
 		5537145D151BD40500F8848A /* pngpriv.h in Headers */ = {isa = PBXBuildFile; fileRef = 553713C9151BD40500F8848A /* pngpriv.h */; };
@@ -99,7 +98,7 @@
 		55371460151BD40500F8848A /* pngrtran.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713CC151BD40500F8848A /* pngrtran.c */; };
 		55371461151BD40500F8848A /* pngrutil.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713CD151BD40500F8848A /* pngrutil.c */; };
 		55371462151BD40500F8848A /* pngset.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713CE151BD40500F8848A /* pngset.c */; };
-		55371463151BD40500F8848A /* pngstruct.h in Headers */ = {isa = PBXBuildFile; fileRef = 553713CF151BD40500F8848A /* pngstruct.h */; };
+		55371463151BD40500F8848A /* pngstruct.h in Headers */ = {isa = PBXBuildFile; fileRef = 553713CF151BD40500F8848A /* pngstruct.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		55371465151BD40500F8848A /* pngtrans.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713D2151BD40500F8848A /* pngtrans.c */; };
 		55371466151BD40500F8848A /* pngwio.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713D3151BD40500F8848A /* pngwio.c */; };
 		55371467151BD40500F8848A /* pngwrite.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713D4151BD40500F8848A /* pngwrite.c */; };
@@ -113,9 +112,8 @@
 		55AFA4B7151AA3FB00B5351D /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 55AFA4B5151AA3FB00B5351D /* Credits.rtf */; };
 		55AFA4C6151AA43700B5351D /* SVGDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 55AFA4C5151AA43700B5351D /* SVGDocument.m */; };
 		55AFA4C8151AA5E500B5351D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 55AFA4C7151AA5E500B5351D /* main.m */; };
-		55AFA4CE151AA7E900B5351D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55AFA493151AA3BC00B5351D /* Cocoa.framework */; };
 		55AFA50C151AA82000B5351D /* svg.c in Sources */ = {isa = PBXBuildFile; fileRef = 55AFA4F1151AA82000B5351D /* svg.c */; };
-		55AFA50D151AA82000B5351D /* svg.h in Headers */ = {isa = PBXBuildFile; fileRef = 55AFA4F2151AA82000B5351D /* svg.h */; };
+		55AFA50D151AA82000B5351D /* svg.h in Headers */ = {isa = PBXBuildFile; fileRef = 55AFA4F2151AA82000B5351D /* svg.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		55AFA50E151AA82000B5351D /* svg_ascii.c in Sources */ = {isa = PBXBuildFile; fileRef = 55AFA4F3151AA82000B5351D /* svg_ascii.c */; };
 		55AFA50F151AA82000B5351D /* svg_ascii.h in Headers */ = {isa = PBXBuildFile; fileRef = 55AFA4F4151AA82000B5351D /* svg_ascii.h */; };
 		55AFA510151AA82000B5351D /* svg_attribute.c in Sources */ = {isa = PBXBuildFile; fileRef = 55AFA4F5151AA82000B5351D /* svg_attribute.c */; };
@@ -156,26 +154,47 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		5537131D151BD18000F8848A /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 55AFA487151AA3BC00B5351D /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 553711AF151BCF9100F8848A;
-			remoteInfo = jpeg;
-		};
-		5537131F151BD18000F8848A /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 55AFA487151AA3BC00B5351D /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 553711BE151BCF9A00F8848A;
-			remoteInfo = png;
-		};
 		55AFA52B151AACE200B5351D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 55AFA487151AA3BC00B5351D /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 55AFA4CC151AA7E900B5351D;
 			remoteInfo = svg;
+		};
+		55C87404152A2EDB00710A01 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 55AFA487151AA3BC00B5351D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 55AFA4CC151AA7E900B5351D;
+			remoteInfo = svg;
+		};
+		55C87406152A2F2C00710A01 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 55AFA487151AA3BC00B5351D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 553711AF151BCF9100F8848A;
+			remoteInfo = jpeg;
+		};
+		55C87408152A2F2C00710A01 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 55AFA487151AA3BC00B5351D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 553711BE151BCF9A00F8848A;
+			remoteInfo = png;
+		};
+		55C8740A152A2F3300710A01 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 55AFA487151AA3BC00B5351D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 553711AF151BCF9100F8848A;
+			remoteInfo = jpeg;
+		};
+		55C8740C152A2F3300710A01 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 55AFA487151AA3BC00B5351D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 553711BE151BCF9A00F8848A;
+			remoteInfo = png;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -365,7 +384,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				553711C0151BCF9A00F8848A /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -400,7 +418,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				55AFA4CE151AA7E900B5351D /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -719,17 +736,17 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				553712C8151BD0CD00F8848A /* cderror.h in Headers */,
-				553712CA151BD0CD00F8848A /* cdjpeg.h in Headers */,
 				553712DC151BD0CD00F8848A /* jconfig.h in Headers */,
-				553712E8151BD0CD00F8848A /* jdct.h in Headers */,
 				553712F4151BD0CD00F8848A /* jerror.h in Headers */,
 				553712FB151BD0CD00F8848A /* jinclude.h in Headers */,
 				55371303151BD0CD00F8848A /* jmemsys.h in Headers */,
 				55371304151BD0CD00F8848A /* jmorecfg.h in Headers */,
-				55371305151BD0CD00F8848A /* jpegint.h in Headers */,
 				55371306151BD0CD00F8848A /* jpeglib.h in Headers */,
 				5537130B151BD0CD00F8848A /* jversion.h in Headers */,
+				553712C8151BD0CD00F8848A /* cderror.h in Headers */,
+				553712CA151BD0CD00F8848A /* cdjpeg.h in Headers */,
+				553712E8151BD0CD00F8848A /* jdct.h in Headers */,
+				55371305151BD0CD00F8848A /* jpegint.h in Headers */,
 				55371316151BD0CD00F8848A /* transupp.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -738,13 +755,13 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				55371437151BD40500F8848A /* config.h in Headers */,
-				55371455151BD40500F8848A /* png.h in Headers */,
-				55371456151BD40500F8848A /* pngconf.h in Headers */,
-				55371457151BD40500F8848A /* pngdebug.h in Headers */,
-				5537145A151BD40500F8848A /* pnginfo.h in Headers */,
-				5537145D151BD40500F8848A /* pngpriv.h in Headers */,
 				55371463151BD40500F8848A /* pngstruct.h in Headers */,
+				5537145A151BD40500F8848A /* pnginfo.h in Headers */,
+				55371456151BD40500F8848A /* pngconf.h in Headers */,
+				55371455151BD40500F8848A /* png.h in Headers */,
+				55371437151BD40500F8848A /* config.h in Headers */,
+				55371457151BD40500F8848A /* pngdebug.h in Headers */,
+				5537145D151BD40500F8848A /* pngpriv.h in Headers */,
 				5537146E151BD54A00F8848A /* pnglibconf.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -810,6 +827,8 @@
 			buildRules = (
 			);
 			dependencies = (
+				55C87407152A2F2C00710A01 /* PBXTargetDependency */,
+				55C87409152A2F2C00710A01 /* PBXTargetDependency */,
 				55AFA52C151AACE200B5351D /* PBXTargetDependency */,
 			);
 			name = SVGImageRep;
@@ -828,6 +847,9 @@
 			buildRules = (
 			);
 			dependencies = (
+				55C8740B152A2F3300710A01 /* PBXTargetDependency */,
+				55C8740D152A2F3300710A01 /* PBXTargetDependency */,
+				55C87405152A2EDB00710A01 /* PBXTargetDependency */,
 			);
 			name = SVGViewer;
 			productName = SVGViewer;
@@ -845,8 +867,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				5537131E151BD18000F8848A /* PBXTargetDependency */,
-				55371320151BD18000F8848A /* PBXTargetDependency */,
 			);
 			name = svg;
 			productName = svg;
@@ -1043,20 +1063,35 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		5537131E151BD18000F8848A /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 553711AF151BCF9100F8848A /* jpeg */;
-			targetProxy = 5537131D151BD18000F8848A /* PBXContainerItemProxy */;
-		};
-		55371320151BD18000F8848A /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 553711BE151BCF9A00F8848A /* png */;
-			targetProxy = 5537131F151BD18000F8848A /* PBXContainerItemProxy */;
-		};
 		55AFA52C151AACE200B5351D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 55AFA4CC151AA7E900B5351D /* svg */;
 			targetProxy = 55AFA52B151AACE200B5351D /* PBXContainerItemProxy */;
+		};
+		55C87405152A2EDB00710A01 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 55AFA4CC151AA7E900B5351D /* svg */;
+			targetProxy = 55C87404152A2EDB00710A01 /* PBXContainerItemProxy */;
+		};
+		55C87407152A2F2C00710A01 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 553711AF151BCF9100F8848A /* jpeg */;
+			targetProxy = 55C87406152A2F2C00710A01 /* PBXContainerItemProxy */;
+		};
+		55C87409152A2F2C00710A01 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 553711BE151BCF9A00F8848A /* png */;
+			targetProxy = 55C87408152A2F2C00710A01 /* PBXContainerItemProxy */;
+		};
+		55C8740B152A2F3300710A01 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 553711AF151BCF9100F8848A /* jpeg */;
+			targetProxy = 55C8740A152A2F3300710A01 /* PBXContainerItemProxy */;
+		};
+		55C8740D152A2F3300710A01 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 553711BE151BCF9A00F8848A /* png */;
+			targetProxy = 55C8740C152A2F3300710A01 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1141,7 +1176,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -1167,7 +1202,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -1185,7 +1220,6 @@
 		55AFA4A3151AA3BC00B5351D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SVGImageRep/SVGImageRep-Prefix.pch";
@@ -1205,7 +1239,6 @@
 		55AFA4A4151AA3BC00B5351D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SVGImageRep/SVGImageRep-Prefix.pch";
@@ -1225,7 +1258,6 @@
 		55AFA4C2151AA3FB00B5351D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SVGViewer/SVGViewer-Prefix.pch";
@@ -1244,7 +1276,6 @@
 		55AFA4C3151AA3FB00B5351D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				DEAD_CODE_STRIPPING = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
