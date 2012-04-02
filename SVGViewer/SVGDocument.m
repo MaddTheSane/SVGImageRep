@@ -134,7 +134,7 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 	- (IBAction)scale_##a##_##b:(id)sender \
 	{ \
 		scale=a##.##b; \
-		[self reload: nil]; \
+		[self reload:sender]; \
 	} \
 
 
