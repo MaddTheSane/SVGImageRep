@@ -44,9 +44,9 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 	svg_t *svg_test;
 	svg_status_t status;
 	svg_create(&svg_test);
-	status = svg_parse_buffer(svg_test,[d bytes],[d length]);
+	status = svg_parse_buffer(svg_test, [d bytes], [d length]);
 	svg_destroy(svg_test);
-	return status==SVG_STATUS_SUCCESS;
+	return status == SVG_STATUS_SUCCESS;
 }
 
 
@@ -81,8 +81,9 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 		[svg_render_context prepareRender: 1.0];
 		svg_render(svg, &cocoa_svg_engine,  (__bridge void*)svg_render_context);
 		[svg_render_context finishRender];
-		[self setPixelsHigh:[svg_render_context size].height];
-		[self setPixelsWide:[svg_render_context size].width];
+		NSSize renderSize = [svg_render_context size];
+		[self setPixelsHigh:renderSize.height];
+		[self setPixelsWide:renderSize.width];
 	}
 
 	return self;
@@ -107,8 +108,8 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 	svg_render(svg, &cocoa_svg_engine,  (__bridge void*)svg_render_context);
 	[svg_render_context finishRender];
 
-	CGContextDrawLayerInRect(CGCtx, CGRectMake(0, 0, [svg_render_context size].width, [svg_render_context size].height), svg_render_context.renderLayer);
-
+	NSSize renderSize = [svg_render_context size];
+	CGContextDrawLayerInRect(CGCtx, CGRectMake(0, 0, renderSize.width, renderSize.height), svg_render_context.renderLayer);
 	return YES;
 }
 

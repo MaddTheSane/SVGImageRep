@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/NSObject.h>
+#include <ApplicationServices/ApplicationServices.h>
 #include <svg.h>
 @class SVGRenderState, NSWindow, NSMutableArray;
 
@@ -37,6 +38,7 @@ extern svg_render_engine_t cocoa_svg_engine;
 
 - (double)lengthToPoints: (svg_length_t *)l;
 
++ (CGGradientRef)gradientFromSVGGradient:(svg_gradient_t *)gradient;
 
 - (void)arcTo: (double)rx : (double) ry
 			 : (double)x_axis_rotation

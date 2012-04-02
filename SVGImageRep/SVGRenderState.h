@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/NSObject.h>
+#include <ApplicationServices/ApplicationServices.h>
 #include <svg.h>
 @class NSWindow, NSString;
 
