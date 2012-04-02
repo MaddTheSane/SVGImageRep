@@ -18,6 +18,7 @@ extern svg_render_engine_t cocoa_svg_engine;
 @public
 	NSWindow *__unsafe_unretained result;
 	CGLayerRef renderLayer;
+	CGLayerRef unsizedRenderLayer;
 	NSSize size;
 	
 	double scale;
