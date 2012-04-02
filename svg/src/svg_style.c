@@ -102,6 +102,9 @@ static svg_status_t
 _svg_style_parse_style_str (svg_style_t		*style,
 			    const char	*str);
 
+static svg_status_t
+_svg_style_parse_color_profile (svg_style_t *style, const char	*str);
+
 typedef struct svg_style_parse_map {
     const char	*name;
     svg_status_t 	(*parse) (svg_style_t *style, const char *value);
@@ -113,7 +116,7 @@ static const svg_style_parse_map_t SVG_STYLE_PARSE_MAP[] = {
     { "color",			_svg_style_parse_color,			"black" },
 /* XXX: { "color-interpolation",_svg_style_parse_color_interpolation,	"sRGB" }, */
 /* XXX: { "color-interpolation-filters",_svg_style_parse_color_interpolation_filters,	"linearRGB" }, */
-/* XXX: { "color-profile",	_svg_style_parse_color_profile,		"auto" }, */
+	{ "color-profile",	_svg_style_parse_color_profile,		"auto" },
 /* XXX: { "color-rendering",	_svg_style_parse_color_rendering,	"auto" }, */
 /* XXX: { "cursor",		_svg_style_parse_cursor,		"auto" }, */
 /* XXX: { "direction",		_svg_style_parse_direction,		"ltr" }, */
@@ -764,6 +767,13 @@ _svg_style_parse_style_str (svg_style_t		*style,
     }
 
     return SVG_STATUS_SUCCESS;
+}
+static svg_status_t
+_svg_style_parse_color_profile (svg_style_t		*style,
+								const char	*str)
+{
+	//TODO: Color Profile support
+	return SVG_STATUS_SUCCESS;
 }
 
 svg_status_t
