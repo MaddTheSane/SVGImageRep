@@ -2,4 +2,5 @@
 // Prefix header for all source files of the 'png' target in the 'png' project
 //
 
-#include "png.h"
+#include "pngpriv.h"
+#include <zlib.h>

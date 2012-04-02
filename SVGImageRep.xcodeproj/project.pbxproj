@@ -100,7 +100,6 @@
 		55371461151BD40500F8848A /* pngrutil.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713CD151BD40500F8848A /* pngrutil.c */; };
 		55371462151BD40500F8848A /* pngset.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713CE151BD40500F8848A /* pngset.c */; };
 		55371463151BD40500F8848A /* pngstruct.h in Headers */ = {isa = PBXBuildFile; fileRef = 553713CF151BD40500F8848A /* pngstruct.h */; };
-		55371464151BD40500F8848A /* pngtest.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713D0151BD40500F8848A /* pngtest.c */; };
 		55371465151BD40500F8848A /* pngtrans.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713D2151BD40500F8848A /* pngtrans.c */; };
 		55371466151BD40500F8848A /* pngwio.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713D3151BD40500F8848A /* pngwio.c */; };
 		55371467151BD40500F8848A /* pngwrite.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713D4151BD40500F8848A /* pngwrite.c */; };
@@ -986,7 +985,6 @@
 				55371460151BD40500F8848A /* pngrtran.c in Sources */,
 				55371461151BD40500F8848A /* pngrutil.c in Sources */,
 				55371462151BD40500F8848A /* pngset.c in Sources */,
-				55371464151BD40500F8848A /* pngtest.c in Sources */,
 				55371465151BD40500F8848A /* pngtrans.c in Sources */,
 				55371466151BD40500F8848A /* pngwio.c in Sources */,
 				55371467151BD40500F8848A /* pngwrite.c in Sources */,

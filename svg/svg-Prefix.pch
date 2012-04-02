@@ -8,3 +8,6 @@
 #include "jerror.h"
 #include "png.h"
 #include "svg.h"
+#include <libxml/SAX.h>
+#include <libxml/xmlmemory.h>
+#include <libxml/hash.h>
