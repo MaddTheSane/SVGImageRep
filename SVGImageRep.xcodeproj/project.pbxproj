@@ -146,6 +146,10 @@
 		55AFA533151AB3B700B5351D /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 55AFA52E151AACFF00B5351D /* libxml2.dylib */; };
 		55AFA535151AB48C00B5351D /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 55AFA534151AB48C00B5351D /* libz.dylib */; };
 		55AFA536151AB4AB00B5351D /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 55AFA534151AB48C00B5351D /* libz.dylib */; };
+		55C87423152A6BBF00710A01 /* README in Resources */ = {isa = PBXBuildFile; fileRef = 55C87421152A6BBF00710A01 /* README */; };
+		55C87424152A6BBF00710A01 /* README in Resources */ = {isa = PBXBuildFile; fileRef = 55C87421152A6BBF00710A01 /* README */; };
+		55C87425152A6BBF00710A01 /* TODO in Resources */ = {isa = PBXBuildFile; fileRef = 55C87422152A6BBF00710A01 /* TODO */; };
+		55C87426152A6BBF00710A01 /* TODO in Resources */ = {isa = PBXBuildFile; fileRef = 55C87422152A6BBF00710A01 /* TODO */; };
 		55F0FA88151CDCB6006426B8 /* jmemname.c in Sources */ = {isa = PBXBuildFile; fileRef = 55371263151BD0CD00F8848A /* jmemname.c */; };
 		55F0FA92151FBB80006426B8 /* SVGViewer.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55F0FA91151FBB80006426B8 /* SVGViewer.xib */; };
 		55F0FA94151FBE4A006426B8 /* SVGDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55F0FA93151FBE4A006426B8 /* SVGDocument.xib */; };
@@ -350,6 +354,8 @@
 		55AFA529151AABB700B5351D /* SVGImageRep.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVGImageRep.m; sourceTree = "<group>"; };
 		55AFA52E151AACFF00B5351D /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		55AFA534151AB48C00B5351D /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		55C87421152A6BBF00710A01 /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README; sourceTree = SOURCE_ROOT; };
+		55C87422152A6BBF00710A01 /* TODO */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO; sourceTree = SOURCE_ROOT; };
 		55F0FA8D151FBAB6006426B8 /* SVGViewer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVGViewer.h; sourceTree = "<group>"; };
 		55F0FA8E151FBAB6006426B8 /* SVGViewer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVGViewer.m; sourceTree = "<group>"; };
 		55F0FA91151FBB80006426B8 /* SVGViewer.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SVGViewer.xib; sourceTree = "<group>"; };
@@ -636,6 +642,8 @@
 		55AFA49A151AA3BC00B5351D /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				55C87421152A6BBF00710A01 /* README */,
+				55C87422152A6BBF00710A01 /* TODO */,
 				55AFA49B151AA3BC00B5351D /* SVGImageRep-Info.plist */,
 				55AFA49C151AA3BC00B5351D /* InfoPlist.strings */,
 				55AFA49F151AA3BC00B5351D /* SVGImageRep-Prefix.pch */,
@@ -896,6 +904,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				55AFA49E151AA3BC00B5351D /* InfoPlist.strings in Resources */,
+				55C87423152A6BBF00710A01 /* README in Resources */,
+				55C87425152A6BBF00710A01 /* TODO in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -907,6 +917,8 @@
 				55AFA4B7151AA3FB00B5351D /* Credits.rtf in Resources */,
 				55F0FA92151FBB80006426B8 /* SVGViewer.xib in Resources */,
 				55F0FA94151FBE4A006426B8 /* SVGDocument.xib in Resources */,
+				55C87424152A6BBF00710A01 /* README in Resources */,
+				55C87426152A6BBF00710A01 /* TODO in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
