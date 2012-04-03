@@ -22,7 +22,7 @@
 
 @synthesize size, states, current, scale, renderLayer;
 
-+ (CGColorRef)colorRefFromSVGColor:(svg_color_t *)c opacity:(CGFloat)alpha CF_RETURNS_RETAINED
++ (CGColorRef)createColorRefFromSVGColor:(svg_color_t *)c opacity:(CGFloat)alpha CF_RETURNS_RETAINED
 {
 	return CGColorCreateGenericRGB(svg_color_get_red(c)/255.0, svg_color_get_green(c)/255.0, svg_color_get_blue(c)/255.0, alpha);
 }
