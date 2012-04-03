@@ -106,6 +106,19 @@
 		55371468151BD40500F8848A /* pngwtran.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713D5151BD40500F8848A /* pngwtran.c */; };
 		55371469151BD40500F8848A /* pngwutil.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713D6151BD40500F8848A /* pngwutil.c */; };
 		5537146E151BD54A00F8848A /* pnglibconf.h in Headers */ = {isa = PBXBuildFile; fileRef = 5537146D151BD54A00F8848A /* pnglibconf.h */; };
+		5560E6F8152B6F5C008FF127 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55AFA493151AA3BC00B5351D /* Cocoa.framework */; };
+		5560E6FE152B6F5C008FF127 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5560E6FC152B6F5C008FF127 /* InfoPlist.strings */; };
+		5560E700152B6F5C008FF127 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5560E6FF152B6F5C008FF127 /* main.m */; };
+		5560E704152B6F5C008FF127 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 5560E702152B6F5C008FF127 /* Credits.rtf */; };
+		5560E707152B6F5C008FF127 /* SVGIRAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5560E706152B6F5C008FF127 /* SVGIRAppDelegate.m */; };
+		5560E70A152B6F5C008FF127 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5560E708152B6F5C008FF127 /* MainMenu.xib */; };
+		5560E711152B6F9C008FF127 /* SVGImageRep.bundle in CopyFiles */ = {isa = PBXBuildFile; fileRef = 55AFA490151AA3BC00B5351D /* SVGImageRep.bundle */; };
+		5560E718152B73D7008FF127 /* admon-bug.svg in Resources */ = {isa = PBXBuildFile; fileRef = 5560E712152B73D7008FF127 /* admon-bug.svg */; };
+		5560E719152B73D7008FF127 /* admon-caution.svg in Resources */ = {isa = PBXBuildFile; fileRef = 5560E713152B73D7008FF127 /* admon-caution.svg */; };
+		5560E71A152B73D7008FF127 /* admon-important.svg in Resources */ = {isa = PBXBuildFile; fileRef = 5560E714152B73D7008FF127 /* admon-important.svg */; };
+		5560E71B152B73D7008FF127 /* admon-note.svg in Resources */ = {isa = PBXBuildFile; fileRef = 5560E715152B73D7008FF127 /* admon-note.svg */; };
+		5560E71C152B73D7008FF127 /* admon-tip.svg in Resources */ = {isa = PBXBuildFile; fileRef = 5560E716152B73D7008FF127 /* admon-tip.svg */; };
+		5560E71D152B73D7008FF127 /* admon-warning.svg in Resources */ = {isa = PBXBuildFile; fileRef = 5560E717152B73D7008FF127 /* admon-warning.svg */; };
 		55AFA494151AA3BC00B5351D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55AFA493151AA3BC00B5351D /* Cocoa.framework */; };
 		55AFA49E151AA3BC00B5351D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 55AFA49C151AA3BC00B5351D /* InfoPlist.strings */; };
 		55AFA4AB151AA3FB00B5351D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55AFA493151AA3BC00B5351D /* Cocoa.framework */; };
@@ -174,6 +187,13 @@
 			remoteGlobalIDString = 553711BE151BCF9A00F8848A;
 			remoteInfo = png;
 		};
+		5560E70E152B6F72008FF127 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 55AFA487151AA3BC00B5351D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 55AFA48F151AA3BC00B5351D;
+			remoteInfo = SVGImageRep;
+		};
 		55AFA52B151AACE200B5351D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 55AFA487151AA3BC00B5351D /* Project object */;
@@ -189,6 +209,19 @@
 			remoteInfo = svg;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		5560E710152B6F75008FF127 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				5560E711152B6F9C008FF127 /* SVGImageRep.bundle in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		553711A8151BCDB900F8848A /* SVGImageRep.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVGImageRep.h; sourceTree = "<group>"; };
@@ -307,6 +340,21 @@
 		553713D5151BD40500F8848A /* pngwtran.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pngwtran.c; sourceTree = "<group>"; };
 		553713D6151BD40500F8848A /* pngwutil.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pngwutil.c; sourceTree = "<group>"; };
 		5537146D151BD54A00F8848A /* pnglibconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pnglibconf.h; sourceTree = "<group>"; };
+		5560E6F6152B6F5C008FF127 /* SVGIRTester.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SVGIRTester.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		5560E6FB152B6F5C008FF127 /* SVGIRTester-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "SVGIRTester-Info.plist"; sourceTree = "<group>"; };
+		5560E6FD152B6F5C008FF127 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		5560E6FF152B6F5C008FF127 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		5560E701152B6F5C008FF127 /* SVGIRTester-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SVGIRTester-Prefix.pch"; sourceTree = "<group>"; };
+		5560E703152B6F5C008FF127 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
+		5560E705152B6F5C008FF127 /* SVGIRAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVGIRAppDelegate.h; sourceTree = "<group>"; };
+		5560E706152B6F5C008FF127 /* SVGIRAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVGIRAppDelegate.m; sourceTree = "<group>"; };
+		5560E709152B6F5C008FF127 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		5560E712152B73D7008FF127 /* admon-bug.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "admon-bug.svg"; sourceTree = "<group>"; };
+		5560E713152B73D7008FF127 /* admon-caution.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "admon-caution.svg"; sourceTree = "<group>"; };
+		5560E714152B73D7008FF127 /* admon-important.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "admon-important.svg"; sourceTree = "<group>"; };
+		5560E715152B73D7008FF127 /* admon-note.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "admon-note.svg"; sourceTree = "<group>"; };
+		5560E716152B73D7008FF127 /* admon-tip.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "admon-tip.svg"; sourceTree = "<group>"; };
+		5560E717152B73D7008FF127 /* admon-warning.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "admon-warning.svg"; sourceTree = "<group>"; };
 		55AFA490151AA3BC00B5351D /* SVGImageRep.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SVGImageRep.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		55AFA493151AA3BC00B5351D /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		55AFA496151AA3BC00B5351D /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -379,6 +427,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				553711C0151BCF9A00F8848A /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5560E6F3152B6F5C008FF127 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5560E6F8152B6F5C008FF127 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -578,6 +634,35 @@
 			path = "libpng-1.5.9";
 			sourceTree = "<group>";
 		};
+		5560E6F9152B6F5C008FF127 /* SVGIRTester */ = {
+			isa = PBXGroup;
+			children = (
+				5560E705152B6F5C008FF127 /* SVGIRAppDelegate.h */,
+				5560E706152B6F5C008FF127 /* SVGIRAppDelegate.m */,
+				5560E708152B6F5C008FF127 /* MainMenu.xib */,
+				5560E6FA152B6F5C008FF127 /* Supporting Files */,
+			);
+			path = SVGIRTester;
+			sourceTree = "<group>";
+		};
+		5560E6FA152B6F5C008FF127 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				5560E712152B73D7008FF127 /* admon-bug.svg */,
+				5560E713152B73D7008FF127 /* admon-caution.svg */,
+				5560E714152B73D7008FF127 /* admon-important.svg */,
+				5560E715152B73D7008FF127 /* admon-note.svg */,
+				5560E716152B73D7008FF127 /* admon-tip.svg */,
+				5560E717152B73D7008FF127 /* admon-warning.svg */,
+				5560E6FB152B6F5C008FF127 /* SVGIRTester-Info.plist */,
+				5560E6FC152B6F5C008FF127 /* InfoPlist.strings */,
+				5560E6FF152B6F5C008FF127 /* main.m */,
+				5560E701152B6F5C008FF127 /* SVGIRTester-Prefix.pch */,
+				5560E702152B6F5C008FF127 /* Credits.rtf */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		55AFA485151AA3BC00B5351D = {
 			isa = PBXGroup;
 			children = (
@@ -586,6 +671,7 @@
 				55AFA4CF151AA7E900B5351D /* svg */,
 				553711B2151BCF9100F8848A /* jpeg */,
 				553711C1151BCF9A00F8848A /* png */,
+				5560E6F9152B6F5C008FF127 /* SVGIRTester */,
 				55AFA492151AA3BC00B5351D /* Frameworks */,
 				55AFA491151AA3BC00B5351D /* Products */,
 			);
@@ -599,6 +685,7 @@
 				55AFA4CD151AA7E900B5351D /* libsvg.a */,
 				553711B0151BCF9100F8848A /* libjpeg.a */,
 				553711BF151BCF9A00F8848A /* libpng.a */,
+				5560E6F6152B6F5C008FF127 /* SVGIRTester.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -814,6 +901,25 @@
 			productReference = 553711BF151BCF9A00F8848A /* libpng.a */;
 			productType = "com.apple.product-type.library.static";
 		};
+		5560E6F5152B6F5C008FF127 /* SVGIRTester */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5560E70B152B6F5C008FF127 /* Build configuration list for PBXNativeTarget "SVGIRTester" */;
+			buildPhases = (
+				5560E6F2152B6F5C008FF127 /* Sources */,
+				5560E6F3152B6F5C008FF127 /* Frameworks */,
+				5560E6F4152B6F5C008FF127 /* Resources */,
+				5560E710152B6F75008FF127 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				5560E70F152B6F72008FF127 /* PBXTargetDependency */,
+			);
+			name = SVGIRTester;
+			productName = SVGIRTester;
+			productReference = 5560E6F6152B6F5C008FF127 /* SVGIRTester.app */;
+			productType = "com.apple.product-type.application";
+		};
 		55AFA48F151AA3BC00B5351D /* SVGImageRep */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 55AFA4A2151AA3BC00B5351D /* Build configuration list for PBXNativeTarget "SVGImageRep" */;
@@ -891,6 +997,7 @@
 			targets = (
 				55AFA48F151AA3BC00B5351D /* SVGImageRep */,
 				55AFA4A8151AA3FA00B5351D /* SVGViewer */,
+				5560E6F5152B6F5C008FF127 /* SVGIRTester */,
 				55AFA4CC151AA7E900B5351D /* svg */,
 				553711AF151BCF9100F8848A /* jpeg */,
 				553711BE151BCF9A00F8848A /* png */,
@@ -899,6 +1006,22 @@
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		5560E6F4152B6F5C008FF127 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5560E6FE152B6F5C008FF127 /* InfoPlist.strings in Resources */,
+				5560E704152B6F5C008FF127 /* Credits.rtf in Resources */,
+				5560E70A152B6F5C008FF127 /* MainMenu.xib in Resources */,
+				5560E718152B73D7008FF127 /* admon-bug.svg in Resources */,
+				5560E719152B73D7008FF127 /* admon-caution.svg in Resources */,
+				5560E71A152B73D7008FF127 /* admon-important.svg in Resources */,
+				5560E71B152B73D7008FF127 /* admon-note.svg in Resources */,
+				5560E71C152B73D7008FF127 /* admon-tip.svg in Resources */,
+				5560E71D152B73D7008FF127 /* admon-warning.svg in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		55AFA48E151AA3BC00B5351D /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1013,6 +1136,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		5560E6F2152B6F5C008FF127 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5560E700152B6F5C008FF127 /* main.m in Sources */,
+				5560E707152B6F5C008FF127 /* SVGIRAppDelegate.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		55AFA48C151AA3BC00B5351D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1073,6 +1205,11 @@
 			target = 553711BE151BCF9A00F8848A /* png */;
 			targetProxy = 5537131F151BD18000F8848A /* PBXContainerItemProxy */;
 		};
+		5560E70F152B6F72008FF127 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 55AFA48F151AA3BC00B5351D /* SVGImageRep */;
+			targetProxy = 5560E70E152B6F72008FF127 /* PBXContainerItemProxy */;
+		};
 		55AFA52C151AACE200B5351D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 55AFA4CC151AA7E900B5351D /* svg */;
@@ -1086,6 +1223,30 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		5560E6FC152B6F5C008FF127 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				5560E6FD152B6F5C008FF127 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		5560E702152B6F5C008FF127 /* Credits.rtf */ = {
+			isa = PBXVariantGroup;
+			children = (
+				5560E703152B6F5C008FF127 /* en */,
+			);
+			name = Credits.rtf;
+			sourceTree = "<group>";
+		};
+		5560E708152B6F5C008FF127 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				5560E709152B6F5C008FF127 /* en */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
 		55AFA49C151AA3BC00B5351D /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -1159,6 +1320,32 @@
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		5560E70C152B6F5C008FF127 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "SVGIRTester/SVGIRTester-Prefix.pch";
+				INFOPLIST_FILE = "SVGIRTester/SVGIRTester-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		5560E70D152B6F5C008FF127 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "SVGIRTester/SVGIRTester-Prefix.pch";
+				INFOPLIST_FILE = "SVGIRTester/SVGIRTester-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
 		};
@@ -1332,6 +1519,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		5560E70B152B6F5C008FF127 /* Build configuration list for PBXNativeTarget "SVGIRTester" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5560E70C152B6F5C008FF127 /* Debug */,
+				5560E70D152B6F5C008FF127 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 		55AFA48A151AA3BC00B5351D /* Build configuration list for PBXProject "SVGImageRep" */ = {
 			isa = XCConfigurationList;
