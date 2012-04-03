@@ -56,7 +56,7 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 
 + (NSImageRep *)imageRepWithData:(NSData *)d
 {
-	return [[self alloc] initWithData:d];
+	return [[[self alloc] initWithData:d] autorelease];
 }
 
 

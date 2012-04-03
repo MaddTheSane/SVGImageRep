@@ -26,6 +26,7 @@
 	BOOL loaded = [SVGImageRepBundle load];
 	if (!loaded) {
 		NSLog(@"Bundle Not loaded!");
+		[SVGImageRepBundle release];
 		return;
 	}
 	NSString *resourcePath = [[NSBundle mainBundle] resourcePath];
@@ -47,7 +48,8 @@
 	tempImage = [[NSImage alloc] initWithContentsOfFile:[resourcePath stringByAppendingPathComponent:@"admon-warning.svg"]];
 	[svgWarning setImage:tempImage];
 	[tempImage release]; tempImage = nil;
-
+	
+	[SVGImageRepBundle release];
 }
 
 @end
