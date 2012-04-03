@@ -87,6 +87,7 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 		svg_render(svg, &cocoa_svg_engine, svg_render_context);
 		[svg_render_context finishRender];
 		NSSize renderSize = [svg_render_context size];
+		[self setSize:renderSize];
 		[self setPixelsHigh:renderSize.height];
 		[self setPixelsWide:renderSize.width];
 		[svg_render_context release];
