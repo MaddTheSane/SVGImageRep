@@ -62,6 +62,7 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 	status = svg_parse_buffer(svg, [d bytes], [d length]);
 	if (status != SVG_STATUS_SUCCESS)
 	{
+		[self autorelease];
 		return nil;
 	}
 
@@ -79,6 +80,7 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 		NSSize renderSize = [svg_render_context size];
 		[self setPixelsHigh:renderSize.height];
 		[self setPixelsWide:renderSize.width];
+		[svg_render_context release];
 	}
 
 	return self;
