@@ -41,7 +41,7 @@ extern svg_render_engine_t cocoa_svg_engine;
 
 - (double)lengthToPoints: (svg_length_t *)l;
 
-+ (CGGradientRef)gradientFromSVGGradient:(svg_gradient_t *)gradient;
++ (CGGradientRef)createGradientFromSVGGradient:(svg_gradient_t *)gradient CF_RETURNS_RETAINED;
 
 - (void)arcTo: (double)rx : (double) ry
 			 : (double)x_axis_rotation

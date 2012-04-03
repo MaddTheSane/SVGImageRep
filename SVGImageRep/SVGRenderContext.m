@@ -22,7 +22,7 @@
 
 @synthesize size, states, current, scale, renderLayer;
 
-+ (CGColorRef)colorRefFromSVGColor:(svg_color_t *)c opacity:(CGFloat)alpha
++ (CGColorRef)colorRefFromSVGColor:(svg_color_t *)c opacity:(CGFloat)alpha CF_RETURNS_RETAINED
 {
 	return CGColorCreateGenericRGB(svg_color_get_red(c)/255.0, svg_color_get_green(c)/255.0, svg_color_get_blue(c)/255.0, alpha);
 }
@@ -107,7 +107,7 @@
 - (void)setStrokeColor:(svg_color_t *)c alpha:(CGFloat)alph
 {
 	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
-	CGColorRef tempColor = [SVGRenderContext colorRefFromSVGColor:c opacity:alph];
+	CGColorRef tempColor = [SVGRenderContext createColorRefFromSVGColor:c opacity:alph];
 	CGContextSetStrokeColorWithColor(tempCtx, tempColor);
 	CGColorRelease(tempColor);
 	//CGContextSetRGBStrokeColor(tempCtx, svg_color_get_red(c)/255.0, svg_color_get_green(c)/255.0, svg_color_get_blue(c)/255.0, alph);
@@ -116,13 +116,13 @@
 - (void)setFillColor:(svg_color_t *)c alpha:(CGFloat)alph
 {
 	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
-	CGColorRef tempColor = [SVGRenderContext colorRefFromSVGColor:c opacity:alph];
+	CGColorRef tempColor = [SVGRenderContext createColorRefFromSVGColor:c opacity:alph];
 	CGContextSetFillColorWithColor(tempCtx, tempColor);
 	CGColorRelease(tempColor);
 	//CGContextSetRGBFillColor(tempCtx, svg_color_get_red(c)/255.0, svg_color_get_green(c)/255.0, svg_color_get_blue(c)/255.0, alph);
 }
 
-+ (CGGradientRef)gradientFromSVGGradient:(svg_gradient_t *)gradient
++ (CGGradientRef)createGradientFromSVGGradient:(svg_gradient_t *)gradient CF_RETURNS_RETAINED
 {
 	int numStops = gradient->num_stops;
 	CFMutableArrayRef colorArray = CFArrayCreateMutable(kCFAllocatorDefault, numStops, &kCFTypeArrayCallBacks);
@@ -130,7 +130,7 @@
 	NSInteger i;
 	for (i = 0; i < numStops; i++) {
 		
-		CGColorRef tempColor = [SVGRenderContext colorRefFromSVGColor:&gradient->stops[i].color opacity:gradient->stops[i].opacity];
+		CGColorRef tempColor = [SVGRenderContext createColorRefFromSVGColor:&gradient->stops[i].color opacity:gradient->stops[i].opacity];
 		CFArrayInsertValueAtIndex(colorArray, i, tempColor);
 		CGColorRelease(tempColor);
 		GradStops[i] = gradient->stops[i].offset;
@@ -345,7 +345,7 @@
 		case SVG_PAINT_TYPE_GRADIENT:
 		{
 			CGContextSaveGState(tempCtx);
-			CGGradientRef gradient = [SVGRenderContext gradientFromSVGGradient:current->fill_paint.p.gradient];
+			CGGradientRef gradient = [SVGRenderContext createGradientFromSVGGradient:current->fill_paint.p.gradient];
 			
 			if (rx > 0 || ry > 0)
 			{
@@ -417,7 +417,7 @@
 #warning SVG_PAINT_TYPE_GRADIENT not handled yet!
 			CGContextSaveGState(tempCtx);
 		{
-			CGGradientRef gradient = [SVGRenderContext gradientFromSVGGradient:current->fill_paint.p.gradient];
+			CGGradientRef gradient = [SVGRenderContext createGradientFromSVGGradient:current->fill_paint.p.gradient];
 			CGGradientRelease(gradient);
 		}
 			CGContextRestoreGState(tempCtx);
@@ -556,7 +556,7 @@
 			//I.E.: handle fill_rule.
 			CGContextSaveGState(tempCtx);
 			CGContextClip(tempCtx);
-			CGGradientRef gradient = [SVGRenderContext gradientFromSVGGradient:current->fill_paint.p.gradient];
+			CGGradientRef gradient = [SVGRenderContext createGradientFromSVGGradient:current->fill_paint.p.gradient];
 			
 			switch (current->fill_paint.p.gradient->type) {
 				case SVG_GRADIENT_LINEAR:
@@ -602,7 +602,7 @@
 #warning SVG_PAINT_TYPE_GRADIENT not handled yet!
 			CGContextSaveGState(tempCtx);
 		{
-			CGGradientRef gradient = [SVGRenderContext gradientFromSVGGradient:current->stroke_paint.p.gradient];
+			CGGradientRef gradient = [SVGRenderContext createGradientFromSVGGradient:current->stroke_paint.p.gradient];
 			CGGradientRelease(gradient);
 		}
 			CGContextRestoreGState(tempCtx);
@@ -720,7 +720,7 @@
 			CGContextShowText(tempCtx, utf8, strlen(utf8));
 		{
 			//CGContextClip(tempCtx);
-			CGGradientRef gradient = [SVGRenderContext gradientFromSVGGradient:current->fill_paint.p.gradient];
+			CGGradientRef gradient = [SVGRenderContext createGradientFromSVGGradient:current->fill_paint.p.gradient];
 			
 			switch (current->fill_paint.p.gradient->type) {
 				case SVG_GRADIENT_LINEAR:
@@ -762,7 +762,7 @@
 			CGContextShowText(tempCtx, utf8, strlen(utf8));
 		{
 			//CGContextClip(tempCtx);
-			CGGradientRef gradient = [SVGRenderContext gradientFromSVGGradient:current->stroke_paint.p.gradient];
+			CGGradientRef gradient = [SVGRenderContext createGradientFromSVGGradient:current->stroke_paint.p.gradient];
 			
 			switch (current->stroke_paint.p.gradient->type) {
 				case SVG_GRADIENT_LINEAR:
