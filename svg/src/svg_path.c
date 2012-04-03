@@ -109,7 +109,7 @@ _svg_path_create (svg_path_t **path)
 {
     *path = malloc (sizeof (svg_path_t));
     if (*path == NULL)
-	return SVG_STATUS_NO_MEMORY;
+		return SVG_STATUS_NO_MEMORY;
 
     return _svg_path_init (*path);
 }
@@ -253,16 +253,16 @@ _svg_path_deinit (svg_path_t *path)
     svg_path_arg_buf_t *arg;
 
     while (path->op_head) {
-	op = path->op_head;
-	path->op_head = op->next;
-	_svg_path_op_buf_destroy (op);
+		op = path->op_head;
+		path->op_head = op->next;
+		_svg_path_op_buf_destroy (op);
     }
     path->op_tail = NULL;
 
     while (path->arg_head) {
-	arg = path->arg_head;
-	path->arg_head = arg->next;
-	_svg_path_arg_buf_destroy (arg);
+		arg = path->arg_head;
+		path->arg_head = arg->next;
+		_svg_path_arg_buf_destroy (arg);
     }
     path->arg_tail = NULL;
 
@@ -295,54 +295,54 @@ _svg_path_render (svg_path_t		*path,
     int buf_i = 0;
 
     for (op_buf = path->op_head; op_buf; op_buf = op_buf->next) {
-	for (i=0; i < op_buf->num_ops; i++) {
-	    op = op_buf->op[i];
-
-	    for (j=0; j < SVG_PATH_CMD_INFO[op].num_args; j++) {
-		arg[j] = arg_buf->arg[buf_i];
-		buf_i++;
-		if (buf_i >= arg_buf->num_args) {
-		    arg_buf = arg_buf->next;
-		    buf_i = 0;
+		for (i=0; i < op_buf->num_ops; i++) {
+			op = op_buf->op[i];
+			
+			for (j=0; j < SVG_PATH_CMD_INFO[op].num_args; j++) {
+				arg[j] = arg_buf->arg[buf_i];
+				buf_i++;
+				if (buf_i >= arg_buf->num_args) {
+					arg_buf = arg_buf->next;
+					buf_i = 0;
+				}
+			}
+			
+			switch (op) {
+				case SVG_PATH_OP_MOVE_TO:
+					status = (engine->move_to) (closure, arg[0], arg[1]);
+					break;
+				case SVG_PATH_OP_LINE_TO:
+					status = (engine->line_to) (closure, arg[0], arg[1]);
+					break;
+				case SVG_PATH_OP_CURVE_TO:
+					status = (engine->curve_to) (closure,
+												 arg[0], arg[1],
+												 arg[2], arg[3],
+												 arg[4], arg[5]);
+					break;
+				case SVG_PATH_OP_QUAD_TO:
+					status = (engine->quadratic_curve_to) (closure,
+														   arg[0], arg[1],
+														   arg[2], arg[3]);
+					break;
+				case SVG_PATH_OP_ARC_TO:
+					status = (engine->arc_to) (closure,
+											   arg[0], arg[1],
+											   arg[2], arg[3], arg[4],
+											   arg[5], arg[6]);
+					break;
+				case SVG_PATH_OP_CLOSE_PATH:
+					status = (engine->close_path) (closure);
+					break;
+			}
+			if (status)
+				return status;
 		}
-	    }
-
-	    switch (op) {
-	    case SVG_PATH_OP_MOVE_TO:
-		status = (engine->move_to) (closure, arg[0], arg[1]);
-		break;
-	    case SVG_PATH_OP_LINE_TO:
-		status = (engine->line_to) (closure, arg[0], arg[1]);
-		break;
-	    case SVG_PATH_OP_CURVE_TO:
-		status = (engine->curve_to) (closure,
-					     arg[0], arg[1],
-					     arg[2], arg[3],
-					     arg[4], arg[5]);
-		break;
-	    case SVG_PATH_OP_QUAD_TO:
-		status = (engine->quadratic_curve_to) (closure,
-						       arg[0], arg[1],
-						       arg[2], arg[3]);
-		break;
-	    case SVG_PATH_OP_ARC_TO:
-		status = (engine->arc_to) (closure,
-					   arg[0], arg[1],
-					   arg[2], arg[3], arg[4],
-					   arg[5], arg[6]);
-		break;
-	    case SVG_PATH_OP_CLOSE_PATH:
-		status = (engine->close_path) (closure);
-		break;
-	    }
-	    if (status)
-		return status;
-	}
     }
 
     status = (engine->render_path) (closure);
     if (status)
-	return status;
+		return status;
 
     return SVG_STATUS_SUCCESS;
 }
@@ -394,115 +394,115 @@ _svg_path_add_from_str (svg_path_t *path, const char *path_str)
 
     s = path_str;
     while (*s) {
-	if (_svg_ascii_isspace (*s)) {
-	    s++;
-	    continue;
-	}
+		if (_svg_ascii_isspace (*s)) {
+			s++;
+			continue;
+		}
 
-	status = _svg_path_cmd_info_lookup (s[0], &cmd_info);
-	if (status)
-	    return status;
-	s++;
+		status = _svg_path_cmd_info_lookup (s[0], &cmd_info);
+		if (status)
+			return status;
+		s++;
 
-	while (1) {
-	    status = _svg_str_parse_csv_doubles (s, arg, cmd_info->num_args, &end);
-	    s = end;
-	    if (status == SVGINT_STATUS_ARGS_EXHAUSTED)
-		goto NEXT_CMD;
-	    if (status)
-		return status;
-	    switch (cmd_info->cmd) {
-	    case SVG_PATH_CMD_MOVE_TO:
-		status = _svg_path_move_to (path, arg[0], arg[1]);
-		break;
-	    case SVG_PATH_CMD_REL_MOVE_TO:
-		status = _svg_path_rel_move_to (path, arg[0], arg[1]);
-		break;
-	    case SVG_PATH_CMD_LINE_TO:
-		status = _svg_path_line_to (path, arg[0], arg[1]);
-		break;
-	    case SVG_PATH_CMD_REL_LINE_TO:
-		status = _svg_path_rel_line_to (path, arg[0], arg[1]);
-		break;
-	    case SVG_PATH_CMD_HORIZONTAL_LINE_TO:
-		status = _svg_path_horizontal_line_to (path, arg[0]);
-		break;
-	    case SVG_PATH_CMD_REL_HORIZONTAL_LINE_TO:
-		status = _svg_path_rel_horizontal_line_to (path, arg[0]);
-		break;
-	    case SVG_PATH_CMD_VERTICAL_LINE_TO:
-		status = _svg_path_vertical_line_to (path, arg[0]);
-		break;
-	    case SVG_PATH_CMD_REL_VERTICAL_LINE_TO:
-		status = _svg_path_rel_vertical_line_to (path, arg[0]);
-		break;
-	    case SVG_PATH_CMD_CURVE_TO:
-		status = _svg_path_curve_to (path,
-					     arg[0], arg[1],
-					     arg[2], arg[3],
-					     arg[4], arg[5]);
-		break;
-	    case SVG_PATH_CMD_REL_CURVE_TO:
-		status = _svg_path_rel_curve_to (path,
-						 arg[0], arg[1],
-						 arg[2], arg[3],
-						 arg[4], arg[5]);
-		break;
-	    case SVG_PATH_CMD_SMOOTH_CURVE_TO:
-		status = _svg_path_smooth_curve_to (path,
-						    arg[0], arg[1],
-						    arg[2], arg[3]);
-		break;
-	    case SVG_PATH_CMD_REL_SMOOTH_CURVE_TO:
-		status = _svg_path_rel_smooth_curve_to (path,
-							arg[0], arg[1],
-							arg[2], arg[3]);
-		break;
-	    case SVG_PATH_CMD_QUADRATIC_CURVE_TO:
-		status = _svg_path_quadratic_curve_to (path,
-						       arg[0], arg[1],
-						       arg[2], arg[3]);
-		break;
-	    case SVG_PATH_CMD_REL_QUADRATIC_CURVE_TO:
-		status = _svg_path_rel_quadratic_curve_to (path,
-							   arg[0], arg[1],
-							   arg[2], arg[3]);
-		break;
-	    case SVG_PATH_CMD_SMOOTH_QUADRATIC_CURVE_TO:
-		status = _svg_path_smooth_quadratic_curve_to (path,
-							      arg[0], arg[1]);
-		break;
-	    case SVG_PATH_CMD_REL_SMOOTH_QUADRATIC_CURVE_TO:
-		status = _svg_path_rel_smooth_quadratic_curve_to (path,
-								  arg[0], arg[1]);
-		break;
-	    case SVG_PATH_CMD_ARC_TO:
-		status = _svg_path_arc_to (path,
-					   arg[0], arg[1],
-					   arg[2], arg[3],
-					   arg[4], arg[5],
-					   arg[6]);
-		break;
-	    case SVG_PATH_CMD_REL_ARC_TO:
-		status = _svg_path_rel_arc_to (path,
-					       arg[0], arg[1],
-					       arg[2], arg[3],
-					       arg[4], arg[5],
-					       arg[6]);
-		break;
-	    case SVG_PATH_CMD_CLOSE_PATH:
-		status = _svg_path_close_path (path);
-		goto NEXT_CMD;
-		break;
-	    default:
-		status = SVG_STATUS_PARSE_ERROR;
-		break;
-	    }
-	    if (status)
-		return status;
-	}
+		while (1) {
+			status = _svg_str_parse_csv_doubles (s, arg, cmd_info->num_args, &end);
+			s = end;
+			if (status == SVGINT_STATUS_ARGS_EXHAUSTED)
+				goto NEXT_CMD;
+			if (status)
+				return status;
+			switch (cmd_info->cmd) {
+				case SVG_PATH_CMD_MOVE_TO:
+					status = _svg_path_move_to (path, arg[0], arg[1]);
+					break;
+				case SVG_PATH_CMD_REL_MOVE_TO:
+					status = _svg_path_rel_move_to (path, arg[0], arg[1]);
+					break;
+				case SVG_PATH_CMD_LINE_TO:
+					status = _svg_path_line_to (path, arg[0], arg[1]);
+					break;
+				case SVG_PATH_CMD_REL_LINE_TO:
+					status = _svg_path_rel_line_to (path, arg[0], arg[1]);
+					break;
+				case SVG_PATH_CMD_HORIZONTAL_LINE_TO:
+					status = _svg_path_horizontal_line_to (path, arg[0]);
+					break;
+				case SVG_PATH_CMD_REL_HORIZONTAL_LINE_TO:
+					status = _svg_path_rel_horizontal_line_to (path, arg[0]);
+					break;
+				case SVG_PATH_CMD_VERTICAL_LINE_TO:
+					status = _svg_path_vertical_line_to (path, arg[0]);
+					break;
+				case SVG_PATH_CMD_REL_VERTICAL_LINE_TO:
+					status = _svg_path_rel_vertical_line_to (path, arg[0]);
+					break;
+				case SVG_PATH_CMD_CURVE_TO:
+					status = _svg_path_curve_to (path,
+												 arg[0], arg[1],
+												 arg[2], arg[3],
+												 arg[4], arg[5]);
+					break;
+				case SVG_PATH_CMD_REL_CURVE_TO:
+					status = _svg_path_rel_curve_to (path,
+													 arg[0], arg[1],
+													 arg[2], arg[3],
+													 arg[4], arg[5]);
+					break;
+				case SVG_PATH_CMD_SMOOTH_CURVE_TO:
+					status = _svg_path_smooth_curve_to (path,
+														arg[0], arg[1],
+														arg[2], arg[3]);
+					break;
+				case SVG_PATH_CMD_REL_SMOOTH_CURVE_TO:
+					status = _svg_path_rel_smooth_curve_to (path,
+															arg[0], arg[1],
+															arg[2], arg[3]);
+					break;
+				case SVG_PATH_CMD_QUADRATIC_CURVE_TO:
+					status = _svg_path_quadratic_curve_to (path,
+														   arg[0], arg[1],
+														   arg[2], arg[3]);
+					break;
+				case SVG_PATH_CMD_REL_QUADRATIC_CURVE_TO:
+					status = _svg_path_rel_quadratic_curve_to (path,
+															   arg[0], arg[1],
+															   arg[2], arg[3]);
+					break;
+				case SVG_PATH_CMD_SMOOTH_QUADRATIC_CURVE_TO:
+					status = _svg_path_smooth_quadratic_curve_to (path,
+																  arg[0], arg[1]);
+					break;
+				case SVG_PATH_CMD_REL_SMOOTH_QUADRATIC_CURVE_TO:
+					status = _svg_path_rel_smooth_quadratic_curve_to (path,
+																	  arg[0], arg[1]);
+					break;
+				case SVG_PATH_CMD_ARC_TO:
+					status = _svg_path_arc_to (path,
+											   arg[0], arg[1],
+											   arg[2], arg[3],
+											   arg[4], arg[5],
+											   arg[6]);
+					break;
+				case SVG_PATH_CMD_REL_ARC_TO:
+					status = _svg_path_rel_arc_to (path,
+												   arg[0], arg[1],
+												   arg[2], arg[3],
+												   arg[4], arg[5],
+												   arg[6]);
+					break;
+				case SVG_PATH_CMD_CLOSE_PATH:
+					status = _svg_path_close_path (path);
+					goto NEXT_CMD;
+					break;
+				default:
+					status = SVG_STATUS_PARSE_ERROR;
+					break;
+			}
+			if (status)
+				return status;
+		}
     NEXT_CMD:
-	;
+		;
     }
 
     return SVG_STATUS_SUCCESS;
@@ -545,7 +545,7 @@ _svg_path_add_va (svg_path_t *path, svg_path_op_t op, va_list va)
             return status;
     }
     for (i=0; i < num_args; i++)
-	_svg_path_arg_buf_add (path->arg_tail, va_arg (va, double));
+		_svg_path_arg_buf_add (path->arg_tail, va_arg (va, double));
 
     path->last_path_op = op;
 
@@ -874,9 +874,9 @@ _svg_path_add_op_buf (svg_path_t *path, svg_path_op_buf_t *op)
     op->prev = path->op_tail;
 
     if (path->op_tail) {
-	path->op_tail->next = op;
+		path->op_tail->next = op;
     } else {
-	path->op_head = op;
+		path->op_head = op;
     }
 
     path->op_tail = op;
@@ -889,7 +889,7 @@ _svg_path_new_op_buf (svg_path_t *path)
 
     op = _svg_path_op_buf_create ();
     if (op == NULL)
-	return SVG_STATUS_NO_MEMORY;
+		return SVG_STATUS_NO_MEMORY;
 
     _svg_path_add_op_buf (path, op);
 
@@ -903,9 +903,9 @@ _svg_path_add_arg_buf (svg_path_t *path, svg_path_arg_buf_t *arg)
     arg->prev = path->arg_tail;
 
     if (path->arg_tail) {
-	path->arg_tail->next = arg;
+		path->arg_tail->next = arg;
     } else {
-	path->arg_head = arg;
+		path->arg_head = arg;
     }
 
     path->arg_tail = arg;
@@ -921,7 +921,7 @@ _svg_path_new_arg_buf (svg_path_t *path)
     arg = _svg_path_arg_buf_create ();
 
     if (arg == NULL)
-	return SVG_STATUS_NO_MEMORY;
+		return SVG_STATUS_NO_MEMORY;
 
     _svg_path_add_arg_buf (path, arg);
 
@@ -936,8 +936,8 @@ _svg_path_op_buf_create (void)
     op = malloc( sizeof (svg_path_op_buf_t));
 
     if (op) {
-	op->num_ops = 0;
-	op->next = NULL;
+		op->num_ops = 0;
+		op->next = NULL;
     }
 
     return op;
@@ -967,8 +967,8 @@ _svg_path_arg_buf_create (void)
     arg_buf = malloc (sizeof (svg_path_arg_buf_t));
 
     if (arg_buf) {
-	arg_buf->num_args = 0;
-	arg_buf->next = NULL;
+		arg_buf->num_args = 0;
+		arg_buf->next = NULL;
     }
 
     return arg_buf;

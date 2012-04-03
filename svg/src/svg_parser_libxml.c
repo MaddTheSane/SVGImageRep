@@ -113,12 +113,18 @@ _svg_parser_begin (svg_parser_t *parser)
     parser->status = SVG_STATUS_SUCCESS;
 
     if (parser->ctxt)
-	parser->status = SVG_STATUS_INVALID_CALL;
+	{
+		parser->status = SVG_STATUS_INVALID_CALL;
+		return parser->status;
+	}
 
     parser->ctxt = xmlCreatePushParserCtxt (&SVG_PARSER_SAX_HANDLER,
 					    parser, NULL, 0, NULL);
     if (parser->ctxt == NULL)
-	parser->status = SVG_STATUS_NO_MEMORY;
+	{
+		parser->status = SVG_STATUS_NO_MEMORY;
+		return parser->status;
+	}
 
     parser->ctxt->replaceEntities = 1;
 
@@ -130,10 +136,10 @@ svg_status_t
 _svg_parser_parse_chunk (svg_parser_t *parser, const char *buf, size_t count)
 {
     if (parser->status)
-	return parser->status;
+		return parser->status;
 
     if (parser->ctxt == NULL)
-	return SVG_STATUS_INVALID_CALL;
+		return SVG_STATUS_INVALID_CALL;
 
     xmlParseChunk (parser->ctxt, buf, count, 0);
 
@@ -180,36 +186,36 @@ _svg_parser_sax_entity_decl (void		*closure,
 {
     svg_parser_t *parser = closure;
     xmlEntityPtr entity;
-
+	
     entity = malloc (sizeof(xmlEntity));
-
+	
     entity->type = XML_ENTITY_DECL;
     entity->name = xmlStrdup (name);
     entity->etype = type;
     if (publicId)
-	entity->ExternalID = xmlStrdup (publicId);
+		entity->ExternalID = xmlStrdup (publicId);
     else
-	entity->ExternalID = NULL;
+		entity->ExternalID = NULL;
     if (systemId)
-	entity->SystemID = xmlStrdup (systemId);
+		entity->SystemID = xmlStrdup (systemId);
     else
-	entity->SystemID = NULL;
-
+		entity->SystemID = NULL;
+	
     if (content) {
-	entity->length = xmlStrlen (content);
-	entity->content = xmlStrndup (content, entity->length);
+		entity->length = xmlStrlen (content);
+		entity->content = xmlStrndup (content, entity->length);
     } else {
-	entity->length = 0;
-	entity->content = NULL;
+		entity->length = 0;
+		entity->content = NULL;
     }
     entity->URI = NULL;
     entity->orig = NULL;
     entity->owner = 0;
     entity->children = NULL;
-
+	
     if (xmlHashAddEntry (parser->entities, name, entity)) {
-	/* Entity was already defined at another level. */
-	free (entity);
+		/* Entity was already defined at another level. */
+		free (entity);
     }
 }
 
