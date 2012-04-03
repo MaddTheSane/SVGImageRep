@@ -1,6 +1,6 @@
 /* svg_pattern.c: Data structures for SVG pattern elements
  
-   Copyright © 2002 USC/Information Sciences Institute
+   Copyright Â© 2002 USC/Information Sciences Institute
   
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as

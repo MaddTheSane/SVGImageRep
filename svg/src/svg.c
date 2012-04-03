@@ -1,6 +1,6 @@
 /* libsvg - Library for parsing/rendering SVG documents
 
-   Copyright © 2002 USC/Information Sciences Institute
+   Copyright Â© 2002 USC/Information Sciences Institute
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as

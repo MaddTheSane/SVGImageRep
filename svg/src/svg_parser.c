@@ -1,8 +1,8 @@
 /* svg_parser.c: SAX-based parser for SVG documents
 
-   Copyright © 2000 Eazel, Inc.
-   Copyright © 2002 Dom Lachowicz <cinamod@hotmail.com>
-   Copyright © 2002 USC/Information Sciences Institute
+   Copyright Â© 2000 Eazel, Inc.
+   Copyright Â© 2002 Dom Lachowicz <cinamod@hotmail.com>
+   Copyright Â© 2002 USC/Information Sciences Institute
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
