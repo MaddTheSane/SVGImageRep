@@ -27,7 +27,7 @@ _svg_str_skip_space (const char **str)
 {
     const char *s = *str;
     while (_svg_ascii_isspace (*s))
-	s++;
+		s++;
     *str = s;
 }
 
@@ -36,7 +36,7 @@ _svg_str_skip_char (const char **str, char c)
 {
     const char *s = *str;
     while (*s == c)
-	s++;
+		s++;
     *str = s;
 }
 
@@ -45,7 +45,7 @@ _svg_str_skip_space_or_char (const char **str, char c)
 {
     const char *s = *str;
     while (_svg_ascii_isspace (*s) || *s == c)
-	s++;
+		s++;
     *str = s;
 }
 
@@ -58,25 +58,25 @@ _svg_str_parse_csv_doubles (const char *str, double *value, int num_values, cons
     svg_status_t status = SVG_STATUS_SUCCESS;
 
     for (i=0; i < num_values; i++) {
-	_svg_str_skip_space_or_char (&str, ',');
-	if (*str == '\0') {
-	    fail_pos = str;
-	    status = SVGINT_STATUS_ARGS_EXHAUSTED;
-	    break;
-	}
+		_svg_str_skip_space_or_char (&str, ',');
+		if (*str == '\0') {
+			fail_pos = str;
+			status = SVGINT_STATUS_ARGS_EXHAUSTED;
+			break;
+		}
 
-	val = _svg_ascii_strtod (str, &fail_pos);
-	if (fail_pos == str) {
-	    status = SVGINT_STATUS_ARGS_EXHAUSTED;
-	    break;
-	}
-	str = fail_pos;
+		val = _svg_ascii_strtod (str, &fail_pos);
+		if (fail_pos == str) {
+			status = SVGINT_STATUS_ARGS_EXHAUSTED;
+			break;
+		}
+		str = fail_pos;
 
-	value[i] = val;
+		value[i] = val;
     }
 
     if (end)
-	*end = fail_pos;
+		*end = fail_pos;
     return status;
 }
 
@@ -89,24 +89,24 @@ _svg_str_parse_all_csv_doubles (const char *str, double **value, int *num_values
     *value = NULL;
 
     while (1) {
-	if (*num_values >= size) {
-	    while (*num_values >= size)
-		size = size ? size * 2 : 5;
-	    *value = realloc(*value, size * sizeof(double));
-	    if (*value == NULL)
-		status = SVG_STATUS_NO_MEMORY;
-	}
+		if (*num_values >= size) {
+			while (*num_values >= size)
+				size = size ? size * 2 : 5;
+			*value = realloc(*value, size * sizeof(double));
+			if (*value == NULL)
+				status = SVG_STATUS_NO_MEMORY;
+		}
 
-	status = _svg_str_parse_csv_doubles (str, *value + *num_values, 1, end);
-	if (status)
-	    break;
+		status = _svg_str_parse_csv_doubles (str, *value + *num_values, 1, end);
+		if (status)
+			break;
 
-	(*num_values)++;
-	str = *end;
+		(*num_values)++;
+		str = *end;
     }
 
     if (status == SVGINT_STATUS_ARGS_EXHAUSTED)
-	status = SVG_STATUS_SUCCESS;
+		status = SVG_STATUS_SUCCESS;
     
     return status;
 }

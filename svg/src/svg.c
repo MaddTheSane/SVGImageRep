@@ -38,7 +38,7 @@ svg_create (svg_t **svg)
 {
     *svg = malloc (sizeof (svg_t));
     if (*svg == NULL) {
-	return SVG_STATUS_NO_MEMORY;
+		return SVG_STATUS_NO_MEMORY;
     }
 
     return _svg_init (*svg);
@@ -69,7 +69,7 @@ _svg_deinit (svg_t *svg)
     svg->dir_name = NULL;
 
     if (svg->group_element)
-	_svg_element_destroy (svg->group_element);
+		_svg_element_destroy (svg->group_element);
 
     _svg_parser_deinit (&svg->parser);
 
@@ -102,35 +102,35 @@ svg_parse_file (svg_t *svg, FILE *file)
 
     zfile = gzdopen (dup(fileno(file)), "r");
     if (zfile == NULL) {
-	switch (errno) {
-	case ENOMEM:
-	    return SVG_STATUS_NO_MEMORY;
-	case ENOENT:
-	    return SVG_STATUS_FILE_NOT_FOUND;
-	default:
-	    return SVG_STATUS_IO_ERROR;
-	}
+		switch (errno) {
+			case ENOMEM:
+				return SVG_STATUS_NO_MEMORY;
+			case ENOENT:
+				return SVG_STATUS_FILE_NOT_FOUND;
+			default:
+				return SVG_STATUS_IO_ERROR;
+		}
     }
 
     status = svg_parse_chunk_begin (svg);
     if (status)
-	goto CLEANUP;
+		goto CLEANUP;
 
     while (! gzeof (zfile)) {
-	read = gzread (zfile, buf, SVG_PARSE_BUFFER_SIZE);
-	if (read > -1) {
-	    status = svg_parse_chunk (svg, buf, read);
-	    if (status)
-		goto CLEANUP;
-	} else {
-	    status = SVG_STATUS_IO_ERROR;
-	    goto CLEANUP;
-	}
+		read = gzread (zfile, buf, SVG_PARSE_BUFFER_SIZE);
+		if (read > -1) {
+			status = svg_parse_chunk (svg, buf, read);
+			if (status)
+				goto CLEANUP;
+		} else {
+			status = SVG_STATUS_IO_ERROR;
+			goto CLEANUP;
+		}
     }
 
     status = svg_parse_chunk_end (svg);
 
- CLEANUP:
+CLEANUP:
     gzclose (zfile);
     return status;
 }
@@ -150,14 +150,14 @@ svg_parse (svg_t *svg, const char *filename)
 
     file = fopen (filename, "r");
     if (file == NULL) {
-	switch (errno) {
-	case ENOMEM:
-	    return SVG_STATUS_NO_MEMORY;
-	case ENOENT:
-	    return SVG_STATUS_FILE_NOT_FOUND;
-	default:
-	    return SVG_STATUS_IO_ERROR;
-	}
+		switch (errno) {
+			case ENOMEM:
+				return SVG_STATUS_NO_MEMORY;
+			case ENOENT:
+				return SVG_STATUS_FILE_NOT_FOUND;
+			default:
+				return SVG_STATUS_IO_ERROR;
+		}
     }
     status = svg_parse_file (svg, file);
     fclose (file);
@@ -171,11 +171,11 @@ svg_parse_buffer (svg_t *svg, const char *buf, size_t count)
 
     status = svg_parse_chunk_begin (svg);
     if (status)
-	return status;
+		return status;
 
     status = svg_parse_chunk (svg, buf, count);
     if (status)
-	return status;
+		return status;
 
     status = svg_parse_chunk_end (svg);
 
@@ -202,14 +202,14 @@ svg_parse_chunk_end (svg_t *svg)
 
 svg_status_t
 svg_render (svg_t		*svg,
-	    svg_render_engine_t	*engine,
-	    void		*closure)
+			svg_render_engine_t	*engine,
+			void		*closure)
 {
     svg_status_t status;
     char orig_dir[MAXPATHLEN];
 
     if (svg->group_element == NULL)
-	return SVG_STATUS_SUCCESS;
+		return SVG_STATUS_SUCCESS;
 
     /* TODO: Currently, the SVG parser doesn't resolve relative URLs
        properly, so I'll just cheese things in by changing the current
@@ -230,9 +230,9 @@ svg_status_t
 _svg_store_element_by_id (svg_t *svg, svg_element_t *element)
 {
     _svg_xml_hash_add_entry (svg->element_ids,
-			     (unsigned char *)element->id,
-			     element);
-
+							 (unsigned char *)element->id,
+							 element);
+	
     return SVG_STATUS_SUCCESS;
 }
 
@@ -240,7 +240,7 @@ svg_status_t
 _svg_fetch_element_by_id (svg_t *svg, const char *id, svg_element_t **element_ret)
 {
     *element_ret = _svg_xml_hash_lookup (svg->element_ids, (unsigned char *)id);
-
+	
     return SVG_STATUS_SUCCESS;
 }
 
@@ -248,9 +248,9 @@ void
 svg_get_size (svg_t *svg, svg_length_t *width, svg_length_t *height)
 {
     if (svg->group_element) {
-	_svg_group_get_size (&svg->group_element->e.group, width, height);
+		_svg_group_get_size (&svg->group_element->e.group, width, height);
     } else {
-	_svg_length_init (width, 0.0);
-	_svg_length_init (height, 0.0);
+		_svg_length_init (width, 0.0);
+		_svg_length_init (height, 0.0);
     }
 }

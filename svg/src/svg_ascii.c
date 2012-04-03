@@ -45,23 +45,23 @@
 #include <string.h>
 
 static const uint16_t svg_ascii_table_data[256] = {
-  0x004, 0x004, 0x004, 0x004, 0x004, 0x004, 0x004, 0x004,
-  0x004, 0x104, 0x104, 0x004, 0x104, 0x104, 0x004, 0x004,
-  0x004, 0x004, 0x004, 0x004, 0x004, 0x004, 0x004, 0x004,
-  0x004, 0x004, 0x004, 0x004, 0x004, 0x004, 0x004, 0x004,
-  0x140, 0x0d0, 0x0d0, 0x0d0, 0x0d0, 0x0d0, 0x0d0, 0x0d0,
-  0x0d0, 0x0d0, 0x0d0, 0x0d0, 0x0d0, 0x0d0, 0x0d0, 0x0d0,
-  0x459, 0x459, 0x459, 0x459, 0x459, 0x459, 0x459, 0x459,
-  0x459, 0x459, 0x0d0, 0x0d0, 0x0d0, 0x0d0, 0x0d0, 0x0d0,
-  0x0d0, 0x653, 0x653, 0x653, 0x653, 0x653, 0x653, 0x253,
-  0x253, 0x253, 0x253, 0x253, 0x253, 0x253, 0x253, 0x253,
-  0x253, 0x253, 0x253, 0x253, 0x253, 0x253, 0x253, 0x253,
-  0x253, 0x253, 0x253, 0x0d0, 0x0d0, 0x0d0, 0x0d0, 0x0d0,
-  0x0d0, 0x473, 0x473, 0x473, 0x473, 0x473, 0x473, 0x073,
-  0x073, 0x073, 0x073, 0x073, 0x073, 0x073, 0x073, 0x073,
-  0x073, 0x073, 0x073, 0x073, 0x073, 0x073, 0x073, 0x073,
-  0x073, 0x073, 0x073, 0x0d0, 0x0d0, 0x0d0, 0x0d0, 0x004
-  /* the upper 128 are all zeroes */
+	0x004, 0x004, 0x004, 0x004, 0x004, 0x004, 0x004, 0x004,
+	0x004, 0x104, 0x104, 0x004, 0x104, 0x104, 0x004, 0x004,
+	0x004, 0x004, 0x004, 0x004, 0x004, 0x004, 0x004, 0x004,
+	0x004, 0x004, 0x004, 0x004, 0x004, 0x004, 0x004, 0x004,
+	0x140, 0x0d0, 0x0d0, 0x0d0, 0x0d0, 0x0d0, 0x0d0, 0x0d0,
+	0x0d0, 0x0d0, 0x0d0, 0x0d0, 0x0d0, 0x0d0, 0x0d0, 0x0d0,
+	0x459, 0x459, 0x459, 0x459, 0x459, 0x459, 0x459, 0x459,
+	0x459, 0x459, 0x0d0, 0x0d0, 0x0d0, 0x0d0, 0x0d0, 0x0d0,
+	0x0d0, 0x653, 0x653, 0x653, 0x653, 0x653, 0x653, 0x253,
+	0x253, 0x253, 0x253, 0x253, 0x253, 0x253, 0x253, 0x253,
+	0x253, 0x253, 0x253, 0x253, 0x253, 0x253, 0x253, 0x253,
+	0x253, 0x253, 0x253, 0x0d0, 0x0d0, 0x0d0, 0x0d0, 0x0d0,
+	0x0d0, 0x473, 0x473, 0x473, 0x473, 0x473, 0x473, 0x073,
+	0x073, 0x073, 0x073, 0x073, 0x073, 0x073, 0x073, 0x073,
+	0x073, 0x073, 0x073, 0x073, 0x073, 0x073, 0x073, 0x073,
+	0x073, 0x073, 0x073, 0x0d0, 0x0d0, 0x0d0, 0x0d0, 0x004
+	/* the upper 128 are all zeroes */
 };
 
 const uint16_t * const svg_ascii_table = svg_ascii_table_data;
@@ -95,127 +95,127 @@ const uint16_t * const svg_ascii_table = svg_ascii_table_data;
  **/
 double
 _svg_ascii_strtod (const char  *nptr,
-		   const char **endptr)
+				   const char **endptr)
 {
-  char *fail_pos;
-  double val;
-  struct lconv *locale_data;
-  const char *decimal_point;
-  int decimal_point_len;
-  const char *p, *decimal_point_pos;
-  const char *end = NULL; /* Silence gcc */
+	char *fail_pos;
+	double val;
+	struct lconv *locale_data;
+	const char *decimal_point;
+	int decimal_point_len;
+	const char *p, *decimal_point_pos;
+	const char *end = NULL; /* Silence gcc */
 
-  if (nptr == NULL)
-      return 0;
+	if (nptr == NULL)
+		return 0;
 
-  fail_pos = NULL;
+	fail_pos = NULL;
 
-  locale_data = localeconv ();
-  decimal_point = locale_data->decimal_point;
-  decimal_point_len = strlen (decimal_point);
-  
-  decimal_point_pos = NULL;
-  if (decimal_point[0] != '.' ||
-      decimal_point[1] != 0)
+	locale_data = localeconv ();
+	decimal_point = locale_data->decimal_point;
+	decimal_point_len = strlen (decimal_point);
+
+	decimal_point_pos = NULL;
+	if (decimal_point[0] != '.' ||
+		decimal_point[1] != 0)
     {
-      p = nptr;
-      /* Skip leading space */
-      while (_svg_ascii_isspace (*p))
-	p++;
-      
-      /* Skip leading optional sign */
-      if (*p == '+' || *p == '-')
-	p++;
-      
-      if (p[0] == '0' &&
-	  (p[1] == 'x' || p[1] == 'X'))
-	{
-	  p += 2;
-	  /* HEX - find the (optional) decimal point */
-	  
-	  while (_svg_ascii_isxdigit (*p))
-	    p++;
-	  
-	  if (*p == '.')
-	    {
-	      decimal_point_pos = p++;
-	      
-	      while (_svg_ascii_isxdigit (*p))
-		p++;
-	      
-	      if (*p == 'p' || *p == 'P')
-		p++;
-	      if (*p == '+' || *p == '-')
-		p++;
-	      while (_svg_ascii_isdigit (*p))
-		p++;
-	      end = p;
-	    }
-	}
-      else
-	{
-	  while (_svg_ascii_isdigit (*p))
-	    p++;
-	  
-	  if (*p == '.')
-	    {
-	      decimal_point_pos = p++;
-	      
-	      while (_svg_ascii_isdigit (*p))
-		p++;
-	      
-	      if (*p == 'e' || *p == 'E')
-		p++;
-	      if (*p == '+' || *p == '-')
-		p++;
-	      while (_svg_ascii_isdigit (*p))
-		p++;
-	      end = p;
-	    }
-	}
-      /* For the other cases, we need not convert the decimal point */
+		p = nptr;
+		/* Skip leading space */
+		while (_svg_ascii_isspace (*p))
+			p++;
+		
+		/* Skip leading optional sign */
+		if (*p == '+' || *p == '-')
+			p++;
+		
+		if (p[0] == '0' &&
+			(p[1] == 'x' || p[1] == 'X'))
+		{
+			p += 2;
+			/* HEX - find the (optional) decimal point */
+			
+			while (_svg_ascii_isxdigit (*p))
+				p++;
+			
+			if (*p == '.')
+			{
+				decimal_point_pos = p++;
+				
+				while (_svg_ascii_isxdigit (*p))
+					p++;
+				
+				if (*p == 'p' || *p == 'P')
+					p++;
+				if (*p == '+' || *p == '-')
+					p++;
+				while (_svg_ascii_isdigit (*p))
+					p++;
+				end = p;
+			}
+		}
+		else
+		{
+			while (_svg_ascii_isdigit (*p))
+				p++;
+			
+			if (*p == '.')
+			{
+				decimal_point_pos = p++;
+				
+				while (_svg_ascii_isdigit (*p))
+					p++;
+				
+				if (*p == 'e' || *p == 'E')
+					p++;
+				if (*p == '+' || *p == '-')
+					p++;
+				while (_svg_ascii_isdigit (*p))
+					p++;
+				end = p;
+			}
+		}
+		/* For the other cases, we need not convert the decimal point */
     }
 
-  /* Set errno to zero, so that we can distinguish zero results
+	/* Set errno to zero, so that we can distinguish zero results
      and underflows */
-  errno = 0;
-  
-  if (decimal_point_pos)
+	errno = 0;
+	
+	if (decimal_point_pos)
     {
-      char *copy, *c;
+		char *copy, *c;
 
-      /* We need to convert the '.' to the locale specific decimal point */
-      copy = malloc (end - nptr + 1 + decimal_point_len);
-      
-      c = copy;
-      memcpy (c, nptr, decimal_point_pos - nptr);
-      c += decimal_point_pos - nptr;
-      memcpy (c, decimal_point, decimal_point_len);
-      c += decimal_point_len;
-      memcpy (c, decimal_point_pos + 1, end - (decimal_point_pos + 1));
-      c += end - (decimal_point_pos + 1);
-      *c = 0;
+		/* We need to convert the '.' to the locale specific decimal point */
+		copy = malloc (end - nptr + 1 + decimal_point_len);
+		
+		c = copy;
+		memcpy (c, nptr, decimal_point_pos - nptr);
+		c += decimal_point_pos - nptr;
+		memcpy (c, decimal_point, decimal_point_len);
+		c += decimal_point_len;
+		memcpy (c, decimal_point_pos + 1, end - (decimal_point_pos + 1));
+		c += end - (decimal_point_pos + 1);
+		*c = 0;
 
-      val = strtod (copy, &fail_pos);
+		val = strtod (copy, &fail_pos);
 
-      if (fail_pos)
-	{
-	  if (fail_pos > decimal_point_pos)
-	    fail_pos = (char *)nptr + (fail_pos - copy) - (decimal_point_len - 1);
-	  else
-	    fail_pos = (char *)nptr + (fail_pos - copy);
-	}
-      
-      free (copy);
-	  
+		if (fail_pos)
+		{
+			if (fail_pos > decimal_point_pos)
+				fail_pos = (char *)nptr + (fail_pos - copy) - (decimal_point_len - 1);
+			else
+				fail_pos = (char *)nptr + (fail_pos - copy);
+		}
+		
+		free (copy);
+		
     }
-  else
-    val = strtod (nptr, &fail_pos);
+	else
+		val = strtod (nptr, &fail_pos);
 
-  if (endptr)
-    *endptr = fail_pos;
-  
-  return val;
+	if (endptr)
+		*endptr = fail_pos;
+	
+	return val;
 }
 
 /**
@@ -239,7 +239,7 @@ _svg_ascii_strtod (const char  *nptr,
 char
 _svg_ascii_tolower (char c)
 {
-  return _svg_ascii_isupper (c) ? c - 'A' + 'a' : c;
+	return _svg_ascii_isupper (c) ? c - 'A' + 'a' : c;
 }
 
 /**
@@ -263,7 +263,7 @@ _svg_ascii_tolower (char c)
 char
 _svg_ascii_toupper (char c)
 {
-  return _svg_ascii_islower (c) ? c - 'a' + 'A' : c;
+	return _svg_ascii_islower (c) ? c - 'a' + 'A' : c;
 }
 
 /**
@@ -281,9 +281,9 @@ _svg_ascii_toupper (char c)
 int
 _svg_ascii_digit_value (char c)
 {
-  if (_svg_ascii_isdigit (c))
-    return c - '0';
-  return -1;
+	if (_svg_ascii_isdigit (c))
+		return c - '0';
+	return -1;
 }
 
 /**
@@ -301,11 +301,11 @@ _svg_ascii_digit_value (char c)
 int
 _svg_ascii_xdigit_value (char c)
 {
-  if (c >= 'A' && c <= 'F')
-    return c - 'A' + 10;
-  if (c >= 'a' && c <= 'f')
-    return c - 'a' + 10;
-  return _svg_ascii_digit_value (c);
+	if (c >= 'A' && c <= 'F')
+		return c - 'A' + 10;
+	if (c >= 'a' && c <= 'f')
+		return c - 'a' + 10;
+	return _svg_ascii_digit_value (c);
 }
 
 /**
@@ -325,23 +325,23 @@ _svg_ascii_xdigit_value (char c)
  **/
 int
 _svg_ascii_strcasecmp (const char *s1,
-		       const char *s2)
+					   const char *s2)
 {
-  int c1, c2;
+	int c1, c2;
 
-  if (s1 == NULL || s2 == NULL)
-      return 0;
+	if (s1 == NULL || s2 == NULL)
+		return 0;
 
-  while (*s1 && *s2)
+	while (*s1 && *s2)
     {
-      c1 = (int)(unsigned char) _svg_ascii_tolower (*s1);
-      c2 = (int)(unsigned char) _svg_ascii_tolower (*s2);
-      if (c1 != c2)
-	return (c1 - c2);
-      s1++; s2++;
+		c1 = (int)(unsigned char) _svg_ascii_tolower (*s1);
+		c2 = (int)(unsigned char) _svg_ascii_tolower (*s2);
+		if (c1 != c2)
+			return (c1 - c2);
+		s1++; s2++;
     }
 
-  return (((int)(unsigned char) *s1) - ((int)(unsigned char) *s2));
+	return (((int)(unsigned char) *s1) - ((int)(unsigned char) *s2));
 }
 
 /**
@@ -364,26 +364,26 @@ _svg_ascii_strcasecmp (const char *s1,
  **/
 int
 _svg_ascii_strncasecmp (const char *s1,
-			const char *s2,
-			size_t	   n)
+						const char *s2,
+						size_t	   n)
 {
-  int c1, c2;
+	int c1, c2;
 
-  if (s1 == NULL || s2 == NULL)
-      return 0;
+	if (s1 == NULL || s2 == NULL)
+		return 0;
 
-  while (n && *s1 && *s2)
+	while (n && *s1 && *s2)
     {
-      n -= 1;
-      c1 = (int)(unsigned char) _svg_ascii_tolower (*s1);
-      c2 = (int)(unsigned char) _svg_ascii_tolower (*s2);
-      if (c1 != c2)
-	return (c1 - c2);
-      s1++; s2++;
+		n -= 1;
+		c1 = (int)(unsigned char) _svg_ascii_tolower (*s1);
+		c2 = (int)(unsigned char) _svg_ascii_tolower (*s2);
+		if (c1 != c2)
+			return (c1 - c2);
+		s1++; s2++;
     }
-
-  if (n)
-    return (((int) (unsigned char) *s1) - ((int) (unsigned char) *s2));
-  else
-    return 0;
+	
+	if (n)
+		return (((int) (unsigned char) *s1) - ((int) (unsigned char) *s2));
+	else
+		return 0;
 }

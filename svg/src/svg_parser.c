@@ -189,40 +189,40 @@ _svg_parser_sax_start_element (void		*closure,
     const char **attributes = (const char **) attributes_unsigned;
 
     if (parser->unknown_element_depth) {
-	parser->unknown_element_depth++;
-	return;
+		parser->unknown_element_depth++;
+		return;
     }
 
     cb = NULL;
     for (i=0; i < SVG_ARRAY_SIZE (SVG_PARSER_MAP); i++) {
-	if (strcmp (SVG_PARSER_MAP[i].name, name) == 0) {
-	    cb = &SVG_PARSER_MAP[i].cb;
-	    break;
-	}
+		if (strcmp (SVG_PARSER_MAP[i].name, name) == 0) {
+			cb = &SVG_PARSER_MAP[i].cb;
+			break;
+		}
     }
 
     if (cb == NULL) {
-	parser->unknown_element_depth++;
-	return;
+		parser->unknown_element_depth++;
+		return;
     }
 
     parser->status = _svg_parser_push_state (parser, cb);
     if (parser->status)
-	return;
+		return;
 
     parser->status = (cb->parse_element) (parser, attributes, &element);
     if (parser->status) {
-	if (parser->status == SVGINT_STATUS_UNKNOWN_ELEMENT)
-	    parser->status = SVG_STATUS_SUCCESS;
-	return;
+		if (parser->status == SVGINT_STATUS_UNKNOWN_ELEMENT)
+			parser->status = SVG_STATUS_SUCCESS;
+		return;
     }
 
     parser->status = _svg_element_apply_attributes (element, attributes);
     if (parser->status)
-	return;
+		return;
 
     if (element->id)
-	_svg_store_element_by_id (parser->svg, element);
+		_svg_store_element_by_id (parser->svg, element);
 
     return;
 }
@@ -234,13 +234,13 @@ _svg_parser_sax_end_element (void		*closure,
     svg_parser_t *parser = closure;
 
     if (parser->unknown_element_depth) {
-	parser->unknown_element_depth--;
-	return;
+		parser->unknown_element_depth--;
+		return;
     }
 
     parser->status = _svg_parser_pop_state (parser);
     if (parser->status)
-	return;
+		return;
 
     return;
 }
@@ -262,29 +262,29 @@ _svg_parser_sax_characters (void		*closure,
      */
     ch_copy = malloc (len);
     if (ch_copy == NULL)
-	return;
+		return;
 
     dst = ch_copy;
     space = 0;
     for (src=ch, i=0; i < len; i++, src++) {
-	if (*src == '\n')
-	    continue;
-	if (*src == '\t' || *src == ' ') {
-	    if (space)
-		continue;
-	    *dst = ' ';
-	    space = 1;
-	} else {
-	    *dst = *src;
-	    space = 0;
-	}
-	dst++;
+		if (*src == '\n')
+			continue;
+		if (*src == '\t' || *src == ' ') {
+			if (space)
+				continue;
+			*dst = ' ';
+			space = 1;
+		} else {
+			*dst = *src;
+			space = 0;
+		}
+		dst++;
     }
 
     if (parser->state->cb->parse_characters) {
-	parser->status = (parser->state->cb->parse_characters) (parser, ch_copy, dst - ch_copy);
-	if (parser->status)
-	    return;
+		parser->status = (parser->state->cb->parse_characters) (parser, ch_copy, dst - ch_copy);
+		if (parser->status)
+			return;
     }
 
     free (ch_copy);
@@ -301,13 +301,13 @@ _svg_parser_push_state (svg_parser_t		*parser,
 
     state = malloc (sizeof (svg_parser_state_t));
     if (state == NULL)
-	return SVG_STATUS_NO_MEMORY;
+		return SVG_STATUS_NO_MEMORY;
 
     if (parser->state) {
-	*state = *parser->state;
+		*state = *parser->state;
     } else {
-	state->group_element = NULL;
-	state->text = NULL;
+		state->group_element = NULL;
+		state->text = NULL;
     }
 
     state->cb = cb;
@@ -324,7 +324,7 @@ _svg_parser_pop_state (svg_parser_t *parser)
     svg_parser_state_t *old;
 
     if (parser->state == NULL)
-	return SVG_STATUS_SUCCESS;
+		return SVG_STATUS_SUCCESS;
 
     old = parser->state;
     parser->state = parser->state->next;
@@ -342,17 +342,17 @@ _svg_parser_new_svg_group_element (svg_parser_t *parser, svg_element_t **group_e
     parent = parser->state->group_element;
 
     status = _svg_element_create (group_element,
-				  SVG_ELEMENT_TYPE_SVG_GROUP,
-				  parent,
-				  parser->svg);
+								  SVG_ELEMENT_TYPE_SVG_GROUP,
+								  parent,
+								  parser->svg);
     if (status)
 	    return status;
 
     if (parent) {
-	status = _svg_group_add_element (&parent->e.group, *group_element);
+		status = _svg_group_add_element (&parent->e.group, *group_element);
     } else {
-	_svg_style_init_defaults (&(*group_element)->style, parser->svg);
-	parser->svg->group_element = *group_element;
+		_svg_style_init_defaults (&(*group_element)->style, parser->svg);
+		parser->svg->group_element = *group_element;
     }
 
     parser->state->group_element = *group_element;
@@ -369,7 +369,7 @@ _svg_parser_new_group_element (svg_parser_t *parser,
 
     status = _svg_parser_new_leaf_element (parser, group_element, type);
     if (status)
-	return status;
+		return status;
 
     /* The only thing that distinguishes a group from a leaf is that
        the group becomes the new parent for future elements. */
@@ -389,12 +389,12 @@ _svg_parser_new_leaf_element (svg_parser_t *parser,
 				  parser->state->group_element,
 				  parser->svg);
     if (status)
-	return status;
+		return status;
 
     status = _svg_group_add_element (&parser->state->group_element->e.group,
 				     *child_element);
     if (status)
-	return status;
+		return status;
 
     return SVG_STATUS_SUCCESS;
 }
@@ -488,24 +488,24 @@ _svg_parser_parse_rect (svg_parser_t	*parser,
 
     status = _svg_parser_new_leaf_element (parser, path_element, SVG_ELEMENT_TYPE_RECT);
     if (status)
-	return SVG_STATUS_PARSE_ERROR;
-
+		return SVG_STATUS_PARSE_ERROR;
+	
     _svg_attribute_get_length (attributes, "x", &((*path_element)->e.rect.x), "0");
     _svg_attribute_get_length (attributes, "y", &((*path_element)->e.rect.y), "0");
     _svg_attribute_get_length (attributes, "width", &((*path_element)->e.rect.width), "0");
     _svg_attribute_get_length (attributes, "height", &((*path_element)->e.rect.height), "0");
     status = _svg_attribute_get_length (attributes, "rx", &((*path_element)->e.rect.rx), "0");
     if (status == SVG_STATUS_SUCCESS)
-	has_rx = 1;
+		has_rx = 1;
     status = _svg_attribute_get_length (attributes, "ry", &((*path_element)->e.rect.ry), "0");
     if (status == SVG_STATUS_SUCCESS)
-	has_ry = 1;
+		has_ry = 1;
 
     if (has_rx || has_ry) {
- 	if (! has_rx)
-	    (*path_element)->e.rect.rx = (*path_element)->e.rect.ry;
- 	if (! has_ry)
-	    (*path_element)->e.rect.ry = (*path_element)->e.rect.rx;
+		if (! has_rx)
+			(*path_element)->e.rect.rx = (*path_element)->e.rect.ry;
+		if (! has_ry)
+			(*path_element)->e.rect.ry = (*path_element)->e.rect.rx;
 	}
     return SVG_STATUS_SUCCESS;
 }
@@ -519,14 +519,14 @@ _svg_parser_parse_circle (svg_parser_t	*parser,
 
     status = _svg_parser_new_leaf_element (parser, path_element, SVG_ELEMENT_TYPE_CIRCLE);
     if (status)
-	return SVG_STATUS_PARSE_ERROR;
+		return SVG_STATUS_PARSE_ERROR;
 
     _svg_attribute_get_length (attributes, "cx", &((*path_element)->e.ellipse.cx), "0");
     _svg_attribute_get_length (attributes, "cy", &((*path_element)->e.ellipse.cy), "0");
     _svg_attribute_get_length (attributes, "r", &((*path_element)->e.ellipse.rx), "100%");
     _svg_attribute_get_length (attributes, "r", &((*path_element)->e.ellipse.ry), "100%");
     if ((*path_element)->e.ellipse.rx.value < 0)
-	return SVG_STATUS_PARSE_ERROR;
+		return SVG_STATUS_PARSE_ERROR;
 
     return SVG_STATUS_SUCCESS;
 }
@@ -540,14 +540,14 @@ _svg_parser_parse_ellipse (svg_parser_t		*parser,
 
     status = _svg_parser_new_leaf_element (parser, path_element, SVG_ELEMENT_TYPE_ELLIPSE);
     if (status)
-	return status;
+		return status;
 
     _svg_attribute_get_length (attributes, "cx", &((*path_element)->e.ellipse.cx), "0");
     _svg_attribute_get_length (attributes, "cy", &((*path_element)->e.ellipse.cy), "0");
     _svg_attribute_get_length (attributes, "rx", &((*path_element)->e.ellipse.rx), "100%");
     _svg_attribute_get_length (attributes, "ry", &((*path_element)->e.ellipse.ry), "100%");
     if ((*path_element)->e.ellipse.rx.value < 0 || (*path_element)->e.ellipse.ry.value < 0)
-	return SVG_STATUS_PARSE_ERROR;
+		return SVG_STATUS_PARSE_ERROR;
 
     return SVG_STATUS_SUCCESS;
 }
@@ -561,16 +561,16 @@ _svg_parser_parse_polygon (svg_parser_t		*parser,
     svg_path_t *path;
 
     status = _svg_parser_parse_polyline (parser,
-					 attributes,
-					 path_element);
+										 attributes,
+										 path_element);
     if (status)
-	return status;
+		return status;
 
     path = &(*path_element)->e.path;
 
     status = _svg_path_close_path (path);
     if (status)
-	return status;
+		return status;
 
     return SVG_STATUS_SUCCESS;
 }
@@ -590,31 +590,31 @@ _svg_parser_parse_polyline (svg_parser_t	*parser,
     _svg_attribute_get_string (attributes, "points", &points, NULL);
 
     if (points == NULL)
-	return SVG_STATUS_PARSE_ERROR;
+		return SVG_STATUS_PARSE_ERROR;
 
     status = _svg_parser_new_leaf_element (parser,
-					   path_element,
-					   SVG_ELEMENT_TYPE_PATH);
+										   path_element,
+										   SVG_ELEMENT_TYPE_PATH);
     if (status)
-	return status;
+		return status;
     path = &(*path_element)->e.path;
 
     first = 1;
     p = points;
     while (*p) {
-	status = _svg_str_parse_csv_doubles (p, pt, 2, &next);
-	if (status)
-	    return SVG_STATUS_PARSE_ERROR;
+		status = _svg_str_parse_csv_doubles (p, pt, 2, &next);
+		if (status)
+			return SVG_STATUS_PARSE_ERROR;
+		
+		if (first) {
+			_svg_path_move_to (path, pt[0], pt[1]);
+			first = 0;
+		} else {
+			_svg_path_line_to (path, pt[0], pt[1]);
+		}
 
-	if (first) {
-	    _svg_path_move_to (path, pt[0], pt[1]);
-	    first = 0;
-	} else {
-	    _svg_path_line_to (path, pt[0], pt[1]);
-	}
-
-	p = next;
-	_svg_str_skip_space (&p);
+		p = next;
+		_svg_str_skip_space (&p);
     }
 
     return SVG_STATUS_SUCCESS;
@@ -628,10 +628,10 @@ _svg_parser_parse_text (svg_parser_t	*parser,
     svg_status_t status;
 
     status = _svg_parser_new_leaf_element (parser,
-					   text_element,
-					   SVG_ELEMENT_TYPE_TEXT);
+										   text_element,
+										   SVG_ELEMENT_TYPE_TEXT);
     if (status)
-	return status;
+		return status;
 
     parser->state->text = &(*text_element)->e.text;
 
@@ -667,7 +667,7 @@ _svg_parser_parse_linear_gradient (svg_parser_t	*parser,
 					    gradient_element,
 					    SVG_ELEMENT_TYPE_GRADIENT);
     if (status)
-	return status;
+		return status;
     
     _svg_gradient_set_type (&(*gradient_element)->e.gradient,
 			    SVG_GRADIENT_LINEAR);
@@ -686,7 +686,7 @@ _svg_parser_parse_radial_gradient (svg_parser_t		*parser,
 					    gradient_element,
 					    SVG_ELEMENT_TYPE_GRADIENT);
     if (status)
-	return status;
+		return status;
 
     _svg_gradient_set_type (&(*gradient_element)->e.gradient,
 			    SVG_GRADIENT_RADIAL);
@@ -717,8 +717,8 @@ _svg_parser_parse_gradient_stop (svg_parser_t	*parser,
     gradient_element = NULL;
 
     if (parser->state->group_element == NULL
-	|| parser->state->group_element->type != SVG_ELEMENT_TYPE_GRADIENT)
-	return SVG_STATUS_PARSE_ERROR;
+		|| parser->state->group_element->type != SVG_ELEMENT_TYPE_GRADIENT)
+		return SVG_STATUS_PARSE_ERROR;
 
     group_element = parser->state->group_element;
     gradient = &group_element->e.gradient;
@@ -733,13 +733,13 @@ _svg_parser_parse_gradient_stop (svg_parser_t	*parser,
     _svg_attribute_get_double (attributes, "offset", &offset, 0);
     _svg_attribute_get_double (attributes, "stop-opacity", &opacity, opacity);
     if (_svg_attribute_get_string (attributes, "stop-color", &color_str, "#000000") == SVG_STATUS_SUCCESS)
-	_svg_color_init_from_str (&color, color_str);
+		_svg_color_init_from_str (&color, color_str);
     if (color.is_current_color)
-	color = group_element->style.color;
+		color = group_element->style.color;
 
     /* XXX: Rather than directly storing the stop in the gradient
-       here, it would be cleaner to just have the stop be a standard
-       child element. */
+	 here, it would be cleaner to just have the stop be a standard
+	 child element. */
     _svg_gradient_add_stop (gradient, offset, &color, opacity);
     
     /* XXX: Obviously, this is totally bogus and needs to change. */
@@ -778,11 +778,11 @@ _svg_parser_parse_text_characters (svg_parser_t		*parser,
 
     text = parser->state->text;
     if (text == NULL)
-	return SVG_STATUS_PARSE_ERROR;
+		return SVG_STATUS_PARSE_ERROR;
 
     status = _svg_text_append_chars (text, ch, len);
     if (status)
-	return status;
+		return status;
 
     return SVG_STATUS_SUCCESS;
 }

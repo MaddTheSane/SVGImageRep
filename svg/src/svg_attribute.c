@@ -26,22 +26,22 @@
 
 svgint_status_t
 _svg_attribute_get_double (const char	**attributes,
-			   const char	*name,
-			   double	*value,
-			   double	default_value)
+						   const char	*name,
+						   double	*value,
+						   double	default_value)
 {
     int i;
 
     *value = default_value;
 
     if (attributes == NULL)
-	return SVGINT_STATUS_ATTRIBUTE_NOT_FOUND;
+		return SVGINT_STATUS_ATTRIBUTE_NOT_FOUND;
 
     for (i=0; attributes[i]; i += 2) {
-	if (strcmp (attributes[i], name) == 0) {
-	    *value = _svg_ascii_strtod (attributes[i+1], NULL);
-	    return SVG_STATUS_SUCCESS;
-	}
+		if (strcmp (attributes[i], name) == 0) {
+			*value = _svg_ascii_strtod (attributes[i+1], NULL);
+			return SVG_STATUS_SUCCESS;
+		}
     }
 
     return SVGINT_STATUS_ATTRIBUTE_NOT_FOUND;
@@ -49,22 +49,22 @@ _svg_attribute_get_double (const char	**attributes,
 
 svgint_status_t
 _svg_attribute_get_string (const char	**attributes,
-			   const char	*name,
-			   const char	**value,
-			   const char	*default_value)
+						   const char	*name,
+						   const char	**value,
+						   const char	*default_value)
 {
     int i;
 
     *value = default_value;
 
     if (attributes == NULL)
-	return SVGINT_STATUS_ATTRIBUTE_NOT_FOUND;
+		return SVGINT_STATUS_ATTRIBUTE_NOT_FOUND;
 
     for (i=0; attributes[i]; i += 2) {
-	if (strcmp (attributes[i], name) == 0) {
-	    *value = attributes[i+1];
-	    return SVG_STATUS_SUCCESS;
-	}
+		if (strcmp (attributes[i], name) == 0) {
+			*value = attributes[i+1];
+			return SVG_STATUS_SUCCESS;
+		}
     }
 
     return SVGINT_STATUS_ATTRIBUTE_NOT_FOUND;
@@ -72,22 +72,22 @@ _svg_attribute_get_string (const char	**attributes,
 
 svgint_status_t
 _svg_attribute_get_length (const char	**attributes,
-			   const char	*name,
-			   svg_length_t	*value,
-			   const char	*default_value)
+						   const char	*name,
+						   svg_length_t	*value,
+						   const char	*default_value)
 {
     int i;
 
     _svg_length_init_from_str (value, default_value);
 
     if (attributes == NULL)
-	return SVGINT_STATUS_ATTRIBUTE_NOT_FOUND;
+		return SVGINT_STATUS_ATTRIBUTE_NOT_FOUND;
 
     for (i=0; attributes[i]; i += 2) {
-	if (strcmp (attributes[i], name) == 0) {
-	    _svg_length_init_from_str (value, attributes[i+1]);
-	    return SVG_STATUS_SUCCESS;
-	}
+		if (strcmp (attributes[i], name) == 0) {
+			_svg_length_init_from_str (value, attributes[i+1]);
+			return SVG_STATUS_SUCCESS;
+		}
     }
     
     return SVGINT_STATUS_ATTRIBUTE_NOT_FOUND;

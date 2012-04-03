@@ -44,13 +44,13 @@ _svg_text_init_copy (svg_text_t *text,
 
     text->len = other->len;
     if (text->len) {
-	text->chars = malloc (text->len + 1);
-	if (text->chars == NULL)
-	    return SVG_STATUS_NO_MEMORY;
-	memcpy (text->chars, other->chars, text->len);
-	text->chars[text->len] = '\0';
+		text->chars = malloc (text->len + 1);
+		if (text->chars == NULL)
+			return SVG_STATUS_NO_MEMORY;
+		memcpy (text->chars, other->chars, text->len);
+		text->chars[text->len] = '\0';
     } else {
-	text->chars = NULL;
+		text->chars = NULL;
     }
 
     return SVG_STATUS_SUCCESS;
@@ -76,12 +76,12 @@ _svg_text_append_chars (svg_text_t	*text,
 
     new_chars = realloc (text->chars, text->len + 1);
     if (new_chars == NULL) {
-	text->len -= len;
-	return SVG_STATUS_NO_MEMORY;
+		text->len -= len;
+		return SVG_STATUS_NO_MEMORY;
     }
 
     if (text->chars == NULL)
-	new_chars[0] = '\0';
+		new_chars[0] = '\0';
     text->chars = new_chars;
     strncat (text->chars, chars, len);
 
