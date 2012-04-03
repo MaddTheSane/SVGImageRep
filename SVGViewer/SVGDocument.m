@@ -109,7 +109,7 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 	if (status != SVG_STATUS_SUCCESS) {
 		if (outError != nil) {
 			NSError *error =  [NSError errorWithDomain:NSCocoaErrorDomain code:NSFileReadCorruptFileError userInfo:nil];
-			outError = &error;
+			*outError = error;
 		}
 		svg_destroy(svg);
 		
