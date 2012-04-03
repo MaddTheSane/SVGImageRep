@@ -49,7 +49,6 @@
 - (void)dealloc
 {
 	CGLayerRelease(renderLayer);
-	[current release];
 	
 	[super dealloc];
 }

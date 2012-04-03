@@ -55,7 +55,6 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 
 @end
 
-
 @implementation SVGDocument
 
 - (IBAction)reload:(id)sender
