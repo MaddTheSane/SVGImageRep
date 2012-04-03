@@ -4,6 +4,8 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 
 #include <math.h>
 
+#import "SVGImageRep.h"
+
 #import <Foundation/NSArray.h>
 #import <Foundation/NSData.h>
 #import <Foundation/NSGeometry.h>
@@ -11,7 +13,6 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 #import <AppKit/NSGraphicsContext.h>
 #include <ApplicationServices/ApplicationServices.h>
 
-#import "SVGImageRep.h"
 #import "SVGRenderContext.h"
 
 #include <svg.h>
@@ -20,12 +21,20 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 
 + (NSArray *)imageUnfilteredFileTypes
 {
-	return [NSArray arrayWithObject:@"svg"];
+	static NSArray *types = nil;
+	if (types == nil) {
+		types = [[NSArray alloc] initWithObjects:@"svg", nil];
+	}
+	return types;
 }
 
 + (NSArray *)imageUnfilteredTypes
 {
-	return [NSArray arrayWithObject:@"public.svg-image"];
+	static NSArray *types = nil;
+	if (types == nil) {
+		types = [[NSArray alloc] initWithObjects:@"public.svg-image", nil];
+	}
+	return types;
 }
 
 + (NSArray *)imageUnfilteredPasteboardTypes
@@ -47,7 +56,7 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 
 + (NSImageRep *)imageRepWithData:(NSData *)d
 {
-	return [[self alloc] initWithData: d];
+	return [[self alloc] initWithData:d];
 }
 
 
