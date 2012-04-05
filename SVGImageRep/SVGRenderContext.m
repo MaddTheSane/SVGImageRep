@@ -30,7 +30,7 @@
 - (void)prepareRender:(double)a_scale
 {
 	states = [[NSMutableArray alloc] init];
-	[current release]; current = nil;
+	current = nil;
 	hasSize = NO;
 	scale = a_scale;
 	size = NSMakeSize(500 * scale, 500 * scale);
@@ -494,7 +494,6 @@
 		SVGRenderState *oldCurrent = current;
 		current = nil;
 		current = [oldCurrent copy];
-		[oldCurrent release];
 		
 		CGContextSaveGState(tempCtx);
 	}
@@ -504,6 +503,7 @@
 		current = [[SVGRenderState alloc] init];
 	}
 	[states addObject:current];
+	[current release];
 	
 	return SVG_STATUS_SUCCESS;
 }
@@ -742,6 +742,10 @@
 		{
 			CGLayerRef gradLayer = CGLayerCreateWithContext(tempCtx, NSSizeToCGSize([self size]), NULL);
 			CGContextRef gradContext = CGLayerGetContext(gradLayer);
+			{
+				CGPoint TextPos = CGContextGetTextPosition(tempCtx);
+				CGContextSetTextPosition(gradContext, TextPos.x, TextPos.y);
+			}
 			CGContextSetTextDrawingMode(gradContext, kCGTextFillClip);
 			CGContextShowText(gradContext, utf8, strlen(utf8));
 		
@@ -787,6 +791,10 @@
 		{
 			CGLayerRef gradLayer = CGLayerCreateWithContext(tempCtx, NSSizeToCGSize([self size]), NULL);
 			CGContextRef gradContext = CGLayerGetContext(gradLayer);
+			{
+				CGPoint TextPos = CGContextGetTextPosition(tempCtx);
+				CGContextSetTextPosition(gradContext, TextPos.x, TextPos.y);
+			}
 			CGContextSetTextDrawingMode(gradContext, kCGTextStrokeClip);
 			CGContextShowText(gradContext, utf8, strlen(utf8));
 			//CGContextClip(tempCtx);
@@ -852,8 +860,8 @@ static svg_status_t r_begin_element(void *closure)
 	CGContextSaveGState(CGCtx);
 	SVGRenderState *tempState = [[self current] copy];
 	self.current = tempState;
-	[tempState release];
 	[[self states] addObject:[self current]];
+	[tempState release];
 	
 	return SVG_STATUS_SUCCESS;
 }

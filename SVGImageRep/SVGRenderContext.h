@@ -29,7 +29,7 @@ extern svg_render_engine_t cocoa_svg_engine;
 	NSMutableArray *states;
 }
 
-@property (readwrite, retain) SVGRenderState *current;
+@property (readwrite, assign) SVGRenderState *current;
 @property (readwrite, retain) NSMutableArray *states;
 @property (readonly) NSSize size;
 @property (readwrite) double scale;
