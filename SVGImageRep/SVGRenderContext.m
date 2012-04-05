@@ -110,7 +110,6 @@
 	CGColorRef tempColor = [SVGRenderContext createColorRefFromSVGColor:c opacity:alph];
 	CGContextSetStrokeColorWithColor(tempCtx, tempColor);
 	CGColorRelease(tempColor);
-	//CGContextSetRGBStrokeColor(tempCtx, svg_color_get_red(c)/255.0, svg_color_get_green(c)/255.0, svg_color_get_blue(c)/255.0, alph);
 }
 
 - (void)setFillColor:(svg_color_t *)c alpha:(CGFloat)alph
@@ -119,7 +118,6 @@
 	CGColorRef tempColor = [SVGRenderContext createColorRefFromSVGColor:c opacity:alph];
 	CGContextSetFillColorWithColor(tempCtx, tempColor);
 	CGColorRelease(tempColor);
-	//CGContextSetRGBFillColor(tempCtx, svg_color_get_red(c)/255.0, svg_color_get_green(c)/255.0, svg_color_get_blue(c)/255.0, alph);
 }
 
 + (CGGradientRef)createGradientFromSVGGradient:(svg_gradient_t *)gradient CF_RETURNS_RETAINED
