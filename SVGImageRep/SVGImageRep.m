@@ -30,11 +30,11 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 
 + (NSArray *)imageUnfilteredTypes
 {
-	static NSArray *types = nil;
-	if (types == nil) {
-		types = [[NSArray alloc] initWithObjects:@"public.svg-image", nil];
+	static NSArray *UTItypes = nil;
+	if (UTItypes == nil) {
+		UTItypes = [[NSArray alloc] initWithObjects:@"public.svg-image", nil];
 	}
-	return types;
+	return UTItypes;
 }
 
 + (NSArray *)imageUnfilteredPasteboardTypes
@@ -53,12 +53,10 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 	return status == SVG_STATUS_SUCCESS;
 }
 
-
 + (NSImageRep *)imageRepWithData:(NSData *)d
 {
 	return [[[self alloc] initWithData:d] autorelease];
 }
-
 
 - (id)initWithData:(NSData *)d
 {
@@ -130,6 +128,27 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 
 	NSSize renderSize = [svg_render_context size];
 	CGContextDrawLayerInRect(CGCtx, CGRectMake(0, 0, renderSize.width, renderSize.height), svg_render_context.renderLayer);
+	[svg_render_context release];
+	return YES;
+}
+
+- (BOOL)drawInRect:(NSRect)rect
+{
+	SVGRenderContext *svg_render_context;
+	CGContextRef CGCtx = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
+		
+	svg_render_context = [[SVGRenderContext alloc] init];
+	
+	CGFloat wScale, hScale;
+	wScale = rect.size.width / [self pixelsWide];
+	hScale = rect.size.height / [self pixelsHigh];
+	
+	[svg_render_context prepareRender:MIN(wScale, hScale)];
+	svg_render(svg, &cocoa_svg_engine, svg_render_context);
+	[svg_render_context finishRender];
+	
+	//NSSize renderSize = [svg_render_context size];
+	CGContextDrawLayerInRect(CGCtx, NSRectToCGRect(rect), svg_render_context.renderLayer);
 	[svg_render_context release];
 	return YES;
 }
