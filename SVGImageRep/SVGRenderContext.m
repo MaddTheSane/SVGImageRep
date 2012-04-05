@@ -365,10 +365,6 @@
 		{
 			CGLayerRef gradLayer = CGLayerCreateWithContext(tempCtx, NSSizeToCGSize([self size]), NULL);
 			CGContextRef gradContext = CGLayerGetContext(gradLayer);
-			CGPathRef tempPath = CGContextCopyPath(tempCtx);
-			CGContextAddPath(gradContext, tempPath);
-			CGPathRelease(tempPath);
-			CGContextClip(gradContext);
 			CGGradientRef gradient = [SVGRenderContext createGradientFromSVGGradient:current->fill_paint.p.gradient];
 			
 			if (rx > 0 || ry > 0)
@@ -748,10 +744,6 @@
 		{
 			CGLayerRef gradLayer = CGLayerCreateWithContext(tempCtx, NSSizeToCGSize([self size]), NULL);
 			CGContextRef gradContext = CGLayerGetContext(gradLayer);
-			CGPathRef tempPath = CGContextCopyPath(tempCtx);
-			CGContextAddPath(gradContext, tempPath);
-			CGPathRelease(tempPath);
-			CGContextClip(gradContext);
 			CGContextSetTextDrawingMode(gradContext, kCGTextFillClip);
 			CGContextShowText(gradContext, utf8, strlen(utf8));
 		
@@ -797,10 +789,6 @@
 		{
 			CGLayerRef gradLayer = CGLayerCreateWithContext(tempCtx, NSSizeToCGSize([self size]), NULL);
 			CGContextRef gradContext = CGLayerGetContext(gradLayer);
-			CGPathRef tempPath = CGContextCopyPath(tempCtx);
-			CGContextAddPath(gradContext, tempPath);
-			CGPathRelease(tempPath);
-			CGContextClip(gradContext);
 			CGContextSetTextDrawingMode(gradContext, kCGTextStrokeClip);
 			CGContextShowText(gradContext, utf8, strlen(utf8));
 			//CGContextClip(tempCtx);
