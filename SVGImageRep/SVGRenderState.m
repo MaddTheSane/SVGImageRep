@@ -8,7 +8,6 @@
 
 #import "SVGRenderState.h"
 #import <Foundation/NSString.h>
-#import <AppKit/NSWindow.h>
 
 @implementation SVGRenderState
 
