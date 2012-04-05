@@ -7,14 +7,16 @@
 //
 
 #import <Foundation/NSObject.h>
-#include <ApplicationServices/ApplicationServices.h>
+#import <Foundation/NSGeometry.h>
 #include <svg.h>
+
 @class NSString;
 
 @interface SVGRenderState : NSObject <NSCopying>
 {
 @public
 	svg_paint_t fill_paint,stroke_paint;
+@private
 	double fill_opacity,stroke_opacity;
 	
 	svg_color_t color;

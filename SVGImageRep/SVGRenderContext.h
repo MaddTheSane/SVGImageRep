@@ -18,7 +18,6 @@ extern svg_render_engine_t cocoa_svg_engine;
 
 @interface SVGRenderContext : NSObject
 {
-@public
 	CGLayerRef renderLayer;
 	CGLayerRef unsizedRenderLayer;
 	NSSize size;
