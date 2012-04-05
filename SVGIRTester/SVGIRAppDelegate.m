@@ -45,9 +45,7 @@
 	tempImage = [[NSImage alloc] initWithContentsOfFile:[resourcePath stringByAppendingPathComponent:@"admon-tip.svg"]];
 	[svgTip setImage:tempImage];
 	[tempImage release]; tempImage = nil;
-	tempImage = [[NSImage alloc] initWithContentsOfFile:[resourcePath stringByAppendingPathComponent:@"admon-warning.svg"]];
-	[svgWarning setImage:tempImage];
-	[tempImage release]; tempImage = nil;
+	[svgWarning setImage:[NSImage imageNamed:@"admon-warning"]];
 	
 	[SVGImageRepBundle release];
 }
