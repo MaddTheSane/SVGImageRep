@@ -188,6 +188,7 @@
 - (void)_pathArcSegment:(double)xc : (double)yc
 					   : (double)th0 : (double)th1
 					   : (double)rx : (double)ry : (double)x_axis_rotation
+					   : (CGContextRef)ctxt
 {
     double sin_th, cos_th;
     double a00, a01, a10, a11;
@@ -212,11 +213,19 @@
     x2 = x3 + t * sin(th1);
     y2 = y3 - t * cos(th1);
 	
-	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
-	
-	CGContextAddCurveToPoint(tempCtx, a00 * x1 + a01 * y1, a10 * x1 + a11 * y1, a00 * x2 + a01 * y2, a10 * x2 + a11 * y2, a00 * x3 + a01 * y3, a10 * x3 + a11 * y3);
+	CGContextAddCurveToPoint(ctxt, a00 * x1 + a01 * y1, a10 * x1 + a11 * y1, a00 * x2 + a01 * y2, a10 * x2 + a11 * y2, a00 * x3 + a01 * y3, a10 * x3 + a11 * y3);
 	
 }
+
+- (void)_pathArcSegment:(double)xc : (double)yc
+					   : (double)th0 : (double)th1
+					   : (double)rx : (double)ry : (double)x_axis_rotation
+{
+	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
+	[self _pathArcSegment:xc :yc :th0 :th1 :rx :ry :x_axis_rotation :tempCtx];
+}
+
+
 
 /**
  * _xsvg_path_arc_to: Add an arc to the given path
@@ -236,6 +245,7 @@
 			 : (int)sweep_flag
 			 : (double)x
 			 : (double)y
+			 : (CGContextRef)ctxt
 {
     double sin_th, cos_th;
     double a00, a01, a10, a11;
@@ -248,8 +258,7 @@
     double cury;
 	
 	{
-		CGContextRef tempCtx = CGLayerGetContext(renderLayer);
-		CGPoint tempPoint = CGContextGetPathCurrentPoint(tempCtx);
+		CGPoint tempPoint = CGContextGetPathCurrentPoint(ctxt);
 		curx = tempPoint.x;
 		cury = tempPoint.y;
 	}
@@ -316,10 +325,20 @@
 		[self _pathArcSegment: xc : yc
 							 : th0 + i * th_arc / n_segs
 							 : th0 + (i + 1) * th_arc / n_segs
-							 : rx : ry : x_axis_rotation];
+							 : rx : ry : x_axis_rotation : ctxt];
     }
 }
 
+- (void)arcTo:(double)rx : (double) ry
+			 : (double)x_axis_rotation
+			 : (int)large_arc_flag
+			 : (int)sweep_flag
+			 : (double)x
+			 : (double)y
+{
+	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
+	[self arcTo:rx :ry :x_axis_rotation :large_arc_flag :sweep_flag :x :y :tempCtx];
+}
 
 - (svg_status_t)renderRect:(svg_length_t *)x : (svg_length_t *)y
 						  : (svg_length_t *)width : (svg_length_t *)height
@@ -344,41 +363,47 @@
 	{
 		case SVG_PAINT_TYPE_GRADIENT:
 		{
-			CGContextSaveGState(tempCtx);
+			CGLayerRef gradLayer = CGLayerCreateWithContext(tempCtx, NSSizeToCGSize([self size]), NULL);
+			CGContextRef gradContext = CGLayerGetContext(gradLayer);
+			CGPathRef tempPath = CGContextCopyPath(tempCtx);
+			CGContextAddPath(gradContext, tempPath);
+			CGPathRelease(tempPath);
+			CGContextClip(gradContext);
 			CGGradientRef gradient = [SVGRenderContext createGradientFromSVGGradient:current->fill_paint.p.gradient];
 			
 			if (rx > 0 || ry > 0)
 			{
-				CGContextMoveToPoint(tempCtx, cx + crx, cy);
-				CGContextAddLineToPoint(tempCtx, cx + cw - crx, cy);
-				[self arcTo: crx : cry : 0 : 0 : 1 : cx + cw : cy + cry];
-				CGContextAddLineToPoint(tempCtx, cx + cw, cy + ch - cry);
-				[self arcTo: crx : cry : 0 : 0 : 1 : cx + cw - crx : cy + ch];
-				CGContextAddLineToPoint(tempCtx, cx + crx, cy + ch);
-				[self arcTo: crx : cry : 0 : 0 : 1 : cx : cy + ch - cry];
-				CGContextAddLineToPoint(tempCtx, cx, cy + cry);
-				[self arcTo: crx : cry : 0 : 0 : 1 : cx + crx : cy];
-				CGContextClosePath(tempCtx);
-				CGContextClip(tempCtx);
+				CGContextMoveToPoint(gradContext, cx + crx, cy);
+				CGContextAddLineToPoint(gradContext, cx + cw - crx, cy);
+				[self arcTo: crx : cry : 0 : 0 : 1 : cx + cw : cy + cry : gradContext];
+				CGContextAddLineToPoint(gradContext, cx + cw, cy + ch - cry);
+				[self arcTo: crx : cry : 0 : 0 : 1 : cx + cw - crx : cy + ch : gradContext];
+				CGContextAddLineToPoint(gradContext, cx + crx, cy + ch);
+				[self arcTo: crx : cry : 0 : 0 : 1 : cx : cy + ch - cry : gradContext];
+				CGContextAddLineToPoint(gradContext, cx, cy + cry);
+				[self arcTo: crx : cry : 0 : 0 : 1 : cx + crx : cy : gradContext];
+				CGContextClosePath(gradContext);
+				CGContextClip(gradContext);
 			}
 			else
-				CGContextClipToRect(tempCtx, CGRectMake(cx, cy, cw, ch));
+				CGContextClipToRect(gradContext, CGRectMake(cx, cy, cw, ch));
 			
 			switch (current->fill_paint.p.gradient->type) {
 				case SVG_GRADIENT_LINEAR:
-					CGContextDrawLinearGradient(tempCtx, gradient, CGPointMake([self lengthToPoints:&current->fill_paint.p.gradient->u.linear.x1], [self lengthToPoints:&current->fill_paint.p.gradient->u.linear.y1]), CGPointMake([self lengthToPoints:&current->fill_paint.p.gradient->u.linear.x2], [self lengthToPoints:&current->fill_paint.p.gradient->u.linear.y2]), kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
+					CGContextDrawLinearGradient(gradContext, gradient, CGPointMake([self lengthToPoints:&current->fill_paint.p.gradient->u.linear.x1], [self lengthToPoints:&current->fill_paint.p.gradient->u.linear.y1]), CGPointMake([self lengthToPoints:&current->fill_paint.p.gradient->u.linear.x2], [self lengthToPoints:&current->fill_paint.p.gradient->u.linear.y2]), kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
 
 					break;
 					
 				case SVG_GRADIENT_RADIAL:
-					CGContextDrawRadialGradient(tempCtx, gradient, CGPointMake([self lengthToPoints:&current->fill_paint.p.gradient->u.radial.cx], [self lengthToPoints:&current->fill_paint.p.gradient->u.radial.cy]), [self lengthToPoints:&current->fill_paint.p.gradient->u.radial.r], CGPointMake([self lengthToPoints:&current->fill_paint.p.gradient->u.radial.fx], [self lengthToPoints:&current->fill_paint.p.gradient->u.radial.fy]), [self lengthToPoints:&current->fill_paint.p.gradient->u.radial.r], kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
+					CGContextDrawRadialGradient(gradContext, gradient, CGPointMake([self lengthToPoints:&current->fill_paint.p.gradient->u.radial.cx], [self lengthToPoints:&current->fill_paint.p.gradient->u.radial.cy]), [self lengthToPoints:&current->fill_paint.p.gradient->u.radial.r], CGPointMake([self lengthToPoints:&current->fill_paint.p.gradient->u.radial.fx], [self lengthToPoints:&current->fill_paint.p.gradient->u.radial.fy]), [self lengthToPoints:&current->fill_paint.p.gradient->u.radial.r], kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
 					break;
 
 				default:
 					break;
 			}
 			CGGradientRelease(gradient);
-			CGContextRestoreGState(tempCtx);
+			CGContextDrawLayerInRect(tempCtx, CGRectMake(0, 0, [self size].width, [self size].height), gradLayer);
+			CGLayerRelease(gradLayer);
 		}
 			break;
 			
@@ -554,25 +579,30 @@
 		{
 			//TODO: handle stuff like this method's case SVG_PAINT_TYPE_COLOR does.
 			//I.E.: handle fill_rule.
-			CGContextSaveGState(tempCtx);
-			CGContextClip(tempCtx);
+			CGLayerRef gradLayer = CGLayerCreateWithContext(tempCtx, NSSizeToCGSize([self size]), NULL);
+			CGContextRef gradContext = CGLayerGetContext(gradLayer);
+			CGPathRef tempPath = CGContextCopyPath(tempCtx);
+			CGContextAddPath(gradContext, tempPath);
+			CGPathRelease(tempPath);
+			CGContextClip(gradContext);
 			CGGradientRef gradient = [SVGRenderContext createGradientFromSVGGradient:current->fill_paint.p.gradient];
 			
 			switch (current->fill_paint.p.gradient->type) {
 				case SVG_GRADIENT_LINEAR:
-					CGContextDrawLinearGradient(tempCtx, gradient, CGPointMake([self lengthToPoints:&current->fill_paint.p.gradient->u.linear.x1], [self lengthToPoints:&current->fill_paint.p.gradient->u.linear.y1]), CGPointMake([self lengthToPoints:&current->fill_paint.p.gradient->u.linear.x2], [self lengthToPoints:&current->fill_paint.p.gradient->u.linear.y2]), kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
+					CGContextDrawLinearGradient(gradContext, gradient, CGPointMake([self lengthToPoints:&current->fill_paint.p.gradient->u.linear.x1], [self lengthToPoints:&current->fill_paint.p.gradient->u.linear.y1]), CGPointMake([self lengthToPoints:&current->fill_paint.p.gradient->u.linear.x2], [self lengthToPoints:&current->fill_paint.p.gradient->u.linear.y2]), kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
 					
 					break;
 					
 				case SVG_GRADIENT_RADIAL:
-					CGContextDrawRadialGradient(tempCtx, gradient, CGPointMake([self lengthToPoints:&current->fill_paint.p.gradient->u.radial.cx], [self lengthToPoints:&current->fill_paint.p.gradient->u.radial.cy]), [self lengthToPoints:&current->fill_paint.p.gradient->u.radial.r], CGPointMake([self lengthToPoints:&current->fill_paint.p.gradient->u.radial.fx], [self lengthToPoints:&current->fill_paint.p.gradient->u.radial.fy]), [self lengthToPoints:&current->fill_paint.p.gradient->u.radial.r], kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
+					CGContextDrawRadialGradient(gradContext, gradient, CGPointMake([self lengthToPoints:&current->fill_paint.p.gradient->u.radial.cx], [self lengthToPoints:&current->fill_paint.p.gradient->u.radial.cy]), [self lengthToPoints:&current->fill_paint.p.gradient->u.radial.r], CGPointMake([self lengthToPoints:&current->fill_paint.p.gradient->u.radial.fx], [self lengthToPoints:&current->fill_paint.p.gradient->u.radial.fy]), [self lengthToPoints:&current->fill_paint.p.gradient->u.radial.r], kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
 					break;
 					
 				default:
 					break;
 			}
 			CGGradientRelease(gradient);
-			CGContextRestoreGState(tempCtx);
+			CGContextDrawLayerInRect(tempCtx, CGRectMake(0, 0, [self size].width, [self size].height), gradLayer);
+			CGLayerRelease(gradLayer);
 		}
 			break;
 			
@@ -715,29 +745,36 @@
 	switch ([current fill_paint].type)
 	{
 		case SVG_PAINT_TYPE_GRADIENT:
-			CGContextSaveGState(tempCtx);
-			CGContextSetTextDrawingMode(tempCtx, kCGTextFillClip);
-			CGContextShowText(tempCtx, utf8, strlen(utf8));
 		{
+			CGLayerRef gradLayer = CGLayerCreateWithContext(tempCtx, NSSizeToCGSize([self size]), NULL);
+			CGContextRef gradContext = CGLayerGetContext(gradLayer);
+			CGPathRef tempPath = CGContextCopyPath(tempCtx);
+			CGContextAddPath(gradContext, tempPath);
+			CGPathRelease(tempPath);
+			CGContextClip(gradContext);
+			CGContextSetTextDrawingMode(gradContext, kCGTextFillClip);
+			CGContextShowText(gradContext, utf8, strlen(utf8));
+		
 			//CGContextClip(tempCtx);
 			CGGradientRef gradient = [SVGRenderContext createGradientFromSVGGradient:current->fill_paint.p.gradient];
 			
 			switch (current->fill_paint.p.gradient->type) {
 				case SVG_GRADIENT_LINEAR:
-					CGContextDrawLinearGradient(tempCtx, gradient, CGPointMake([self lengthToPoints:&current->fill_paint.p.gradient->u.linear.x1], [self lengthToPoints:&current->fill_paint.p.gradient->u.linear.y1]), CGPointMake([self lengthToPoints:&current->fill_paint.p.gradient->u.linear.x2], [self lengthToPoints:&current->fill_paint.p.gradient->u.linear.y2]), kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
+					CGContextDrawLinearGradient(gradContext, gradient, CGPointMake([self lengthToPoints:&current->fill_paint.p.gradient->u.linear.x1], [self lengthToPoints:&current->fill_paint.p.gradient->u.linear.y1]), CGPointMake([self lengthToPoints:&current->fill_paint.p.gradient->u.linear.x2], [self lengthToPoints:&current->fill_paint.p.gradient->u.linear.y2]), kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
 					
 					break;
 					
 				case SVG_GRADIENT_RADIAL:
-					CGContextDrawRadialGradient(tempCtx, gradient, CGPointMake([self lengthToPoints:&current->fill_paint.p.gradient->u.radial.cx], [self lengthToPoints:&current->fill_paint.p.gradient->u.radial.cy]), [self lengthToPoints:&current->fill_paint.p.gradient->u.radial.r], CGPointMake([self lengthToPoints:&current->fill_paint.p.gradient->u.radial.fx], [self lengthToPoints:&current->fill_paint.p.gradient->u.radial.fy]), [self lengthToPoints:&current->fill_paint.p.gradient->u.radial.r], kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
+					CGContextDrawRadialGradient(gradContext, gradient, CGPointMake([self lengthToPoints:&current->fill_paint.p.gradient->u.radial.cx], [self lengthToPoints:&current->fill_paint.p.gradient->u.radial.cy]), [self lengthToPoints:&current->fill_paint.p.gradient->u.radial.r], CGPointMake([self lengthToPoints:&current->fill_paint.p.gradient->u.radial.fx], [self lengthToPoints:&current->fill_paint.p.gradient->u.radial.fy]), [self lengthToPoints:&current->fill_paint.p.gradient->u.radial.r], kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
 					break;
 					
 				default:
 					break;
 			}
 			CGGradientRelease(gradient);
+			CGContextDrawLayerInRect(tempCtx, CGRectMake(0, 0, [self size].width, [self size].height), gradLayer);
+			CGLayerRelease(gradLayer);
 		}
-			CGContextRestoreGState(tempCtx);
 			break;
 			
 		case SVG_PAINT_TYPE_PATTERN:
@@ -757,29 +794,35 @@
 	switch ([current stroke_paint].type)
 	{
 		case SVG_PAINT_TYPE_GRADIENT:
-			CGContextSaveGState(tempCtx);
-			CGContextSetTextDrawingMode(tempCtx, kCGTextStrokeClip);
-			CGContextShowText(tempCtx, utf8, strlen(utf8));
 		{
+			CGLayerRef gradLayer = CGLayerCreateWithContext(tempCtx, NSSizeToCGSize([self size]), NULL);
+			CGContextRef gradContext = CGLayerGetContext(gradLayer);
+			CGPathRef tempPath = CGContextCopyPath(tempCtx);
+			CGContextAddPath(gradContext, tempPath);
+			CGPathRelease(tempPath);
+			CGContextClip(gradContext);
+			CGContextSetTextDrawingMode(gradContext, kCGTextStrokeClip);
+			CGContextShowText(gradContext, utf8, strlen(utf8));
 			//CGContextClip(tempCtx);
 			CGGradientRef gradient = [SVGRenderContext createGradientFromSVGGradient:current->stroke_paint.p.gradient];
 			
 			switch (current->stroke_paint.p.gradient->type) {
 				case SVG_GRADIENT_LINEAR:
-					CGContextDrawLinearGradient(tempCtx, gradient, CGPointMake([self lengthToPoints:&current->fill_paint.p.gradient->u.linear.x1], [self lengthToPoints:&current->fill_paint.p.gradient->u.linear.y1]), CGPointMake([self lengthToPoints:&current->fill_paint.p.gradient->u.linear.x2], [self lengthToPoints:&current->fill_paint.p.gradient->u.linear.y2]), kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
+					CGContextDrawLinearGradient(gradContext, gradient, CGPointMake([self lengthToPoints:&current->fill_paint.p.gradient->u.linear.x1], [self lengthToPoints:&current->fill_paint.p.gradient->u.linear.y1]), CGPointMake([self lengthToPoints:&current->fill_paint.p.gradient->u.linear.x2], [self lengthToPoints:&current->fill_paint.p.gradient->u.linear.y2]), kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
 					
 					break;
 					
 				case SVG_GRADIENT_RADIAL:
-					CGContextDrawRadialGradient(tempCtx, gradient, CGPointMake([self lengthToPoints:&current->fill_paint.p.gradient->u.radial.cx], [self lengthToPoints:&current->fill_paint.p.gradient->u.radial.cy]), [self lengthToPoints:&current->fill_paint.p.gradient->u.radial.r], CGPointMake([self lengthToPoints:&current->fill_paint.p.gradient->u.radial.fx], [self lengthToPoints:&current->fill_paint.p.gradient->u.radial.fy]), [self lengthToPoints:&current->fill_paint.p.gradient->u.radial.r], kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
+					CGContextDrawRadialGradient(gradContext, gradient, CGPointMake([self lengthToPoints:&current->fill_paint.p.gradient->u.radial.cx], [self lengthToPoints:&current->fill_paint.p.gradient->u.radial.cy]), [self lengthToPoints:&current->fill_paint.p.gradient->u.radial.r], CGPointMake([self lengthToPoints:&current->fill_paint.p.gradient->u.radial.fx], [self lengthToPoints:&current->fill_paint.p.gradient->u.radial.fy]), [self lengthToPoints:&current->fill_paint.p.gradient->u.radial.r], kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
 					break;
 					
 				default:
 					break;
 			}
 			CGGradientRelease(gradient);
+			CGContextDrawLayerInRect(tempCtx, CGRectMake(0, 0, [self size].width, [self size].height), gradLayer);
+			CGLayerRelease(gradLayer);
 		}
-			CGContextRestoreGState(tempCtx);
 			break;
 			
 		case SVG_PAINT_TYPE_PATTERN:
