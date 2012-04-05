@@ -113,15 +113,9 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 {
 	SVGRenderContext *svg_render_context;
 	CGContextRef CGCtx = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
-
-	//FIXME: somehow use the AffineTransform (or some other way) to find the size of the
-	//scale to be rendered.
-	//CGAffineTransform ctm = CGContextGetCTM(CGCtx);
 	
 	svg_render_context = [[SVGRenderContext alloc] init];
 
-	//[svg_render_context prepareRender:
-	//	sqrt(ctm.a * ctm.b + ctm.c * ctm.d)];
 	[svg_render_context prepareRender:1.0];
 	svg_render(svg, &cocoa_svg_engine, svg_render_context);
 	[svg_render_context finishRender];
@@ -159,8 +153,3 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 }
 
 @end
-
-extern void InitSVGImageRep()
-{
-	[NSImageRep registerImageRepClass:[SVGImageRep class]];
-}
