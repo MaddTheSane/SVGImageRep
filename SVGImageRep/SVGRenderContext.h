@@ -38,7 +38,8 @@ extern svg_render_engine_t cocoa_svg_engine;
 - (void)prepareRender:(double)a_scale;
 - (void)finishRender;
 
-- (double)lengthToPoints: (svg_length_t *)l;
+- (double)lengthToPoints:(svg_length_t *)l;
++ (double)lengthToPoints:(svg_length_t *)l;
 
 + (CGGradientRef)createGradientFromSVGGradient:(svg_gradient_t *)gradient CF_RETURNS_RETAINED;
 

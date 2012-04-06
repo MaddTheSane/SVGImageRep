@@ -78,17 +78,13 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 	[self setBitsPerSample: 0];
 	[self setOpaque: NO];
 
-	/* TODO: figure out the size without actually rendering everything */
 	{
-		SVGRenderContext *svg_render_context = [[SVGRenderContext alloc] init];
-		[svg_render_context prepareRender: 1.0];
-		svg_render(svg, &cocoa_svg_engine, svg_render_context);
-		[svg_render_context finishRender];
-		NSSize renderSize = [svg_render_context size];
+		svg_length_t w, h;
+		svg_get_size(svg, &w, &h);
+		NSSize renderSize = NSMakeSize([SVGRenderContext lengthToPoints:&w], [SVGRenderContext lengthToPoints:&h]);
 		[self setSize:renderSize];
 		[self setPixelsHigh:renderSize.height];
 		[self setPixelsWide:renderSize.width];
-		[svg_render_context release];
 	}
 
 	return self;

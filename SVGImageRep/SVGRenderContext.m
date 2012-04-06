@@ -60,6 +60,52 @@
 	[super finalize];
 }
 
++ (double)lengthToPoints:(svg_length_t *)l
+{
+	double points;
+	switch (l->unit)
+	{
+		case SVG_LENGTH_UNIT_PT:
+			points = l->value;
+			break;
+			
+		case SVG_LENGTH_UNIT_PX:
+			points = l->value / 1.25;
+			break;
+			
+		case SVG_LENGTH_UNIT_CM:
+			points = l->value / 2.54 * 72;
+			break;
+			
+		case SVG_LENGTH_UNIT_MM:
+			points = l->value / 25.4 * 72;
+			break;
+			
+		case SVG_LENGTH_UNIT_IN:
+			points = l->value * 72;
+			break;
+			
+		case SVG_LENGTH_UNIT_PC:
+			points = l->value / 6 * 72;
+			break;
+			
+			//Assume a resolution of 100 when using percents
+		case SVG_LENGTH_UNIT_PCT:
+			if (l->orientation == SVG_LENGTH_ORIENTATION_HORIZONTAL)
+				return l->value / 100 * 100;
+			else if (l->orientation == SVG_LENGTH_ORIENTATION_VERTICAL)
+				return l->value / 100 * 100;
+			else
+				return l->value / 100 * sqrt(100 * 100 + 100 * 100) * sqrt(2);
+			
+		default:
+			printf("unhandled unit %i\n", l->unit);
+			return l->value;
+	}
+	return points * 1.25;
+}
+
+
 - (double)lengthToPoints:(svg_length_t *)l
 {
 	double points;
@@ -133,10 +179,13 @@
 		CGColorRelease(tempColor);
 		GradStops[i] = gradient->stops[i].offset;
 	}
-	CGColorSpaceRef tempCSpace = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
-	CGGradientRef CGgradient = CGGradientCreateWithColors(tempCSpace, colorArray, GradStops);
+	CGGradientRef CGgradient;
+	{
+		CGColorSpaceRef tempCSpace = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
+		CGgradient = CGGradientCreateWithColors(tempCSpace, colorArray, GradStops);
+		CGColorSpaceRelease(tempCSpace);
+	}
 	CFRelease(colorArray);
-	CGColorSpaceRelease(tempCSpace);
 	free(GradStops);
 	return CGgradient;
 }
@@ -554,9 +603,11 @@
 			//I.E.: handle fill_rule.
 			CGLayerRef gradLayer = CGLayerCreateWithContext(tempCtx, NSSizeToCGSize([self size]), NULL);
 			CGContextRef gradContext = CGLayerGetContext(gradLayer);
-			CGPathRef tempPath = CGContextCopyPath(tempCtx);
-			CGContextAddPath(gradContext, tempPath);
-			CGPathRelease(tempPath);
+			{
+				CGPathRef tempPath = CGContextCopyPath(tempCtx);
+				CGContextAddPath(gradContext, tempPath);
+				CGPathRelease(tempPath);
+			}
 			CGContextClip(gradContext);
 			CGGradientRef gradient = [SVGRenderContext createGradientFromSVGGradient:current->fill_paint.p.gradient];
 			
