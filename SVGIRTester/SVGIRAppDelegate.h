@@ -16,6 +16,7 @@
 	IBOutlet NSImageCell *svgNote;
 	IBOutlet NSImageCell *svgTip;
 	IBOutlet NSImageCell *svgWarning;
+	NSWindow *_window;
 }
 @property (assign) IBOutlet NSWindow *window;
 
