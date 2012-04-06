@@ -215,16 +215,6 @@
 	
 }
 
-- (void)_pathArcSegment:(double)xc : (double)yc
-					   : (double)th0 : (double)th1
-					   : (double)rx : (double)ry : (double)x_axis_rotation
-{
-	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
-	[self _pathArcSegment:xc :yc :th0 :th1 :rx :ry :x_axis_rotation :tempCtx];
-}
-
-
-
 /**
  * _xsvg_path_arc_to: Add an arc to the given path
  *
@@ -327,17 +317,6 @@
     }
 }
 
-- (void)arcTo:(double)rx : (double) ry
-			 : (double)x_axis_rotation
-			 : (int)large_arc_flag
-			 : (int)sweep_flag
-			 : (double)x
-			 : (double)y
-{
-	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
-	[self arcTo:rx :ry :x_axis_rotation :large_arc_flag :sweep_flag :x :y :tempCtx];
-}
-
 - (svg_status_t)renderRect:(svg_length_t *)x : (svg_length_t *)y
 						  : (svg_length_t *)width : (svg_length_t *)height
 						  : (svg_length_t *)rx : (svg_length_t *)ry
@@ -412,13 +391,13 @@
 			{
 				CGContextMoveToPoint(tempCtx, cx + crx, cy);
 				CGContextAddLineToPoint(tempCtx, cx + cw - crx, cy);
-				[self arcTo: crx : cry : 0 : 0 : 1 : cx + cw : cy + cry];
+				[self arcTo: crx : cry : 0 : 0 : 1 : cx + cw : cy + cry : tempCtx];
 				CGContextAddLineToPoint(tempCtx, cx + cw, cy + ch - cry);
-				[self arcTo: crx : cry : 0 : 0 : 1 : cx + cw - crx : cy + ch];
+				[self arcTo: crx : cry : 0 : 0 : 1 : cx + cw - crx : cy + ch : tempCtx];
 				CGContextAddLineToPoint(tempCtx, cx + crx, cy + ch);
-				[self arcTo: crx : cry : 0 : 0 : 1 : cx : cy + ch - cry];
+				[self arcTo: crx : cry : 0 : 0 : 1 : cx : cy + ch - cry : tempCtx];
 				CGContextAddLineToPoint(tempCtx, cx, cy + cry);
-				[self arcTo: crx : cry : 0 : 0 : 1 : cx + crx : cy];
+				[self arcTo: crx : cry : 0 : 0 : 1 : cx + crx : cy : tempCtx];
 				CGContextClosePath(tempCtx);
 				CGContextFillPath(tempCtx);
 			}
@@ -930,14 +909,15 @@ static svg_status_t r_quadratic_curve_to(void *closure, double x1, double y1, do
 static svg_status_t r_arc_to(void *closure, double rx, double ry, double x_axis_rotation, int large_arc_flag, int sweep_flag, double x, double y)
 {
 	SVGRenderContext *self = (SVGRenderContext *)closure;
-	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
+	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	[self arcTo: rx
 			   : ry
 			   : x_axis_rotation
 			   : large_arc_flag
 			   : sweep_flag
 			   : x
-			   : y];
+			   : y
+			   : CGCtx];
 	return SVG_STATUS_SUCCESS;
 }
 
