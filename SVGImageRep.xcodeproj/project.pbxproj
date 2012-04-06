@@ -1523,6 +1523,7 @@
 				5560E70D152B6F5C008FF127 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		55AFA48A151AA3BC00B5351D /* Build configuration list for PBXProject "SVGImageRep" */ = {
 			isa = XCConfigurationList;
