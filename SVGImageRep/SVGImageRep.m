@@ -113,24 +113,27 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 {
 	SVGRenderContext *svg_render_context;
 	CGContextRef CGCtx = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
-	
+	BOOL didRender = NO;
 	svg_render_context = [[SVGRenderContext alloc] init];
 
 	[svg_render_context prepareRender:1.0];
-	svg_render(svg, &cocoa_svg_engine, svg_render_context);
+	svg_status_t rendered = svg_render(svg, &cocoa_svg_engine, svg_render_context);
 	[svg_render_context finishRender];
 
-	NSSize renderSize = [svg_render_context size];
-	CGContextDrawLayerInRect(CGCtx, CGRectMake(0, 0, renderSize.width, renderSize.height), svg_render_context.renderLayer);
+	if (rendered == SVG_STATUS_SUCCESS) {
+		NSSize renderSize = [svg_render_context size];
+		CGContextDrawLayerInRect(CGCtx, CGRectMake(0, 0, renderSize.width, renderSize.height), svg_render_context.renderLayer);
+		didRender = YES;
+	}
 	[svg_render_context release];
-	return YES;
+	return didRender;
 }
 
 - (BOOL)drawInRect:(NSRect)rect
 {
 	SVGRenderContext *svg_render_context;
 	CGContextRef CGCtx = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
-		
+	BOOL didRender = NO;
 	svg_render_context = [[SVGRenderContext alloc] init];
 	
 	CGFloat wScale, hScale;
@@ -138,13 +141,15 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 	hScale = rect.size.height / [self pixelsHigh];
 	
 	[svg_render_context prepareRender:MIN(wScale, hScale)];
-	svg_render(svg, &cocoa_svg_engine, svg_render_context);
+	svg_status_t rendered = svg_render(svg, &cocoa_svg_engine, svg_render_context);
 	[svg_render_context finishRender];
 	
-	//NSSize renderSize = [svg_render_context size];
-	CGContextDrawLayerInRect(CGCtx, NSRectToCGRect(rect), svg_render_context.renderLayer);
+	if (rendered == SVG_STATUS_SUCCESS) {
+		CGContextDrawLayerInRect(CGCtx, NSRectToCGRect(rect), svg_render_context.renderLayer);
+		didRender = YES;
+	}
 	[svg_render_context release];
-	return YES;
+	return didRender;
 }
 
 + (void)load
