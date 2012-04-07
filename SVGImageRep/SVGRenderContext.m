@@ -105,7 +105,6 @@
 	return points * 1.25;
 }
 
-
 - (double)lengthToPoints:(svg_length_t *)l
 {
 	double points;
@@ -919,7 +918,7 @@
 	}
 	
 	//Again, set the text CTM?
-	CGContextScaleCTM(tempCtx,1,-1);
+	CGContextScaleCTM(tempCtx, 1, -1);
 	
 	return SVG_STATUS_SUCCESS;
 }
