@@ -778,7 +778,7 @@
 	if (!f)
 		f = [NSFont userFontOfSize: [current font_size]];
 	
-	NSFontDescriptor *tempDiscriptor = [NSFontDescriptor fontDescriptorWithName:[f fontName] size:[current font_size]];
+	NSFontDescriptor *tempDiscriptor = [f fontDescriptor];
 	//Should we set the text CTM here?
 	CGContextScaleCTM(tempCtx, 1, -1);
 	CGContextSelectFont(tempCtx, [[tempDiscriptor postscriptName] UTF8String], [current font_size] * scale, kCGEncodingFontSpecific);
@@ -900,6 +900,11 @@
 	CGContextScaleCTM(tempCtx, 1, -1);
 	
 	return SVG_STATUS_SUCCESS;
+}
+
+- (NSString *)description
+{
+	return [NSString stringWithFormat:@"Size: (%fx%f) is set: %@ scale: %f States: %i Current: %@", size.width, size.height, hasSize ? @"Yes" : @"No", scale, [states count], [current description]];
 }
 
 @end
