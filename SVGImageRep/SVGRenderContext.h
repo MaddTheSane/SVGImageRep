@@ -47,8 +47,7 @@ extern svg_render_engine_t cocoa_svg_engine;
 			 : (double)x_axis_rotation
 			 : (int)large_arc_flag
 			 : (int)sweep_flag
-			 : (double)x : (double)y
-			 : (CGContextRef)ctxt;
+			 : (double)x : (double)y;
 
 - (svg_status_t)beginGroup: (double)opacity;
 - (svg_status_t)endGroup: (double)opacity;

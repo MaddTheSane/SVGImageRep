@@ -234,7 +234,6 @@
 - (void)_pathArcSegment:(double)xc : (double)yc
 					   : (double)th0 : (double)th1
 					   : (double)rx : (double)ry : (double)x_axis_rotation
-					   : (CGContextRef)ctxt
 {
     double sin_th, cos_th;
     double a00, a01, a10, a11;
@@ -259,8 +258,9 @@
     x2 = x3 + t * sin(th1);
     y2 = y3 - t * cos(th1);
 	
-	CGContextAddCurveToPoint(ctxt, a00 * x1 + a01 * y1, a10 * x1 + a11 * y1, a00 * x2 + a01 * y2, a10 * x2 + a11 * y2, a00 * x3 + a01 * y3, a10 * x3 + a11 * y3);
+	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
 	
+	CGContextAddCurveToPoint(tempCtx, a00 * x1 + a01 * y1, a10 * x1 + a11 * y1, a00 * x2 + a01 * y2, a10 * x2 + a11 * y2, a00 * x3 + a01 * y3, a10 * x3 + a11 * y3);	
 }
 
 /**
@@ -281,7 +281,6 @@
 			 : (int)sweep_flag
 			 : (double)x
 			 : (double)y
-			 : (CGContextRef)ctxt
 {
     double sin_th, cos_th;
     double a00, a01, a10, a11;
@@ -294,7 +293,8 @@
     double cury;
 	
 	{
-		CGPoint tempPoint = CGContextGetPathCurrentPoint(ctxt);
+		CGContextRef tempCtx = CGLayerGetContext(renderLayer);
+		CGPoint tempPoint = CGContextGetPathCurrentPoint(tempCtx);
 		curx = tempPoint.x;
 		cury = tempPoint.y;
 	}
@@ -361,7 +361,7 @@
 		[self _pathArcSegment: xc : yc
 							 : th0 + i * th_arc / n_segs
 							 : th0 + (i + 1) * th_arc / n_segs
-							 : rx : ry : x_axis_rotation : ctxt];
+							 : rx : ry : x_axis_rotation];
     }
 }
 
@@ -394,13 +394,13 @@
 			{
 				CGContextMoveToPoint(tempCtx, cx + crx, cy);
 				CGContextAddLineToPoint(tempCtx, cx + cw - crx, cy);
-				[self arcTo: crx : cry : 0 : 0 : 1 : cx + cw : cy + cry : tempCtx];
+				[self arcTo: crx : cry : 0 : 0 : 1 : cx + cw : cy + cry];
 				CGContextAddLineToPoint(tempCtx, cx + cw, cy + ch - cry);
-				[self arcTo: crx : cry : 0 : 0 : 1 : cx + cw - crx : cy + ch : tempCtx];
+				[self arcTo: crx : cry : 0 : 0 : 1 : cx + cw - crx : cy + ch];
 				CGContextAddLineToPoint(tempCtx, cx + crx, cy + ch);
-				[self arcTo: crx : cry : 0 : 0 : 1 : cx : cy + ch - cry : tempCtx];
+				[self arcTo: crx : cry : 0 : 0 : 1 : cx : cy + ch - cry];
 				CGContextAddLineToPoint(tempCtx, cx, cy + cry);
-				[self arcTo: crx : cry : 0 : 0 : 1 : cx + crx : cy : tempCtx];
+				[self arcTo: crx : cry : 0 : 0 : 1 : cx + crx : cy];
 				CGContextClosePath(tempCtx);
 				CGContextClip(tempCtx);
 			}
@@ -450,13 +450,13 @@
 			{
 				CGContextMoveToPoint(tempCtx, cx + crx, cy);
 				CGContextAddLineToPoint(tempCtx, cx + cw - crx, cy);
-				[self arcTo: crx : cry : 0 : 0 : 1 : cx + cw : cy + cry : tempCtx];
+				[self arcTo: crx : cry : 0 : 0 : 1 : cx + cw : cy + cry];
 				CGContextAddLineToPoint(tempCtx, cx + cw, cy + ch - cry);
-				[self arcTo: crx : cry : 0 : 0 : 1 : cx + cw - crx : cy + ch : tempCtx];
+				[self arcTo: crx : cry : 0 : 0 : 1 : cx + cw - crx : cy + ch];
 				CGContextAddLineToPoint(tempCtx, cx + crx, cy + ch);
-				[self arcTo: crx : cry : 0 : 0 : 1 : cx : cy + ch - cry : tempCtx];
+				[self arcTo: crx : cry : 0 : 0 : 1 : cx : cy + ch - cry];
 				CGContextAddLineToPoint(tempCtx, cx, cy + cry);
-				[self arcTo: crx : cry : 0 : 0 : 1 : cx + crx : cy : tempCtx];
+				[self arcTo: crx : cry : 0 : 0 : 1 : cx + crx : cy];
 				CGContextClosePath(tempCtx);
 				CGContextFillPath(tempCtx);
 			}
@@ -998,15 +998,14 @@ static svg_status_t r_quadratic_curve_to(void *closure, double x1, double y1, do
 static svg_status_t r_arc_to(void *closure, double rx, double ry, double x_axis_rotation, int large_arc_flag, int sweep_flag, double x, double y)
 {
 	SVGRenderContext *self = (SVGRenderContext *)closure;
-	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
+	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	[self arcTo: rx
 			   : ry
 			   : x_axis_rotation
 			   : large_arc_flag
 			   : sweep_flag
 			   : x
-			   : y
-			   : CGCtx];
+			   : y];
 	return SVG_STATUS_SUCCESS;
 }
 
