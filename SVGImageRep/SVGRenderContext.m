@@ -388,25 +388,24 @@
 	{
 		case SVG_PAINT_TYPE_GRADIENT:
 		{
-			CGLayerRef gradLayer = CGLayerCreateWithContext(tempCtx, NSSizeToCGSize([self size]), NULL);
-			CGContextRef gradContext = CGLayerGetContext(gradLayer);
+			CGContextSaveGState(tempCtx);
 			CGGradientRef gradient = [SVGRenderContext createGradientFromSVGGradient:current->fill_paint.p.gradient];
 			if (rx > 0 || ry > 0)
 			{
-				CGContextMoveToPoint(gradContext, cx + crx, cy);
-				CGContextAddLineToPoint(gradContext, cx + cw - crx, cy);
-				[self arcTo: crx : cry : 0 : 0 : 1 : cx + cw : cy + cry : gradContext];
-				CGContextAddLineToPoint(gradContext, cx + cw, cy + ch - cry);
-				[self arcTo: crx : cry : 0 : 0 : 1 : cx + cw - crx : cy + ch : gradContext];
-				CGContextAddLineToPoint(gradContext, cx + crx, cy + ch);
-				[self arcTo: crx : cry : 0 : 0 : 1 : cx : cy + ch - cry : gradContext];
-				CGContextAddLineToPoint(gradContext, cx, cy + cry);
-				[self arcTo: crx : cry : 0 : 0 : 1 : cx + crx : cy : gradContext];
-				CGContextClosePath(gradContext);
-				CGContextClip(gradContext);
+				CGContextMoveToPoint(tempCtx, cx + crx, cy);
+				CGContextAddLineToPoint(tempCtx, cx + cw - crx, cy);
+				[self arcTo: crx : cry : 0 : 0 : 1 : cx + cw : cy + cry : tempCtx];
+				CGContextAddLineToPoint(tempCtx, cx + cw, cy + ch - cry);
+				[self arcTo: crx : cry : 0 : 0 : 1 : cx + cw - crx : cy + ch : tempCtx];
+				CGContextAddLineToPoint(tempCtx, cx + crx, cy + ch);
+				[self arcTo: crx : cry : 0 : 0 : 1 : cx : cy + ch - cry : tempCtx];
+				CGContextAddLineToPoint(tempCtx, cx, cy + cry);
+				[self arcTo: crx : cry : 0 : 0 : 1 : cx + crx : cy : tempCtx];
+				CGContextClosePath(tempCtx);
+				CGContextClip(tempCtx);
 			}
 			else
-				CGContextClipToRect(gradContext, CGRectMake(cx, cy, cw, ch));
+				CGContextClipToRect(tempCtx, CGRectMake(cx, cy, cw, ch));
 			
 			switch (current->fill_paint.p.gradient->type) {
 				case SVG_GRADIENT_LINEAR:
@@ -416,7 +415,7 @@
 					y1 = [self lengthToPoints:&current->fill_paint.p.gradient->u.linear.y1];
 					x2 = [self lengthToPoints:&current->fill_paint.p.gradient->u.linear.x2];
 					y2 = [self lengthToPoints:&current->fill_paint.p.gradient->u.linear.y2];
-					CGContextDrawLinearGradient(gradContext, gradient, CGPointMake(x1, y1), CGPointMake(x2, y2), kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
+					CGContextDrawLinearGradient(tempCtx, gradient, CGPointMake(x1, y1), CGPointMake(x2, y2), kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
 				}
 					break;
 					
@@ -428,7 +427,7 @@
 					r = [self lengthToPoints:&current->fill_paint.p.gradient->u.radial.r];
 					fx = [self lengthToPoints:&current->fill_paint.p.gradient->u.radial.fx];
 					fy = [self lengthToPoints:&current->fill_paint.p.gradient->u.radial.fy];
-					CGContextDrawRadialGradient(gradContext, gradient, CGPointMake(cx, cy), r, CGPointMake(fx, fy), r, kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
+					CGContextDrawRadialGradient(tempCtx, gradient, CGPointMake(cx, cy), r, CGPointMake(fx, fy), r, kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
 				}
 					break;
 
@@ -436,8 +435,7 @@
 					break;
 			}
 			CGGradientRelease(gradient);
-			CGContextDrawLayerInRect(tempCtx, CGRectMake(0, 0, [self size].width, [self size].height), gradLayer);
-			CGLayerRelease(gradLayer);
+			CGContextRestoreGState(tempCtx);
 		}
 			break;
 			
@@ -613,14 +611,8 @@
 		{
 			//TODO: handle stuff like this method's case SVG_PAINT_TYPE_COLOR does.
 			//I.E.: handle fill_rule.
-			CGLayerRef gradLayer = CGLayerCreateWithContext(tempCtx, NSSizeToCGSize([self size]), NULL);
-			CGContextRef gradContext = CGLayerGetContext(gradLayer);
-			{
-				CGPathRef tempPath = CGContextCopyPath(tempCtx);
-				CGContextAddPath(gradContext, tempPath);
-				CGPathRelease(tempPath);
-			}
-			CGContextClip(gradContext);
+			CGContextSaveGState(tempCtx);
+			CGContextClip(tempCtx);
 			CGGradientRef gradient = [SVGRenderContext createGradientFromSVGGradient:current->fill_paint.p.gradient];
 			
 			switch (current->fill_paint.p.gradient->type) {
@@ -631,7 +623,7 @@
 					y1 = [self lengthToPoints:&current->fill_paint.p.gradient->u.linear.y1];
 					x2 = [self lengthToPoints:&current->fill_paint.p.gradient->u.linear.x2];
 					y2 = [self lengthToPoints:&current->fill_paint.p.gradient->u.linear.y2];
-					CGContextDrawLinearGradient(gradContext, gradient, CGPointMake(x1, y1), CGPointMake(x2, y2), kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
+					CGContextDrawLinearGradient(tempCtx, gradient, CGPointMake(x1, y1), CGPointMake(x2, y2), kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
 				}
 					break;
 					
@@ -643,7 +635,7 @@
 					r = [self lengthToPoints:&current->fill_paint.p.gradient->u.radial.r];
 					fx = [self lengthToPoints:&current->fill_paint.p.gradient->u.radial.fx];
 					fy = [self lengthToPoints:&current->fill_paint.p.gradient->u.radial.fy];
-					CGContextDrawRadialGradient(gradContext, gradient, CGPointMake(cx, cy), r, CGPointMake(fx, fy), r, kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
+					CGContextDrawRadialGradient(tempCtx, gradient, CGPointMake(cx, cy), r, CGPointMake(fx, fy), r, kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
 				}
 					break;
 					
@@ -651,8 +643,7 @@
 					break;
 			}
 			CGGradientRelease(gradient);
-			CGContextDrawLayerInRect(tempCtx, CGRectMake(0, 0, [self size].width, [self size].height), gradLayer);
-			CGLayerRelease(gradLayer);
+			CGContextRestoreGState(tempCtx);
 		}
 			break;
 			
@@ -790,20 +781,15 @@
 	NSFontDescriptor *tempDiscriptor = [NSFontDescriptor fontDescriptorWithName:[f fontName] size:[current font_size]];
 	//Should we set the text CTM here?
 	CGContextScaleCTM(tempCtx, 1, -1);
-	CGContextSelectFont(tempCtx, [[tempDiscriptor postscriptName] UTF8String], [current font_size], kCGEncodingFontSpecific);
+	CGContextSelectFont(tempCtx, [[tempDiscriptor postscriptName] UTF8String], [current font_size] * scale, kCGEncodingFontSpecific);
 
 	switch ([current fill_paint].type)
 	{
 		case SVG_PAINT_TYPE_GRADIENT:
 		{
-			CGLayerRef gradLayer = CGLayerCreateWithContext(tempCtx, NSSizeToCGSize([self size]), NULL);
-			CGContextRef gradContext = CGLayerGetContext(gradLayer);
-			{
-				CGPoint TextPos = CGContextGetTextPosition(tempCtx);
-				CGContextSetTextPosition(gradContext, TextPos.x, TextPos.y);
-			}
-			CGContextSetTextDrawingMode(gradContext, kCGTextFillClip);
-			CGContextShowText(gradContext, utf8, strlen(utf8));
+			CGContextSaveGState(tempCtx);
+			CGContextSetTextDrawingMode(tempCtx, kCGTextFillClip);
+			CGContextShowText(tempCtx, utf8, strlen(utf8));
 		
 			//CGContextClip(tempCtx);
 			CGGradientRef gradient = [SVGRenderContext createGradientFromSVGGradient:current->fill_paint.p.gradient];
@@ -816,7 +802,7 @@
 					y1 = [self lengthToPoints:&current->fill_paint.p.gradient->u.linear.y1];
 					x2 = [self lengthToPoints:&current->fill_paint.p.gradient->u.linear.x2];
 					y2 = [self lengthToPoints:&current->fill_paint.p.gradient->u.linear.y2];
-					CGContextDrawLinearGradient(gradContext, gradient, CGPointMake(x1, y1), CGPointMake(x2, y2), kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
+					CGContextDrawLinearGradient(tempCtx, gradient, CGPointMake(x1, y1), CGPointMake(x2, y2), kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
 				}
 					break;
 					
@@ -828,7 +814,7 @@
 					r = [self lengthToPoints:&current->fill_paint.p.gradient->u.radial.r];
 					fx = [self lengthToPoints:&current->fill_paint.p.gradient->u.radial.fx];
 					fy = [self lengthToPoints:&current->fill_paint.p.gradient->u.radial.fy];
-					CGContextDrawRadialGradient(gradContext, gradient, CGPointMake(cx, cy), r, CGPointMake(fx, fy), r, kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
+					CGContextDrawRadialGradient(tempCtx, gradient, CGPointMake(cx, cy), r, CGPointMake(fx, fy), r, kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
 				}
 					break;
 					
@@ -836,8 +822,7 @@
 					break;
 			}
 			CGGradientRelease(gradient);
-			CGContextDrawLayerInRect(tempCtx, CGRectMake(0, 0, [self size].width, [self size].height), gradLayer);
-			CGLayerRelease(gradLayer);
+			CGContextRestoreGState(tempCtx);
 		}
 			break;
 			
@@ -859,14 +844,9 @@
 	{
 		case SVG_PAINT_TYPE_GRADIENT:
 		{
-			CGLayerRef gradLayer = CGLayerCreateWithContext(tempCtx, NSSizeToCGSize([self size]), NULL);
-			CGContextRef gradContext = CGLayerGetContext(gradLayer);
-			{
-				CGPoint TextPos = CGContextGetTextPosition(tempCtx);
-				CGContextSetTextPosition(gradContext, TextPos.x, TextPos.y);
-			}
-			CGContextSetTextDrawingMode(gradContext, kCGTextStrokeClip);
-			CGContextShowText(gradContext, utf8, strlen(utf8));
+			CGContextSaveGState(tempCtx);
+			CGContextSetTextDrawingMode(tempCtx, kCGTextStrokeClip);
+			CGContextShowText(tempCtx, utf8, strlen(utf8));
 			//CGContextClip(tempCtx);
 			CGGradientRef gradient = [SVGRenderContext createGradientFromSVGGradient:current->stroke_paint.p.gradient];
 			
@@ -878,7 +858,7 @@
 					y1 = [self lengthToPoints:&current->fill_paint.p.gradient->u.linear.y1];
 					x2 = [self lengthToPoints:&current->fill_paint.p.gradient->u.linear.x2];
 					y2 = [self lengthToPoints:&current->fill_paint.p.gradient->u.linear.y2];
-					CGContextDrawLinearGradient(gradContext, gradient, CGPointMake(x1, y1), CGPointMake(x2, y2), kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
+					CGContextDrawLinearGradient(tempCtx, gradient, CGPointMake(x1, y1), CGPointMake(x2, y2), kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
 				}
 					break;
 					
@@ -890,7 +870,7 @@
 					r = [self lengthToPoints:&current->fill_paint.p.gradient->u.radial.r];
 					fx = [self lengthToPoints:&current->fill_paint.p.gradient->u.radial.fx];
 					fy = [self lengthToPoints:&current->fill_paint.p.gradient->u.radial.fy];
-					CGContextDrawRadialGradient(gradContext, gradient, CGPointMake(cx, cy), r, CGPointMake(fx, fy), r, kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
+					CGContextDrawRadialGradient(tempCtx, gradient, CGPointMake(cx, cy), r, CGPointMake(fx, fy), r, kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
 				}
 					break;
 					
@@ -898,8 +878,7 @@
 					break;
 			}
 			CGGradientRelease(gradient);
-			CGContextDrawLayerInRect(tempCtx, CGRectMake(0, 0, [self size].width, [self size].height), gradLayer);
-			CGLayerRelease(gradLayer);
+			CGContextRestoreGState(tempCtx);
 		}
 			break;
 			
