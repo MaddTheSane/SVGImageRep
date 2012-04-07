@@ -111,37 +111,15 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 	CGContextRef CGCtx = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
 	BOOL didRender = NO;
 	svg_render_context = [[SVGRenderContext alloc] init];
+	CGAffineTransform scaleTrans = CGContextGetCTM(CGCtx);
 
-	[svg_render_context prepareRender:1.0];
+	[svg_render_context prepareRender:MIN(scaleTrans.a, scaleTrans.d)];
 	svg_status_t rendered = svg_render(svg, &cocoa_svg_engine, svg_render_context);
 	[svg_render_context finishRender];
 
 	if (rendered == SVG_STATUS_SUCCESS) {
-		NSSize renderSize = [svg_render_context size];
+		NSSize renderSize = [self size];
 		CGContextDrawLayerInRect(CGCtx, CGRectMake(0, 0, renderSize.width, renderSize.height), svg_render_context.renderLayer);
-		didRender = YES;
-	}
-	[svg_render_context release];
-	return didRender;
-}
-
-- (BOOL)drawInRect:(NSRect)rect
-{
-	SVGRenderContext *svg_render_context;
-	CGContextRef CGCtx = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
-	BOOL didRender = NO;
-	svg_render_context = [[SVGRenderContext alloc] init];
-	
-	CGFloat wScale, hScale;
-	wScale = rect.size.width / [self pixelsWide];
-	hScale = rect.size.height / [self pixelsHigh];
-	
-	[svg_render_context prepareRender:MIN(wScale, hScale)];
-	svg_status_t rendered = svg_render(svg, &cocoa_svg_engine, svg_render_context);
-	[svg_render_context finishRender];
-	
-	if (rendered == SVG_STATUS_SUCCESS) {
-		CGContextDrawLayerInRect(CGCtx, NSRectToCGRect(rect), svg_render_context.renderLayer);
 		didRender = YES;
 	}
 	[svg_render_context release];
