@@ -1399,8 +1399,6 @@
 				HEADER_SEARCH_PATHS = (
 					/usr/include/libxml2,
 					"\"${SRCROOT}\"/svg/src",
-					"\"${SRCROOT}\"/jpeg/jpeg-8d",
-					"\"${SRCROOT}\"/png/libpng-1.5.9",
 				);
 				INFOPLIST_FILE = "SVGImageRep/SVGImageRep-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
@@ -1418,8 +1416,6 @@
 				HEADER_SEARCH_PATHS = (
 					/usr/include/libxml2,
 					"\"${SRCROOT}\"/svg/src",
-					"\"${SRCROOT}\"/jpeg/jpeg-8d",
-					"\"${SRCROOT}\"/png/libpng-1.5.9",
 				);
 				INFOPLIST_FILE = "SVGImageRep/SVGImageRep-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
@@ -1436,8 +1432,6 @@
 				HEADER_SEARCH_PATHS = (
 					/usr/include/libxml2,
 					"\"${SRCROOT}\"/svg/src",
-					"\"${SRCROOT}\"/jpeg/jpeg-8d",
-					"\"${SRCROOT}\"/png/libpng-1.5.9",
 				);
 				INFOPLIST_FILE = "SVGViewer/SVGViewer-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1454,8 +1448,6 @@
 				HEADER_SEARCH_PATHS = (
 					/usr/include/libxml2,
 					"\"${SRCROOT}\"/svg/src",
-					"\"${SRCROOT}\"/jpeg/jpeg-8d",
-					"\"${SRCROOT}\"/png/libpng-1.5.9",
 				);
 				INFOPLIST_FILE = "SVGViewer/SVGViewer-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
