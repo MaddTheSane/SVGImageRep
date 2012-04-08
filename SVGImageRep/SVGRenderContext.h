@@ -38,10 +38,11 @@ extern svg_render_engine_t cocoa_svg_engine;
 - (void)prepareRender:(double)a_scale;
 - (void)finishRender;
 
+- (void)setStrokeColor:(svg_color_t *)c alpha:(CGFloat)alph;
+- (void)setFillColor:(svg_color_t *)c alpha:(CGFloat)alph;
+
 - (double)lengthToPoints:(svg_length_t *)l;
 + (double)lengthToPoints:(svg_length_t *)l;
-
-+ (CGGradientRef)createGradientFromSVGGradient:(svg_gradient_t *)gradient CF_RETURNS_RETAINED;
 
 - (void)arcTo: (double)rx : (double) ry
 			 : (double)x_axis_rotation
