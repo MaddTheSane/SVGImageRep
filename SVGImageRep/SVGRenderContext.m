@@ -18,6 +18,10 @@
 #import <AppKit/NSFont.h>
 #import "SVGRenderState.h"
 
+#ifndef CF_RETURNS_RETAINED
+#define CF_RETURNS_RETAINED
+#endif
+
 @implementation SVGRenderContext
 
 @synthesize size, states, current, scale, renderLayer;
@@ -35,6 +39,18 @@
 	scale = a_scale;
 	size = NSMakeSize(500 * scale, 500 * scale);
 	unsizedRenderLayer = CGLayerCreateWithContext((CGContextRef)[[NSGraphicsContext currentContext] graphicsPort], NSSizeToCGSize(size), NULL);
+}
+
+- (void)prepareRenderFromRenderContext:(SVGRenderContext *)prevContext
+{
+	states = [[NSMutableArray alloc] init];
+	current = [[prevContext current] copy];
+	[states addObject:current];
+	[current release];
+	hasSize = NO;
+	scale = [prevContext scale];
+	size = [prevContext size];
+	unsizedRenderLayer = CGLayerCreateWithContext(CGLayerGetContext([prevContext renderLayer]), NSSizeToCGSize(size), NULL);
 }
 
 - (void)finishRender
@@ -441,6 +457,25 @@
 			
 		case SVG_PAINT_TYPE_PATTERN:
 #warning SVG_PAINT_TYPE_PATTERN not handled yet!
+#if 0
+		{
+			svg_element_t *tempElement = current.fill_paint.p.pattern_element;
+			SVGRenderContext *patternRender = [[SVGRenderContext alloc] init];
+			svg_pattern_t *pattern = svg_element_pattern(tempElement);
+			[patternRender prepareRenderFromRenderContext:self];
+			[patternRender setViewportDimension:&pattern->width :&pattern->height];
+			svg_element_render(tempElement, &cocoa_svg_engine, patternRender);
+			[patternRender finishRender];
+			CGFloat w, h, x, y;
+			w = [self lengthToPoints:&pattern->width];
+			h = [self lengthToPoints:&pattern->height];
+			x = [self lengthToPoints:&pattern->x];
+			y = [self lengthToPoints:&pattern->y];
+			//TODO: handle transform
+			CGContextDrawLayerInRect(tempCtx, CGRectMake(x, y, w, h), patternRender.renderLayer);
+			[patternRender release];
+		}
+#endif
 			break;
 			
 		case SVG_PAINT_TYPE_COLOR:
@@ -648,6 +683,28 @@
 			
 		case SVG_PAINT_TYPE_PATTERN:
 #warning SVG_PAINT_TYPE_PATTERN not handled yet!
+#if 0
+			CGContextSaveGState(tempCtx);
+		{
+			CGContextClip(tempCtx);
+			svg_element_t *tempElement = current.fill_paint.p.pattern_element;
+			SVGRenderContext *patternRender = [[SVGRenderContext alloc] init];
+			svg_pattern_t *pattern = svg_element_pattern(tempElement);
+			[patternRender prepareRenderFromRenderContext:self];
+			[patternRender setViewportDimension:&pattern->width :&pattern->height];
+			svg_element_render(tempElement, &cocoa_svg_engine, patternRender);
+			[patternRender finishRender];
+			CGFloat w, h, x, y;
+			w = [self lengthToPoints:&pattern->width];
+			h = [self lengthToPoints:&pattern->height];
+			x = [self lengthToPoints:&pattern->x];
+			y = [self lengthToPoints:&pattern->y];
+			//TODO: handle transform
+			CGContextDrawLayerInRect(tempCtx, CGRectMake(x, y, w, h), patternRender.renderLayer);
+			[patternRender release];
+		}
+			CGContextRestoreGState(tempCtx);
+#endif
 			break;
 			
 		case SVG_PAINT_TYPE_COLOR:
