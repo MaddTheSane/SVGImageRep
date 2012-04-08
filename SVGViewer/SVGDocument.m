@@ -9,6 +9,8 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 
 #import <Foundation/NSGeometry.h>
 #import <Foundation/NSData.h>
+#import <Foundation/NSError.h>
+#import <Foundation/FoundationErrors.h>
 #import <AppKit/NSGraphicsContext.h>
 
 #include <svg.h>
