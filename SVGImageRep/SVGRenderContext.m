@@ -822,23 +822,25 @@
 		fontTrait |= NSBoldFontMask;
 	}
 	
-	CGMutablePathRef pathRef;
-	{
-		pathRef = CGPathCreateMutable();
-		CGPoint textPoint = CGContextGetTextPosition(tempCtx);
-		CGPathMoveToPoint(pathRef, NULL, textPoint.x, textPoint.y);
-		CGPathAddLineToPoint(pathRef, NULL, textPoint.x + 200, textPoint.y);
-		CGPathAddLineToPoint(pathRef, NULL, textPoint.x + 200, textPoint.y + 100);
-		CGPathAddLineToPoint(pathRef, NULL, textPoint.x, textPoint.y + 100);
-		CGPathCloseSubpath(pathRef);
-	}
 	NSFont *tmpfont = [fm fontWithFamily:[f familyName] traits:fontTrait weight:0 size:current.font_size];
 	//Should we set the text CTM here?
 	CGContextScaleCTM(tempCtx, 1, -1);
 	NSDictionary *fontAttribs = [NSDictionary dictionaryWithObjectsAndKeys:tmpfont, NSFontAttributeName, foreColor,NSForegroundColorAttributeName, outlineClr, NSStrokeColorAttributeName, nil];
 	//CGContextSetTextMatrix(tempCtx, CGAffineTransformIdentity);
 	NSAttributedString *textWFont = [[NSAttributedString alloc] initWithString:[NSString stringWithUTF8String:utf8] attributes:fontAttribs];
+	CFRange fitRange;
 	CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString((CFAttributedStringRef)textWFont);
+	CGSize frameSize = CTFramesetterSuggestFrameSizeWithConstraints(framesetter, CFRangeMake(0, [textWFont length]), NULL, CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX), &fitRange);
+	CGMutablePathRef pathRef;
+	{
+		pathRef = CGPathCreateMutable();
+		CGPoint textPoint = CGContextGetTextPosition(tempCtx);
+		CGPathMoveToPoint(pathRef, NULL, textPoint.x, textPoint.y);
+		CGPathAddLineToPoint(pathRef, NULL, textPoint.x + frameSize.width, textPoint.y);
+		CGPathAddLineToPoint(pathRef, NULL, textPoint.x + frameSize.width, textPoint.y - frameSize.height);
+		CGPathAddLineToPoint(pathRef, NULL, textPoint.x, textPoint.y - frameSize.height);
+		CGPathCloseSubpath(pathRef);
+	}
 	CTFrameRef tempFrame = CTFramesetterCreateFrame(framesetter, CFRangeMake(0, [textWFont length]), pathRef, NULL);
 	
 #if 0
