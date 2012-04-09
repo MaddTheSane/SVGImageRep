@@ -802,14 +802,14 @@
 	NSColor *outlineClr, *foreColor;
 	if (current.fill_paint.type == SVG_PAINT_TYPE_COLOR) {
 		svg_color_t *tempsvgcolor = &current->fill_paint.p.color;
-		foreColor = [NSColor colorWithDeviceRed:svg_color_get_red(tempsvgcolor)/255.0 green:svg_color_get_green(tempsvgcolor)/255.0 blue:svg_color_get_blue(tempsvgcolor)/255.0 alpha:[current fill_opacity]];
+		foreColor = [NSColor colorWithDeviceRed:svg_color_get_red(tempsvgcolor)/255.0 green:svg_color_get_green(tempsvgcolor)/255.0 blue:svg_color_get_blue(tempsvgcolor)/255.0 alpha:current.fill_opacity];
 	} else {
 		foreColor = [NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.0 alpha:0.0];
 	}
 	
 	if (current.stroke_paint.type == SVG_PAINT_TYPE_COLOR) {
 		svg_color_t *tempsvgcolor = &current->stroke_paint.p.color;
-		outlineClr = [NSColor colorWithDeviceRed:svg_color_get_red(tempsvgcolor)/255.0 green:svg_color_get_green(tempsvgcolor)/255.0 blue:svg_color_get_blue(tempsvgcolor)/255.0 alpha:[current stroke_opacity]];
+		outlineClr = [NSColor colorWithDeviceRed:svg_color_get_red(tempsvgcolor)/255.0 green:svg_color_get_green(tempsvgcolor)/255.0 blue:svg_color_get_blue(tempsvgcolor)/255.0 alpha:current.stroke_opacity];
 	} else {
 		outlineClr = [NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.0 alpha:0.0];
 	}
@@ -827,7 +827,10 @@
 		pathRef = CGPathCreateMutable();
 		CGPoint textPoint = CGContextGetTextPosition(tempCtx);
 		CGPathMoveToPoint(pathRef, NULL, textPoint.x, textPoint.y);
-		CGPathAddLineToPoint(pathRef, NULL, textPoint.x, textPoint.y + 10);
+		CGPathAddLineToPoint(pathRef, NULL, textPoint.x + 200, textPoint.y);
+		CGPathAddLineToPoint(pathRef, NULL, textPoint.x + 200, textPoint.y + 100);
+		CGPathAddLineToPoint(pathRef, NULL, textPoint.x, textPoint.y + 100);
+		CGPathCloseSubpath(pathRef);
 	}
 	NSFont *tmpfont = [fm fontWithFamily:[f familyName] traits:fontTrait weight:0 size:current.font_size];
 	//Should we set the text CTM here?
