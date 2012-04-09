@@ -758,7 +758,7 @@
 	NSFont *f;
 	NSFontManager *fm;
 	NSArray *fonts;
-	//int w = ceil([current font_weight] / 80);
+	int w = ceil(current.font_weight / 80);
 	NSInteger i;
 	
 	if (utf8 == NULL)
@@ -804,14 +804,14 @@
 		svg_color_t *tempsvgcolor = &current->fill_paint.p.color;
 		foreColor = [NSColor colorWithDeviceRed:svg_color_get_red(tempsvgcolor)/255.0 green:svg_color_get_green(tempsvgcolor)/255.0 blue:svg_color_get_blue(tempsvgcolor)/255.0 alpha:current.fill_opacity];
 	} else {
-		foreColor = [NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.0 alpha:0.0];
+		foreColor = [NSColor clearColor];
 	}
 	
 	if (current.stroke_paint.type == SVG_PAINT_TYPE_COLOR) {
 		svg_color_t *tempsvgcolor = &current->stroke_paint.p.color;
 		outlineClr = [NSColor colorWithDeviceRed:svg_color_get_red(tempsvgcolor)/255.0 green:svg_color_get_green(tempsvgcolor)/255.0 blue:svg_color_get_blue(tempsvgcolor)/255.0 alpha:current.stroke_opacity];
 	} else {
-		outlineClr = [NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.0 alpha:0.0];
+		outlineClr = [NSColor clearColor];
 	}
 
 	NSFontTraitMask fontTrait = 0;
@@ -822,7 +822,7 @@
 		fontTrait |= NSBoldFontMask;
 	}
 	
-	NSFont *tmpfont = [fm fontWithFamily:[f familyName] traits:fontTrait weight:0 size:current.font_size];
+	NSFont *tmpfont = [fm fontWithFamily:[f familyName] traits:fontTrait weight:w size:current.font_size];
 	//Should we set the text CTM here?
 	CGContextScaleCTM(tempCtx, 1, -1);
 	NSDictionary *fontAttribs = [NSDictionary dictionaryWithObjectsAndKeys:tmpfont, NSFontAttributeName, foreColor,NSForegroundColorAttributeName, outlineClr, NSStrokeColorAttributeName, nil];
