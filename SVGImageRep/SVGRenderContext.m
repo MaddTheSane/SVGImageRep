@@ -757,9 +757,8 @@
 	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
 	NSFont *f;
 	NSFontManager *fm;
-	NSArray *fonts, *font;
-	int w = ceil([current font_weight] / 80);
-	int score, best;
+	NSArray *fonts;
+	//int w = ceil([current font_weight] / 80);
 	NSInteger i;
 	
 	if (utf8 == NULL)
@@ -789,56 +788,57 @@
 			else if ([family isEqual: @"monospace"])
 				family = @"Courier";
 			
-			fonts=[fm availableMembersOfFontFamily:family];
-			if (!fonts || ![fonts count])
-				fonts = [fm availableMembersOfFontFamily:[family capitalizedString]];
-			if (fonts && [fonts count])
+			
+			f = [NSFont fontWithName:family size:current.font_size];
+			if (f)
 				break;
 		}
 		
 		
-		if (!fonts || ![fonts count])
-			fonts = [fm availableMembersOfFontFamily: @"Helvetica"];
+		if (!f)
+			f = [NSFont fontWithName:@"Helvetica" size:current.font_size];
 	}
 	
-	f = nil;
-	best = 1e6;
-	//TODO: rewrite this code for better font finding.
-	for (i = 0; i < [fonts count]; i++)
+	NSColor *outlineClr, *foreColor;
+	if (current.fill_paint.type == SVG_PAINT_TYPE_COLOR) {
+		svg_color_t *tempsvgcolor = &current->fill_paint.p.color;
+		foreColor = [NSColor colorWithDeviceRed:svg_color_get_red(tempsvgcolor)/255.0 green:svg_color_get_green(tempsvgcolor)/255.0 blue:svg_color_get_blue(tempsvgcolor)/255.0 alpha:[current fill_opacity]];
+	} else {
+		foreColor = [NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.0 alpha:0.0];
+	}
+	
+	if (current.stroke_paint.type == SVG_PAINT_TYPE_COLOR) {
+		svg_color_t *tempsvgcolor = &current->stroke_paint.p.color;
+		outlineClr = [NSColor colorWithDeviceRed:svg_color_get_red(tempsvgcolor)/255.0 green:svg_color_get_green(tempsvgcolor)/255.0 blue:svg_color_get_blue(tempsvgcolor)/255.0 alpha:[current stroke_opacity]];
+	} else {
+		outlineClr = [NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.0 alpha:0.0];
+	}
+
+	NSFontTraitMask fontTrait = 0;
+	if (current.font_style > SVG_FONT_STYLE_NORMAL) {
+		fontTrait |= NSItalicFontMask;
+	}
+	if (current.font_weight >= 700) {
+		fontTrait |= NSBoldFontMask;
+	}
+	
+	CGMutablePathRef pathRef;
 	{
-		NSFontTraitMask traits;
-		
-		font=[fonts objectAtIndex: i];
-		score = abs([[font objectAtIndex: 2] intValue] - w);
-		
-		traits = [[font objectAtIndex: 3] unsignedIntValue]&~NSBoldFontMask;
-		if ([current font_style])
-		{
-			if (!(traits & NSItalicFontMask))
-				score += 10;
-			else
-				traits &=~ NSItalicFontMask;
-		}
-		
-		if (traits)
-			score += 10;
-		
-		if (score < best)
-		{
-			best = score;
-			f = [NSFont fontWithName: [font objectAtIndex: 0]
-								size: [current font_size]];
-		}
+		pathRef = CGPathCreateMutable();
+		CGPoint textPoint = CGContextGetTextPosition(tempCtx);
+		CGPathMoveToPoint(pathRef, NULL, textPoint.x, textPoint.y);
+		CGPathAddLineToPoint(pathRef, NULL, textPoint.x, textPoint.y + 10);
 	}
-	
-	if (!f)
-		f = [NSFont userFontOfSize: [current font_size]];
-	
-	NSFontDescriptor *tempDiscriptor = [f fontDescriptor];
+	NSFont *tmpfont = [fm fontWithFamily:[f familyName] traits:fontTrait weight:0 size:current.font_size];
 	//Should we set the text CTM here?
 	CGContextScaleCTM(tempCtx, 1, -1);
-	CGContextSelectFont(tempCtx, [[tempDiscriptor postscriptName] UTF8String], [current font_size], kCGEncodingFontSpecific);
-
+	NSDictionary *fontAttribs = [NSDictionary dictionaryWithObjectsAndKeys:tmpfont, NSFontAttributeName, foreColor,NSForegroundColorAttributeName, outlineClr, NSStrokeColorAttributeName, nil];
+	//CGContextSetTextMatrix(tempCtx, CGAffineTransformIdentity);
+	NSAttributedString *textWFont = [[NSAttributedString alloc] initWithString:[NSString stringWithUTF8String:utf8] attributes:fontAttribs];
+	CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString((CFAttributedStringRef)textWFont);
+	CTFrameRef tempFrame = CTFramesetterCreateFrame(framesetter, CFRangeMake(0, [textWFont length]), pathRef, NULL);
+	
+#if 0
 	switch (current.fill_paint.type)
 	{
 		case SVG_PAINT_TYPE_GRADIENT:
@@ -951,6 +951,12 @@
 		case SVG_PAINT_TYPE_NONE:
 			break;
 	}
+#endif
+	CTFrameDraw(tempFrame, tempCtx);
+	CGPathRelease(pathRef);
+	CFRelease(framesetter);
+	CFRelease(tempFrame);
+	[textWFont release];
 	
 	//Again, set the text CTM?
 	CGContextScaleCTM(tempCtx, 1, -1);
