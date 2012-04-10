@@ -48,12 +48,12 @@
 - (void)prepareRenderFromRenderContext:(SVGRenderContext *)prevContext
 {
 	states = [[NSMutableArray alloc] init];
-	current = [[prevContext current] copy];
+	current = [prevContext.current copy];
 	[states addObject:current];
 	[current release];
 	hasSize = NO;
-	scale = [prevContext scale];
-	size = [prevContext size];
+	scale = prevContext.scale;
+	size = prevContext.size;
 	unsizedRenderLayer = CGLayerCreateWithContext(CGLayerGetContext(prevContext.renderLayer), NSSizeToCGSize(size), NULL);
 }
 
@@ -61,7 +61,6 @@
 {
 	[states release]; states = nil;
 	hasSize = NO;
-	//TODO: release renderLayer after use.
 	CGLayerRelease(unsizedRenderLayer);
 	unsizedRenderLayer = NULL;
 }
@@ -119,7 +118,7 @@
 				return l->value / 100 * sqrt(100 * 100 + 100 * 100) * sqrt(2);
 			
 		default:
-			printf("unhandled unit %i\n", l->unit);
+			printf("SVGRenderContext: unhandled unit %i\n", l->unit);
 			return l->value;
 	}
 	return points * 1.25;
@@ -163,7 +162,7 @@
 				return l->value / 100 * sqrt(size.width * size.width + size.height * size.height) * sqrt(2) / scale;
 			
 		default:
-			printf("unhandled unit %i\n", l->unit);
+			printf("SVGRenderContext: unhandled unit %i\n", l->unit);
 			return l->value;
 	}
 	return points * 1.25;
@@ -823,6 +822,7 @@
 		NSColor *foreColor;
 		if (current.fill_paint.type == SVG_PAINT_TYPE_COLOR) {
 			svg_color_t *tempsvgcolor = &current->fill_paint.p.color;
+			[self setFillColor:tempsvgcolor alpha:current.fill_opacity];
 			foreColor = [NSColor colorWithDeviceRed:svg_color_get_red(tempsvgcolor)/255.0 green:svg_color_get_green(tempsvgcolor)/255.0 blue:svg_color_get_blue(tempsvgcolor)/255.0 alpha:current.fill_opacity];
 		} else {
 			foreColor = [NSColor clearColor];
@@ -831,6 +831,7 @@
 		
 		if (current.stroke_paint.type == SVG_PAINT_TYPE_COLOR) {
 			svg_color_t *tempsvgcolor = &current->stroke_paint.p.color;
+			[self setStrokeColor:tempsvgcolor alpha:current.stroke_opacity];
 			[fontAttribs setValue:[NSColor colorWithDeviceRed:svg_color_get_red(tempsvgcolor)/255.0 green:svg_color_get_green(tempsvgcolor)/255.0 blue:svg_color_get_blue(tempsvgcolor)/255.0 alpha:current.stroke_opacity] forKey:NSStrokeColorAttributeName];
 			[fontAttribs setValue:[NSNumber numberWithDouble:current.stroke_width] forKey:NSStrokeWidthAttributeName];
 		}
