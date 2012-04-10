@@ -62,7 +62,7 @@ extern svg_render_engine_t cocoa_svg_engine;
 						  : (svg_length_t *)width : (svg_length_t *)height
 						  : (svg_length_t *)rx : (svg_length_t *)ry;
 - (svg_status_t)renderPath;
-- (svg_status_t)renderText: (const char *)utf8;
+- (svg_status_t)renderText:(const char *)utf8 atX:(CGFloat)xPos y:(CGFloat)yPos;
 - (svg_status_t)renderEllipse: (svg_length_t *)cx : (svg_length_t *)cy
 							 : (svg_length_t *)rx : (svg_length_t *)ry;
 
