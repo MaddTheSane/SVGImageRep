@@ -9,13 +9,15 @@
 #import "SVGRenderContext.h"
 #import <Foundation/NSString.h>
 #import <Foundation/NSArray.h>
+#import <Foundation/NSDictionary.h>
 #import <Foundation/NSCharacterSet.h>
+#import <Foundation/NSAttributedString.h>
 #import <AppKit/NSFontManager.h>
 #import <AppKit/NSGraphics.h>
 #import <AppKit/NSBitmapImageRep.h>
 #import <AppKit/NSGraphicsContext.h>
-#import <AppKit/NSFontDescriptor.h>
 #import <AppKit/NSFont.h>
+#import <AppKit/NSAttributedString.h>
 #import "SVGRenderState.h"
 
 #ifndef CF_RETURNS_RETAINED
@@ -828,10 +830,11 @@
 	//CGContextSetTextMatrix(tempCtx, CGAffineTransformIdentity);
 	NSAttributedString *textWFont = [[NSAttributedString alloc] initWithString:[NSString stringWithUTF8String:utf8] attributes:fontAttribs];
 	CFRange fitRange;
-	CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString((CFAttributedStringRef)textWFont);
-	CGSize frameSize = CTFramesetterSuggestFrameSizeWithConstraints(framesetter, CFRangeMake(0, [textWFont length]), NULL, CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX), &fitRange);
-	CGMutablePathRef pathRef;
+	CTFrameRef tempFrame;
 	{
+		CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString((CFAttributedStringRef)textWFont);
+		CGSize frameSize = CTFramesetterSuggestFrameSizeWithConstraints(framesetter, CFRangeMake(0, [textWFont length]), NULL, CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX), &fitRange);
+		CGMutablePathRef pathRef;
 		pathRef = CGPathCreateMutable();
 		CGPoint textPoint = CGContextGetTextPosition(tempCtx);
 		CGPathMoveToPoint(pathRef, NULL, textPoint.x, textPoint.y);
@@ -839,9 +842,10 @@
 		CGPathAddLineToPoint(pathRef, NULL, textPoint.x + frameSize.width, textPoint.y - frameSize.height);
 		CGPathAddLineToPoint(pathRef, NULL, textPoint.x, textPoint.y - frameSize.height);
 		CGPathCloseSubpath(pathRef);
+		tempFrame = CTFramesetterCreateFrame(framesetter, CFRangeMake(0, [textWFont length]), pathRef, NULL);
+		CGPathRelease(pathRef);
+		CFRelease(framesetter);
 	}
-	CTFrameRef tempFrame = CTFramesetterCreateFrame(framesetter, CFRangeMake(0, [textWFont length]), pathRef, NULL);
-	
 #if 0
 	switch (current.fill_paint.type)
 	{
@@ -957,8 +961,6 @@
 	}
 #endif
 	CTFrameDraw(tempFrame, tempCtx);
-	CGPathRelease(pathRef);
-	CFRelease(framesetter);
 	CFRelease(tempFrame);
 	[textWFont release];
 	
