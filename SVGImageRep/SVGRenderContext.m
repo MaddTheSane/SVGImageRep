@@ -759,7 +759,7 @@
 	NSFont *f;
 	NSFontManager *fm;
 	NSArray *fonts;
-	int w = ceil(current.font_weight / 80);
+	int w = ceil(current.font_weight / 80.0);
 	NSInteger i;
 	
 	if (utf8 == NULL)
@@ -800,6 +800,18 @@
 			f = [NSFont fontWithName:@"Helvetica" size:current.font_size];
 	}
 	
+	NSFontTraitMask fontTrait = 0;
+	if (current.font_style > SVG_FONT_STYLE_NORMAL) {
+		fontTrait |= NSItalicFontMask;
+	}
+	if (current.font_weight >= 700) {
+		fontTrait |= NSBoldFontMask;
+	}
+	NSFont *tmpfont = [fm fontWithFamily:[f familyName] traits:fontTrait weight:w size:current.font_size];
+
+	NSString *utfString = [NSString stringWithUTF8String:utf8];
+
+#if 1
 	NSColor *outlineClr, *foreColor;
 	if (current.fill_paint.type == SVG_PAINT_TYPE_COLOR) {
 		svg_color_t *tempsvgcolor = &current->fill_paint.p.color;
@@ -815,20 +827,11 @@
 		outlineClr = [NSColor clearColor];
 	}
 
-	NSFontTraitMask fontTrait = 0;
-	if (current.font_style > SVG_FONT_STYLE_NORMAL) {
-		fontTrait |= NSItalicFontMask;
-	}
-	if (current.font_weight >= 700) {
-		fontTrait |= NSBoldFontMask;
-	}
-	
-	NSFont *tmpfont = [fm fontWithFamily:[f familyName] traits:fontTrait weight:w size:current.font_size];
 	//Should we set the text CTM here?
 	CGContextScaleCTM(tempCtx, 1, -1);
 	NSDictionary *fontAttribs = [NSDictionary dictionaryWithObjectsAndKeys:tmpfont, NSFontAttributeName, foreColor,NSForegroundColorAttributeName, outlineClr, NSStrokeColorAttributeName, nil];
 	//CGContextSetTextMatrix(tempCtx, CGAffineTransformIdentity);
-	NSAttributedString *textWFont = [[NSAttributedString alloc] initWithString:[NSString stringWithUTF8String:utf8] attributes:fontAttribs];
+	NSAttributedString *textWFont = [[NSAttributedString alloc] initWithString:utfString attributes:fontAttribs];
 	CFRange fitRange;
 	CTFrameRef tempFrame;
 	{
@@ -846,14 +849,25 @@
 		CGPathRelease(pathRef);
 		CFRelease(framesetter);
 	}
-#if 0
+	CTFrameDraw(tempFrame, tempCtx);
+	CFRelease(tempFrame);
+	[textWFont release];
+	
+#else
+	
+	CGContextSelectFont(tempCtx, [[[tmpfont fontDescriptor] postscriptName] UTF8String], current.font_size, kCGEncodingFontSpecific);
+	NSInteger str8len = [utfString length];
+	unichar *chars = malloc(sizeof(unichar) * str8len);
+	CGGlyph *glyphChars = malloc(sizeof(CGGlyph) * str8len);
+	[utfString getCharacters:chars range:NSMakeRange(0, str8len)];
+	CTFontGetGlyphsForCharacters((CTFontRef)tmpfont, chars, glyphChars, str8len);
 	switch (current.fill_paint.type)
 	{
 		case SVG_PAINT_TYPE_GRADIENT:
 		{
 			CGContextSaveGState(tempCtx);
 			CGContextSetTextDrawingMode(tempCtx, kCGTextFillClip);
-			CGContextShowText(tempCtx, utf8, strlen(utf8));
+			CGContextShowGlyphs(tempCtx, glyphChars, str8len)
 		
 			//CGContextClip(tempCtx);
 			CGGradientRef gradient = [SVGRenderContext createGradientFromSVGGradient:current.fill_paint.p.gradient];
@@ -897,7 +911,7 @@
 		case SVG_PAINT_TYPE_COLOR:
 			[self setFillColor: &current->fill_paint.p.color alpha:[current fill_opacity]];
 			CGContextSetTextDrawingMode(tempCtx, kCGTextFill);
-			CGContextShowText(tempCtx, utf8, strlen(utf8));
+			CGContextShowGlyphs(tempCtx, glyphChars, str8len)
 			break;
 
 		case SVG_PAINT_TYPE_NONE:
@@ -910,7 +924,7 @@
 		{
 			CGContextSaveGState(tempCtx);
 			CGContextSetTextDrawingMode(tempCtx, kCGTextStrokeClip);
-			CGContextShowText(tempCtx, utf8, strlen(utf8));
+			CGContextShowGlyphs(tempCtx, glyphChars, str8len)
 			//CGContextClip(tempCtx);
 			CGGradientRef gradient = [SVGRenderContext createGradientFromSVGGradient:current.stroke_paint.p.gradient];
 			
@@ -953,16 +967,15 @@
 		case SVG_PAINT_TYPE_COLOR:
 			[self setStrokeColor: &current->stroke_paint.p.color alpha:[current stroke_opacity]];
 			CGContextSetTextDrawingMode(tempCtx, kCGTextStroke);
-			CGContextShowText(tempCtx, utf8, strlen(utf8));
+			CGContextShowGlyphs(tempCtx, glyphChars, str8len)
 			break;
 
 		case SVG_PAINT_TYPE_NONE:
 			break;
 	}
+	free(chars);
+	free(glyphChars);
 #endif
-	CTFrameDraw(tempFrame, tempCtx);
-	CFRelease(tempFrame);
-	[textWFont release];
 	
 	//Again, set the text CTM?
 	CGContextScaleCTM(tempCtx, 1, -1);
