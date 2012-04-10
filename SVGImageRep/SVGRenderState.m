@@ -33,7 +33,7 @@
 	new.fill_opacity = fill_opacity;
 	new.stroke_paint = stroke_paint;
 	new.stroke_width = stroke_width;
-	new.font_family = [[font_family copyWithZone:zone] autorelease];
+	new.font_family = font_family; //Declared property has copy in it, so it doesn't retain it.
 	
 	if (dash)
 	{
