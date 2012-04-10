@@ -830,7 +830,7 @@
 		outlineClr = [NSColor clearColor];
 	}
 
-	NSDictionary *fontAttribs = [NSDictionary dictionaryWithObjectsAndKeys:tmpfont, NSFontAttributeName, foreColor,NSForegroundColorAttributeName, outlineClr, NSStrokeColorAttributeName, [NSNumber numberWithDouble:current.stroke_width], NSStrokeWidthAttributeName, nil];
+	NSDictionary *fontAttribs = [NSDictionary dictionaryWithObjectsAndKeys:tmpfont, NSFontAttributeName, foreColor,NSForegroundColorAttributeName, outlineClr, NSStrokeColorAttributeName, nil];
 	//CGContextSetTextMatrix(tempCtx, CGAffineTransformIdentity);
 	NSAttributedString *textWFont = [[NSAttributedString alloc] initWithString:utfString attributes:fontAttribs];
 	CFRange fitRange;
