@@ -50,7 +50,7 @@
 	hasSize = NO;
 	scale = [prevContext scale];
 	size = [prevContext size];
-	unsizedRenderLayer = CGLayerCreateWithContext(CGLayerGetContext([prevContext renderLayer]), NSSizeToCGSize(size), NULL);
+	unsizedRenderLayer = CGLayerCreateWithContext(CGLayerGetContext(prevContext.renderLayer), NSSizeToCGSize(size), NULL);
 }
 
 - (void)finishRender
@@ -108,9 +108,9 @@
 			//Assume a resolution of 100 when using percents
 		case SVG_LENGTH_UNIT_PCT:
 			if (l->orientation == SVG_LENGTH_ORIENTATION_HORIZONTAL)
-				return l->value / 100 * 100;
+				return l->value;
 			else if (l->orientation == SVG_LENGTH_ORIENTATION_VERTICAL)
-				return l->value / 100 * 100;
+				return l->value;
 			else
 				return l->value / 100 * sqrt(100 * 100 + 100 * 100) * sqrt(2);
 			
@@ -183,12 +183,10 @@
 
 + (CGGradientRef)createGradientFromSVGGradient:(svg_gradient_t *)gradient CF_RETURNS_RETAINED
 {
-	int numStops = gradient->num_stops;
+	int numStops = gradient->num_stops, i;
 	CFMutableArrayRef colorArray = CFArrayCreateMutable(kCFAllocatorDefault, numStops, &kCFTypeArrayCallBacks);
 	CGFloat *GradStops = malloc(sizeof(CGFloat) * numStops);
-	NSInteger i;
 	for (i = 0; i < numStops; i++) {
-		
 		CGColorRef tempColor = [SVGRenderContext createColorRefFromSVGColor:&gradient->stops[i].color opacity:gradient->stops[i].opacity];
 		CFArrayInsertValueAtIndex(colorArray, i, tempColor);
 		CGColorRelease(tempColor);
@@ -643,10 +641,11 @@
 	{
 		case SVG_PAINT_TYPE_GRADIENT:
 		{
-			//TODO: handle stuff like this method's case SVG_PAINT_TYPE_COLOR does.
-			//I.E.: handle fill_rule.
 			CGContextSaveGState(tempCtx);
-			CGContextClip(tempCtx);
+			if (current.fill_rule)
+				CGContextEOClip(tempCtx);
+			else
+				CGContextClip(tempCtx);
 			CGGradientRef gradient = [SVGRenderContext createGradientFromSVGGradient:current.fill_paint.p.gradient];
 			
 			switch (current.fill_paint.p.gradient->type) {
@@ -711,7 +710,7 @@
 			[self setFillColor: &current->fill_paint.p.color alpha:current.fill_opacity];
 			if (current.stroke_paint.type != SVG_PAINT_TYPE_NONE)
 				CGContextSaveGState(tempCtx);
-			if ([current fill_rule])
+			if (current.fill_rule)
 				CGContextEOFillPath(tempCtx);
 			else
 				CGContextFillPath(tempCtx);
@@ -1186,8 +1185,8 @@ static svg_status_t r_set_stroke_dash_array(void *closure, double *dashes, int n
 		size_t i;
 		for (i = 0;i < num_dashes;i++)
 			dash[i] = dashes[i];
-		[self current].dash = dash;
-		[self current].num_dash = num_dashes;
+		self.current.dash = dash;
+		self.current.num_dash = num_dashes;
 		CGContextSetLineDash(CGCtx, self.current.dash_offset, self.current.dash, self.current.num_dash);
 	}
 	else
@@ -1201,7 +1200,7 @@ static svg_status_t r_set_stroke_dash_offset(void *closure, svg_length_t *offset
 	SVGRenderContext *self = (SVGRenderContext *)closure;
 	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
-	[self current].dash_offset = [self lengthToPoints: offset];
+	self.current.dash_offset = [self lengthToPoints:offset];
 	CGContextSetLineDash(CGCtx, self.current.dash_offset, self.current.dash, self.current.num_dash);
 	return SVG_STATUS_SUCCESS;
 }
