@@ -756,16 +756,15 @@
 - (svg_status_t)renderText:(const char *)utf8
 {
 	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
-	NSFont *f;
-	NSFontManager *fm;
-	NSArray *fonts;
+	NSFont *f = nil, *tmpfont = nil;
+	NSFontManager *fm = [NSFontManager sharedFontManager];
 	int w = ceil(current.font_weight / 80.0);
 	NSInteger i;
-	
+
 	if (utf8 == NULL)
 		return SVG_STATUS_SUCCESS;
 	
-	fm = [NSFontManager sharedFontManager];
+	NSString *utfString = [NSString stringWithUTF8String:utf8];
 	
 	{
 		NSArray *families;
@@ -773,7 +772,6 @@
 		
 		families = [[current font_family] componentsSeparatedByString: @","];
 		
-		fonts = nil;
 		for (i = 0; i < [families count]; i++)
 		{
 			family = [families objectAtIndex: i];
@@ -800,39 +798,45 @@
 			f = [NSFont fontWithName:@"Helvetica" size:current.font_size];
 	}
 	
-	NSFontTraitMask fontTrait = 0;
-	if (current.font_style > SVG_FONT_STYLE_NORMAL) {
-		fontTrait |= NSItalicFontMask;
+	{
+		NSFontTraitMask fontTrait = 0;
+		if (current.font_style > SVG_FONT_STYLE_NORMAL) {
+			fontTrait |= NSItalicFontMask;
+		}
+		if (current.font_weight >= 700) {
+			fontTrait |= NSBoldFontMask;
+		}
+		tmpfont = [fm fontWithFamily:[f familyName] traits:fontTrait weight:w size:current.font_size];
 	}
-	if (current.font_weight >= 700) {
-		fontTrait |= NSBoldFontMask;
-	}
-	NSFont *tmpfont = [fm fontWithFamily:[f familyName] traits:fontTrait weight:w size:current.font_size];
 
-	NSString *utfString = [NSString stringWithUTF8String:utf8];
 	//Should we set the text CTM here?
 	CGContextScaleCTM(tempCtx, 1, -1);
 	CGContextSetTextMatrix(tempCtx, CGAffineTransformIdentity);
 
 #if 1
-	NSColor *outlineClr, *foreColor;
-	if (current.fill_paint.type == SVG_PAINT_TYPE_COLOR) {
-		svg_color_t *tempsvgcolor = &current->fill_paint.p.color;
-		foreColor = [NSColor colorWithDeviceRed:svg_color_get_red(tempsvgcolor)/255.0 green:svg_color_get_green(tempsvgcolor)/255.0 blue:svg_color_get_blue(tempsvgcolor)/255.0 alpha:current.fill_opacity];
-	} else {
-		foreColor = [NSColor clearColor];
+	
+	NSDictionary *fontAttribs = nil;
+	{
+		NSColor *outlineClr, *foreColor;
+		if (current.fill_paint.type == SVG_PAINT_TYPE_COLOR) {
+			svg_color_t *tempsvgcolor = &current->fill_paint.p.color;
+			foreColor = [NSColor colorWithDeviceRed:svg_color_get_red(tempsvgcolor)/255.0 green:svg_color_get_green(tempsvgcolor)/255.0 blue:svg_color_get_blue(tempsvgcolor)/255.0 alpha:current.fill_opacity];
+		} else {
+			foreColor = [NSColor clearColor];
+		}
+		
+		if (current.stroke_paint.type == SVG_PAINT_TYPE_COLOR) {
+			svg_color_t *tempsvgcolor = &current->stroke_paint.p.color;
+			outlineClr = [NSColor colorWithDeviceRed:svg_color_get_red(tempsvgcolor)/255.0 green:svg_color_get_green(tempsvgcolor)/255.0 blue:svg_color_get_blue(tempsvgcolor)/255.0 alpha:current.stroke_opacity];
+		} else {
+			outlineClr = [NSColor clearColor];
+		}
+		
+		fontAttribs = [NSDictionary dictionaryWithObjectsAndKeys:tmpfont, NSFontAttributeName, foreColor,NSForegroundColorAttributeName, outlineClr, NSStrokeColorAttributeName, nil];
 	}
 	
-	if (current.stroke_paint.type == SVG_PAINT_TYPE_COLOR) {
-		svg_color_t *tempsvgcolor = &current->stroke_paint.p.color;
-		outlineClr = [NSColor colorWithDeviceRed:svg_color_get_red(tempsvgcolor)/255.0 green:svg_color_get_green(tempsvgcolor)/255.0 blue:svg_color_get_blue(tempsvgcolor)/255.0 alpha:current.stroke_opacity];
-	} else {
-		outlineClr = [NSColor clearColor];
-	}
-
-	NSDictionary *fontAttribs = [NSDictionary dictionaryWithObjectsAndKeys:tmpfont, NSFontAttributeName, foreColor,NSForegroundColorAttributeName, outlineClr, NSStrokeColorAttributeName, nil];
-	//CGContextSetTextMatrix(tempCtx, CGAffineTransformIdentity);
 	NSAttributedString *textWFont = [[NSAttributedString alloc] initWithString:utfString attributes:fontAttribs];
+	
 	CFRange fitRange;
 	CTFrameRef tempFrame;
 	{
