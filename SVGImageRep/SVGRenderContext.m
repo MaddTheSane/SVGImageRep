@@ -861,13 +861,15 @@
 	CGGlyph *glyphChars = malloc(sizeof(CGGlyph) * str8len);
 	[utfString getCharacters:chars range:NSMakeRange(0, str8len)];
 	CTFontGetGlyphsForCharacters((CTFontRef)tmpfont, chars, glyphChars, str8len);
+	
+	CGContextSetTextMatrix(tempCtx, CGContextGetCTM(tempCtx));
 	switch (current.fill_paint.type)
 	{
 		case SVG_PAINT_TYPE_GRADIENT:
 		{
 			CGContextSaveGState(tempCtx);
 			CGContextSetTextDrawingMode(tempCtx, kCGTextFillClip);
-			CGContextShowGlyphs(tempCtx, glyphChars, str8len)
+			CGContextShowGlyphs(tempCtx, glyphChars, str8len);
 		
 			//CGContextClip(tempCtx);
 			CGGradientRef gradient = [SVGRenderContext createGradientFromSVGGradient:current.fill_paint.p.gradient];
@@ -909,9 +911,9 @@
 			break;
 			
 		case SVG_PAINT_TYPE_COLOR:
-			[self setFillColor: &current->fill_paint.p.color alpha:[current fill_opacity]];
+			[self setFillColor: &current->fill_paint.p.color alpha:current.fill_opacity];
 			CGContextSetTextDrawingMode(tempCtx, kCGTextFill);
-			CGContextShowGlyphs(tempCtx, glyphChars, str8len)
+			CGContextShowGlyphs(tempCtx, glyphChars, str8len);
 			break;
 
 		case SVG_PAINT_TYPE_NONE:
@@ -924,7 +926,7 @@
 		{
 			CGContextSaveGState(tempCtx);
 			CGContextSetTextDrawingMode(tempCtx, kCGTextStrokeClip);
-			CGContextShowGlyphs(tempCtx, glyphChars, str8len)
+			CGContextShowGlyphs(tempCtx, glyphChars, str8len);
 			//CGContextClip(tempCtx);
 			CGGradientRef gradient = [SVGRenderContext createGradientFromSVGGradient:current.stroke_paint.p.gradient];
 			
@@ -965,9 +967,9 @@
 			break;
 			
 		case SVG_PAINT_TYPE_COLOR:
-			[self setStrokeColor: &current->stroke_paint.p.color alpha:[current stroke_opacity]];
+			[self setStrokeColor: &current->stroke_paint.p.color alpha:current.stroke_opacity];
 			CGContextSetTextDrawingMode(tempCtx, kCGTextStroke);
-			CGContextShowGlyphs(tempCtx, glyphChars, str8len)
+			CGContextShowGlyphs(tempCtx, glyphChars, str8len);
 			break;
 
 		case SVG_PAINT_TYPE_NONE:
