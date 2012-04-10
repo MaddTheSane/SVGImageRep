@@ -754,7 +754,7 @@
 }
 
 
-- (svg_status_t)renderText:(const char *)utf8
+- (svg_status_t)renderText:(const char *)utf8 atX:(CGFloat)xPos y:(CGFloat)yPos
 {
 	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
 	NSFont *f = nil, *tmpfont = nil;
@@ -846,11 +846,10 @@
 		CGSize frameSize = CTFramesetterSuggestFrameSizeWithConstraints(framesetter, CFRangeMake(0, [textWFont length]), NULL, CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX), &fitRange);
 		CGMutablePathRef pathRef;
 		pathRef = CGPathCreateMutable();
-		CGPoint textPoint = CGContextGetTextPosition(tempCtx);
-		CGPathMoveToPoint(pathRef, NULL, textPoint.x, textPoint.y);
-		CGPathAddLineToPoint(pathRef, NULL, textPoint.x + frameSize.width, textPoint.y);
-		CGPathAddLineToPoint(pathRef, NULL, textPoint.x + frameSize.width, textPoint.y - frameSize.height);
-		CGPathAddLineToPoint(pathRef, NULL, textPoint.x, textPoint.y - frameSize.height);
+		CGPathMoveToPoint(pathRef, NULL, xPos, yPos);
+		CGPathAddLineToPoint(pathRef, NULL, xPos + frameSize.width, yPos);
+		CGPathAddLineToPoint(pathRef, NULL, xPos + frameSize.width, yPos - frameSize.height);
+		CGPathAddLineToPoint(pathRef, NULL, xPos, yPos - frameSize.height);
 		CGPathCloseSubpath(pathRef);
 		tempFrame = CTFramesetterCreateFrame(framesetter, CFRangeMake(0, [textWFont length]), pathRef, NULL);
 		CGPathRelease(pathRef);
@@ -862,6 +861,7 @@
 	
 #else
 	
+	CGContextSetTextPosition(tempCtx, xPos, yPos);
 	CGContextSelectFont(tempCtx, [[[tmpfont fontDescriptor] postscriptName] UTF8String], current.font_size, kCGEncodingFontSpecific);
 	NSInteger str8len = [utfString length];
 	unichar *chars = malloc(sizeof(unichar) * str8len);
@@ -1385,10 +1385,9 @@ static svg_status_t r_render_rect(void *closure, svg_length_t *x, svg_length_t *
 static svg_status_t r_render_text(void *closure, svg_length_t *x, svg_length_t *y, const char *utf8)
 {
 	SVGRenderContext *self = (SVGRenderContext *)closure;
-	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
+	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
-	CGContextSetTextPosition(CGCtx, [self lengthToPoints:x], [self lengthToPoints:y]);
-	return [self renderText: utf8];
+	return [self renderText:utf8 atX:[self lengthToPoints:x] y:[self lengthToPoints:y]];
 }
 
 static svg_status_t r_render_image(void *closure, unsigned char *data, unsigned int data_width, unsigned int data_height, svg_length_t *x, svg_length_t *y, svg_length_t *width, svg_length_t *height)
