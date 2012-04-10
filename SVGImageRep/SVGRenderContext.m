@@ -12,11 +12,13 @@
 #import <Foundation/NSDictionary.h>
 #import <Foundation/NSCharacterSet.h>
 #import <Foundation/NSAttributedString.h>
+#import <Foundation/NSValue.h>
 #import <AppKit/NSFontManager.h>
 #import <AppKit/NSGraphics.h>
 #import <AppKit/NSBitmapImageRep.h>
 #import <AppKit/NSGraphicsContext.h>
 #import <AppKit/NSFont.h>
+#import <AppKit/NSFontDescriptor.h>
 #import <AppKit/NSAttributedString.h>
 #import "SVGRenderState.h"
 
@@ -787,12 +789,10 @@
 			else if ([family isEqual: @"monospace"])
 				family = @"Courier";
 			
-			
 			f = [NSFont fontWithName:family size:current.font_size];
 			if (f)
 				break;
 		}
-		
 		
 		if (!f)
 			f = [NSFont fontWithName:@"Helvetica" size:current.font_size];
@@ -815,27 +815,28 @@
 
 #if 1
 	
-	NSDictionary *fontAttribs = nil;
+	NSAttributedString *textWFont = nil;
 	{
-		NSColor *outlineClr, *foreColor;
+		NSMutableDictionary *fontAttribs = [NSMutableDictionary dictionaryWithCapacity:2];
+		
+		[fontAttribs setValue:tmpfont forKey:NSFontAttributeName];
+		NSColor *foreColor;
 		if (current.fill_paint.type == SVG_PAINT_TYPE_COLOR) {
 			svg_color_t *tempsvgcolor = &current->fill_paint.p.color;
 			foreColor = [NSColor colorWithDeviceRed:svg_color_get_red(tempsvgcolor)/255.0 green:svg_color_get_green(tempsvgcolor)/255.0 blue:svg_color_get_blue(tempsvgcolor)/255.0 alpha:current.fill_opacity];
 		} else {
 			foreColor = [NSColor clearColor];
 		}
+		[fontAttribs setValue:foreColor forKey:NSForegroundColorAttributeName];
 		
 		if (current.stroke_paint.type == SVG_PAINT_TYPE_COLOR) {
 			svg_color_t *tempsvgcolor = &current->stroke_paint.p.color;
-			outlineClr = [NSColor colorWithDeviceRed:svg_color_get_red(tempsvgcolor)/255.0 green:svg_color_get_green(tempsvgcolor)/255.0 blue:svg_color_get_blue(tempsvgcolor)/255.0 alpha:current.stroke_opacity];
-		} else {
-			outlineClr = [NSColor clearColor];
+			[fontAttribs setValue:[NSColor colorWithDeviceRed:svg_color_get_red(tempsvgcolor)/255.0 green:svg_color_get_green(tempsvgcolor)/255.0 blue:svg_color_get_blue(tempsvgcolor)/255.0 alpha:current.stroke_opacity] forKey:NSStrokeColorAttributeName];
+			[fontAttribs setValue:[NSNumber numberWithDouble:current.stroke_width] forKey:NSStrokeWidthAttributeName];
 		}
 		
-		fontAttribs = [NSDictionary dictionaryWithObjectsAndKeys:tmpfont, NSFontAttributeName, foreColor,NSForegroundColorAttributeName, outlineClr, NSStrokeColorAttributeName, nil];
+		textWFont = [[NSAttributedString alloc] initWithString:utfString attributes:fontAttribs];
 	}
-	
-	NSAttributedString *textWFont = [[NSAttributedString alloc] initWithString:utfString attributes:fontAttribs];
 	
 	CFRange fitRange;
 	CTFrameRef tempFrame;
