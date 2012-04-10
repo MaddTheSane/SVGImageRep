@@ -810,6 +810,9 @@
 	NSFont *tmpfont = [fm fontWithFamily:[f familyName] traits:fontTrait weight:w size:current.font_size];
 
 	NSString *utfString = [NSString stringWithUTF8String:utf8];
+	//Should we set the text CTM here?
+	CGContextScaleCTM(tempCtx, 1, -1);
+	CGContextSetTextMatrix(tempCtx, CGAffineTransformIdentity);
 
 #if 1
 	NSColor *outlineClr, *foreColor;
@@ -827,9 +830,7 @@
 		outlineClr = [NSColor clearColor];
 	}
 
-	//Should we set the text CTM here?
-	CGContextScaleCTM(tempCtx, 1, -1);
-	NSDictionary *fontAttribs = [NSDictionary dictionaryWithObjectsAndKeys:tmpfont, NSFontAttributeName, foreColor,NSForegroundColorAttributeName, outlineClr, NSStrokeColorAttributeName, nil];
+	NSDictionary *fontAttribs = [NSDictionary dictionaryWithObjectsAndKeys:tmpfont, NSFontAttributeName, foreColor,NSForegroundColorAttributeName, outlineClr, NSStrokeColorAttributeName, [NSNumber numberWithDouble:current.stroke_width], NSStrokeWidthAttributeName, nil];
 	//CGContextSetTextMatrix(tempCtx, CGAffineTransformIdentity);
 	NSAttributedString *textWFont = [[NSAttributedString alloc] initWithString:utfString attributes:fontAttribs];
 	CFRange fitRange;
@@ -862,7 +863,6 @@
 	[utfString getCharacters:chars range:NSMakeRange(0, str8len)];
 	CTFontGetGlyphsForCharacters((CTFontRef)tmpfont, chars, glyphChars, str8len);
 	
-	CGContextSetTextMatrix(tempCtx, CGContextGetCTM(tempCtx));
 	switch (current.fill_paint.type)
 	{
 		case SVG_PAINT_TYPE_GRADIENT:
@@ -1302,7 +1302,8 @@ static svg_status_t r_set_stroke_width(void *closure, svg_length_t *width)
 	SVGRenderContext *self = (SVGRenderContext *)closure;
 	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
-	CGContextSetLineWidth(CGCtx, [self lengthToPoints:width]);
+	self.current.stroke_width = [self lengthToPoints:width];
+	CGContextSetLineWidth(CGCtx, self.current.stroke_width);
 	return SVG_STATUS_SUCCESS;
 }
 
