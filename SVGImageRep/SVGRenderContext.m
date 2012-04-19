@@ -22,17 +22,35 @@
 #import <AppKit/NSAttributedString.h>
 #import "SVGRenderState.h"
 
-#ifndef CF_RETURNS_RETAINED
-#define CF_RETURNS_RETAINED
-#endif
-
 @implementation SVGRenderContext
 
 @synthesize size, states, current, scale, renderLayer;
 
-+ (CGColorRef)createColorRefFromSVGColor:(svg_color_t *)c opacity:(CGFloat)alpha CF_RETURNS_RETAINED
+static inline CGColorRef CreateColorRefFromSVGColor(svg_color_t *c, CGFloat alpha)
 {
 	return CGColorCreateGenericRGB(svg_color_get_red(c)/255.0, svg_color_get_green(c)/255.0, svg_color_get_blue(c)/255.0, alpha);
+}
+
+static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
+{
+	int numStops = gradient->num_stops, i;
+	CFMutableArrayRef colorArray = CFArrayCreateMutable(kCFAllocatorDefault, numStops, &kCFTypeArrayCallBacks);
+	CGFloat *GradStops = malloc(sizeof(CGFloat) * numStops);
+	for (i = 0; i < numStops; i++) {
+		CGColorRef tempColor = CreateColorRefFromSVGColor(&gradient->stops[i].color, gradient->stops[i].opacity);
+		CFArrayInsertValueAtIndex(colorArray, i, tempColor);
+		CGColorRelease(tempColor);
+		GradStops[i] = gradient->stops[i].offset;
+	}
+	CGGradientRef CGgradient;
+	{
+		CGColorSpaceRef tempCSpace = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
+		CGgradient = CGGradientCreateWithColors(tempCSpace, colorArray, GradStops);
+		CGColorSpaceRelease(tempCSpace);
+	}
+	CFRelease(colorArray);
+	free(GradStops);
+	return CGgradient;
 }
 
 - (void)prepareRender:(double)a_scale
@@ -171,7 +189,7 @@
 - (void)setStrokeColor:(svg_color_t *)c alpha:(CGFloat)alph
 {
 	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
-	CGColorRef tempColor = [SVGRenderContext createColorRefFromSVGColor:c opacity:alph];
+	CGColorRef tempColor = CreateColorRefFromSVGColor(c, alph);
 	CGContextSetStrokeColorWithColor(tempCtx, tempColor);
 	CGColorRelease(tempColor);
 }
@@ -179,33 +197,10 @@
 - (void)setFillColor:(svg_color_t *)c alpha:(CGFloat)alph
 {
 	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
-	CGColorRef tempColor = [SVGRenderContext createColorRefFromSVGColor:c opacity:alph];
+	CGColorRef tempColor = CreateColorRefFromSVGColor(c, alph);
 	CGContextSetFillColorWithColor(tempCtx, tempColor);
 	CGColorRelease(tempColor);
 }
-
-+ (CGGradientRef)createGradientFromSVGGradient:(svg_gradient_t *)gradient CF_RETURNS_RETAINED
-{
-	int numStops = gradient->num_stops, i;
-	CFMutableArrayRef colorArray = CFArrayCreateMutable(kCFAllocatorDefault, numStops, &kCFTypeArrayCallBacks);
-	CGFloat *GradStops = malloc(sizeof(CGFloat) * numStops);
-	for (i = 0; i < numStops; i++) {
-		CGColorRef tempColor = [SVGRenderContext createColorRefFromSVGColor:&gradient->stops[i].color opacity:gradient->stops[i].opacity];
-		CFArrayInsertValueAtIndex(colorArray, i, tempColor);
-		CGColorRelease(tempColor);
-		GradStops[i] = gradient->stops[i].offset;
-	}
-	CGGradientRef CGgradient;
-	{
-		CGColorSpaceRef tempCSpace = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
-		CGgradient = CGGradientCreateWithColors(tempCSpace, colorArray, GradStops);
-		CGColorSpaceRelease(tempCSpace);
-	}
-	CFRelease(colorArray);
-	free(GradStops);
-	return CGgradient;
-}
-
 
 /*
  A few methods based on code in libxsvg:
@@ -401,12 +396,12 @@
 	
 	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
 	
-	switch (current.fill_paint.type)
+	switch (current.fillPaint.type)
 	{
 		case SVG_PAINT_TYPE_GRADIENT:
 		{
 			CGContextSaveGState(tempCtx);
-			CGGradientRef gradient = [SVGRenderContext createGradientFromSVGGradient:current.fill_paint.p.gradient];
+			CGGradientRef gradient = CreateGradientRefFromSVGGradient(current.fillPaint.p.gradient);
 			if (rx > 0 || ry > 0)
 			{
 				CGContextMoveToPoint(tempCtx, cx + crx, cy);
@@ -424,14 +419,14 @@
 			else
 				CGContextClipToRect(tempCtx, CGRectMake(cx, cy, cw, ch));
 			
-			switch (current.fill_paint.p.gradient->type) {
+			switch (current.fillPaint.p.gradient->type) {
 				case SVG_GRADIENT_LINEAR:
 				{
 					CGFloat x1, y1, x2, y2;
-					x1 = [self lengthToPoints:&current.fill_paint.p.gradient->u.linear.x1];
-					y1 = [self lengthToPoints:&current.fill_paint.p.gradient->u.linear.y1];
-					x2 = [self lengthToPoints:&current.fill_paint.p.gradient->u.linear.x2];
-					y2 = [self lengthToPoints:&current.fill_paint.p.gradient->u.linear.y2];
+					x1 = [self lengthToPoints:&current.fillPaint.p.gradient->u.linear.x1];
+					y1 = [self lengthToPoints:&current.fillPaint.p.gradient->u.linear.y1];
+					x2 = [self lengthToPoints:&current.fillPaint.p.gradient->u.linear.x2];
+					y2 = [self lengthToPoints:&current.fillPaint.p.gradient->u.linear.y2];
 					CGContextDrawLinearGradient(tempCtx, gradient, CGPointMake(x1, y1), CGPointMake(x2, y2), kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
 				}
 					break;
@@ -439,11 +434,11 @@
 				case SVG_GRADIENT_RADIAL:
 				{
 					CGFloat cx, cy, r, fx, fy;
-					cx = [self lengthToPoints:&current.fill_paint.p.gradient->u.radial.cx];
-					cy = [self lengthToPoints:&current.fill_paint.p.gradient->u.radial.cy];
-					r = [self lengthToPoints:&current.fill_paint.p.gradient->u.radial.r];
-					fx = [self lengthToPoints:&current.fill_paint.p.gradient->u.radial.fx];
-					fy = [self lengthToPoints:&current.fill_paint.p.gradient->u.radial.fy];
+					cx = [self lengthToPoints:&current.fillPaint.p.gradient->u.radial.cx];
+					cy = [self lengthToPoints:&current.fillPaint.p.gradient->u.radial.cy];
+					r = [self lengthToPoints:&current.fillPaint.p.gradient->u.radial.r];
+					fx = [self lengthToPoints:&current.fillPaint.p.gradient->u.radial.fx];
+					fy = [self lengthToPoints:&current.fillPaint.p.gradient->u.radial.fy];
 					CGContextDrawRadialGradient(tempCtx, gradient, CGPointMake(cx, cy), r, CGPointMake(fx, fy), r, kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
 				}
 					break;
@@ -460,7 +455,7 @@
 #warning SVG_PAINT_TYPE_PATTERN not handled yet!
 #if 0
 		{
-			svg_element_t *tempElement = current.fill_paint.p.pattern_element;
+			svg_element_t *tempElement = current.fillPaint.p.pattern_element;
 			SVGRenderContext *patternRender = [[SVGRenderContext alloc] init];
 			svg_pattern_t *pattern = svg_element_pattern(tempElement);
 			[patternRender prepareRenderFromRenderContext:self];
@@ -480,7 +475,7 @@
 			break;
 			
 		case SVG_PAINT_TYPE_COLOR:
-			[self setFillColor:&current->fill_paint.p.color alpha:[current fill_opacity]];
+			[self setFillColor:&current->fillPaint.p.color alpha:current.fillOpacity];
 			if (rx > 0 || ry > 0)
 			{
 				CGContextMoveToPoint(tempCtx, cx + crx, cy);
@@ -503,13 +498,13 @@
 			break;
 	}
 	
-	switch (current.stroke_paint.type)
+	switch (current.strokePaint.type)
 	{
 		case SVG_PAINT_TYPE_GRADIENT:
 #warning SVG_PAINT_TYPE_GRADIENT not handled yet!
 			CGContextSaveGState(tempCtx);
 		{
-			CGGradientRef gradient = [SVGRenderContext createGradientFromSVGGradient:current->fill_paint.p.gradient];
+			CGGradientRef gradient = CreateGradientRefFromSVGGradient(current.strokePaint.p.gradient);
 			CGGradientRelease(gradient);
 		}
 			CGContextRestoreGState(tempCtx);
@@ -520,7 +515,7 @@
 			break;
 			
 		case SVG_PAINT_TYPE_COLOR:
-			[self setStrokeColor:&current->stroke_paint.p.color alpha:[current stroke_opacity]];
+			[self setStrokeColor:&current->strokePaint.p.color alpha:current.strokeOpacity];
 			CGContextStrokeRect(tempCtx, CGRectMake(cx, cy, cw, ch));
 			break;
 
@@ -640,25 +635,25 @@
 - (svg_status_t)renderPath
 {
 	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
-	switch (current.fill_paint.type)
+	switch (current.fillPaint.type)
 	{
 		case SVG_PAINT_TYPE_GRADIENT:
 		{
 			CGContextSaveGState(tempCtx);
-			if (current.fill_rule)
+			if (current.fillRule)
 				CGContextEOClip(tempCtx);
 			else
 				CGContextClip(tempCtx);
-			CGGradientRef gradient = [SVGRenderContext createGradientFromSVGGradient:current.fill_paint.p.gradient];
+			CGGradientRef gradient = CreateGradientRefFromSVGGradient(current.fillPaint.p.gradient);
 			
-			switch (current.fill_paint.p.gradient->type) {
+			switch (current.fillPaint.p.gradient->type) {
 				case SVG_GRADIENT_LINEAR:
 				{
 					CGFloat x1, y1, x2, y2;
-					x1 = [self lengthToPoints:&current.fill_paint.p.gradient->u.linear.x1];
-					y1 = [self lengthToPoints:&current.fill_paint.p.gradient->u.linear.y1];
-					x2 = [self lengthToPoints:&current.fill_paint.p.gradient->u.linear.x2];
-					y2 = [self lengthToPoints:&current.fill_paint.p.gradient->u.linear.y2];
+					x1 = [self lengthToPoints:&current.fillPaint.p.gradient->u.linear.x1];
+					y1 = [self lengthToPoints:&current.fillPaint.p.gradient->u.linear.y1];
+					x2 = [self lengthToPoints:&current.fillPaint.p.gradient->u.linear.x2];
+					y2 = [self lengthToPoints:&current.fillPaint.p.gradient->u.linear.y2];
 					CGContextDrawLinearGradient(tempCtx, gradient, CGPointMake(x1, y1), CGPointMake(x2, y2), kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
 				}
 					break;
@@ -666,11 +661,11 @@
 				case SVG_GRADIENT_RADIAL:
 				{
 					CGFloat cx, cy, r, fx, fy;
-					cx = [self lengthToPoints:&current.fill_paint.p.gradient->u.radial.cx];
-					cy = [self lengthToPoints:&current.fill_paint.p.gradient->u.radial.cy];
-					r = [self lengthToPoints:&current.fill_paint.p.gradient->u.radial.r];
-					fx = [self lengthToPoints:&current.fill_paint.p.gradient->u.radial.fx];
-					fy = [self lengthToPoints:&current.fill_paint.p.gradient->u.radial.fy];
+					cx = [self lengthToPoints:&current.fillPaint.p.gradient->u.radial.cx];
+					cy = [self lengthToPoints:&current.fillPaint.p.gradient->u.radial.cy];
+					r = [self lengthToPoints:&current.fillPaint.p.gradient->u.radial.r];
+					fx = [self lengthToPoints:&current.fillPaint.p.gradient->u.radial.fx];
+					fy = [self lengthToPoints:&current.fillPaint.p.gradient->u.radial.fy];
 					CGContextDrawRadialGradient(tempCtx, gradient, CGPointMake(cx, cy), r, CGPointMake(fx, fy), r, kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
 				}
 					break;
@@ -689,7 +684,7 @@
 			CGContextSaveGState(tempCtx);
 		{
 			CGContextClip(tempCtx);
-			svg_element_t *tempElement = current.fill_paint.p.pattern_element;
+			svg_element_t *tempElement = current.fillPaint.p.pattern_element;
 			SVGRenderContext *patternRender = [[SVGRenderContext alloc] init];
 			svg_pattern_t *pattern = svg_element_pattern(tempElement);
 			[patternRender prepareRenderFromRenderContext:self];
@@ -710,14 +705,14 @@
 			break;
 			
 		case SVG_PAINT_TYPE_COLOR:
-			[self setFillColor: &current->fill_paint.p.color alpha:current.fill_opacity];
-			if (current.stroke_paint.type != SVG_PAINT_TYPE_NONE)
+			[self setFillColor: &current->fillPaint.p.color alpha:current.fillOpacity];
+			if (current.strokePaint.type != SVG_PAINT_TYPE_NONE)
 				CGContextSaveGState(tempCtx);
-			if (current.fill_rule)
+			if (current.fillRule)
 				CGContextEOFillPath(tempCtx);
 			else
 				CGContextFillPath(tempCtx);
-			if (current.stroke_paint.type != SVG_PAINT_TYPE_NONE)
+			if (current.strokePaint.type != SVG_PAINT_TYPE_NONE)
 				CGContextRestoreGState(tempCtx);
 			break;
 
@@ -725,13 +720,13 @@
 			break;
 	}
 	
-	switch (current.stroke_paint.type)
+	switch (current.strokePaint.type)
 	{
 		case SVG_PAINT_TYPE_GRADIENT:
 #warning SVG_PAINT_TYPE_GRADIENT not handled yet!
 			CGContextSaveGState(tempCtx);
 		{
-			CGGradientRef gradient = [SVGRenderContext createGradientFromSVGGradient:current->stroke_paint.p.gradient];
+			CGGradientRef gradient = CreateGradientRefFromSVGGradient(current.strokePaint.p.gradient);
 			CGGradientRelease(gradient);
 		}
 			CGContextRestoreGState(tempCtx);
@@ -742,7 +737,7 @@
 			break;
 			
 		case SVG_PAINT_TYPE_COLOR:
-			[self setStrokeColor: &current->stroke_paint.p.color alpha:current.stroke_opacity];
+			[self setStrokeColor:&current->strokePaint.p.color alpha:current.strokeOpacity];
 			CGContextStrokePath(tempCtx);
 			break;
 
@@ -759,7 +754,7 @@
 	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
 	NSFont *f = nil, *tmpfont = nil;
 	NSFontManager *fm = [NSFontManager sharedFontManager];
-	int w = ceil(current.font_weight / 80.0);
+	int w = ceil(current.fontWeight / 80.0);
 	NSInteger i;
 
 	if (utf8 == NULL)
@@ -771,7 +766,7 @@
 		NSArray *families;
 		NSString *family;
 		
-		families = [[current font_family] componentsSeparatedByString: @","];
+		families = [[current fontFamily] componentsSeparatedByString: @","];
 		
 		for (i = 0; i < [families count]; i++)
 		{
@@ -788,31 +783,31 @@
 			else if ([family isEqual: @"monospace"])
 				family = @"Courier";
 			
-			f = [NSFont fontWithName:family size:current.font_size];
+			f = [NSFont fontWithName:family size:current.fontSize];
 			if (f)
 				break;
 		}
 		
 		if (!f)
-			f = [NSFont fontWithName:@"Helvetica" size:current.font_size];
+			f = [NSFont fontWithName:@"Helvetica" size:current.fontSize];
 	}
 	
 	{
 		NSFontTraitMask fontTrait = 0;
-		if (current.font_style > SVG_FONT_STYLE_NORMAL) {
+		if (current.fontStyle > SVG_FONT_STYLE_NORMAL) {
 			fontTrait |= NSItalicFontMask;
 		}
-		if (current.font_weight >= 700) {
+		if (current.fontWeight >= 700) {
 			fontTrait |= NSBoldFontMask;
 		}
-		tmpfont = [fm fontWithFamily:[f familyName] traits:fontTrait weight:w size:current.font_size];
+		tmpfont = [fm fontWithFamily:[f familyName] traits:fontTrait weight:w size:current.fontSize];
 	}
 
 	//Should we set the text CTM here?
 	CGContextScaleCTM(tempCtx, 1, -1);
 	CGContextSetTextMatrix(tempCtx, CGAffineTransformIdentity);
 
-#if 1
+#if 0
 	
 	NSAttributedString *textWFont = nil;
 	{
@@ -820,20 +815,20 @@
 		
 		[fontAttribs setValue:tmpfont forKey:NSFontAttributeName];
 		NSColor *foreColor;
-		if (current.fill_paint.type == SVG_PAINT_TYPE_COLOR) {
-			svg_color_t *tempsvgcolor = &current->fill_paint.p.color;
-			[self setFillColor:tempsvgcolor alpha:current.fill_opacity];
-			foreColor = [NSColor colorWithDeviceRed:svg_color_get_red(tempsvgcolor)/255.0 green:svg_color_get_green(tempsvgcolor)/255.0 blue:svg_color_get_blue(tempsvgcolor)/255.0 alpha:current.fill_opacity];
+		if (current.fillPaint.type == SVG_PAINT_TYPE_COLOR) {
+			svg_color_t *tempsvgcolor = &current->fillPaint.p.color;
+			[self setFillColor:tempsvgcolor alpha:current.fillOpacity];
+			foreColor = [NSColor colorWithDeviceRed:svg_color_get_red(tempsvgcolor)/255.0 green:svg_color_get_green(tempsvgcolor)/255.0 blue:svg_color_get_blue(tempsvgcolor)/255.0 alpha:current.fillOpacity];
 		} else {
 			foreColor = [NSColor clearColor];
 		}
 		[fontAttribs setValue:foreColor forKey:NSForegroundColorAttributeName];
 		
-		if (current.stroke_paint.type == SVG_PAINT_TYPE_COLOR) {
-			svg_color_t *tempsvgcolor = &current->stroke_paint.p.color;
-			[self setStrokeColor:tempsvgcolor alpha:current.stroke_opacity];
-			[fontAttribs setValue:[NSColor colorWithDeviceRed:svg_color_get_red(tempsvgcolor)/255.0 green:svg_color_get_green(tempsvgcolor)/255.0 blue:svg_color_get_blue(tempsvgcolor)/255.0 alpha:current.stroke_opacity] forKey:NSStrokeColorAttributeName];
-			[fontAttribs setValue:[NSNumber numberWithDouble:current.stroke_width] forKey:NSStrokeWidthAttributeName];
+		if (current.strokePaint.type == SVG_PAINT_TYPE_COLOR) {
+			svg_color_t *tempsvgcolor = &current->strokePaint.p.color;
+			[self setStrokeColor:tempsvgcolor alpha:current.strokeOpacity];
+			[fontAttribs setValue:[NSColor colorWithDeviceRed:svg_color_get_red(tempsvgcolor)/255.0 green:svg_color_get_green(tempsvgcolor)/255.0 blue:svg_color_get_blue(tempsvgcolor)/255.0 alpha:current.strokeOpacity] forKey:NSStrokeColorAttributeName];
+			[fontAttribs setValue:[NSNumber numberWithDouble:current.strokeWidth] forKey:NSStrokeWidthAttributeName];
 		}
 		
 		textWFont = [[NSAttributedString alloc] initWithString:utfString attributes:fontAttribs];
@@ -862,14 +857,14 @@
 #else
 	
 	CGContextSetTextPosition(tempCtx, xPos, yPos);
-	CGContextSelectFont(tempCtx, [[[tmpfont fontDescriptor] postscriptName] UTF8String], current.font_size, kCGEncodingFontSpecific);
-	NSInteger str8len = [utfString length];
+	CGContextSelectFont(tempCtx, [[[tmpfont fontDescriptor] postscriptName] UTF8String], current.fontSize, kCGEncodingFontSpecific);
+	NSUInteger str8len = [utfString length];
 	unichar *chars = malloc(sizeof(unichar) * str8len);
 	CGGlyph *glyphChars = malloc(sizeof(CGGlyph) * str8len);
 	[utfString getCharacters:chars range:NSMakeRange(0, str8len)];
 	CTFontGetGlyphsForCharacters((CTFontRef)tmpfont, chars, glyphChars, str8len);
 	
-	switch (current.fill_paint.type)
+	switch (current.fillPaint.type)
 	{
 		case SVG_PAINT_TYPE_GRADIENT:
 		{
@@ -878,16 +873,16 @@
 			CGContextShowGlyphs(tempCtx, glyphChars, str8len);
 		
 			//CGContextClip(tempCtx);
-			CGGradientRef gradient = [SVGRenderContext createGradientFromSVGGradient:current.fill_paint.p.gradient];
+			CGGradientRef gradient = CreateGradientRefFromSVGGradient(current.fillPaint.p.gradient);
 			
-			switch (current.fill_paint.p.gradient->type) {
+			switch (current.fillPaint.p.gradient->type) {
 				case SVG_GRADIENT_LINEAR:
 				{
 					CGFloat x1, y1, x2, y2;
-					x1 = [self lengthToPoints:&current.fill_paint.p.gradient->u.linear.x1];
-					y1 = [self lengthToPoints:&current.fill_paint.p.gradient->u.linear.y1];
-					x2 = [self lengthToPoints:&current.fill_paint.p.gradient->u.linear.x2];
-					y2 = [self lengthToPoints:&current.fill_paint.p.gradient->u.linear.y2];
+					x1 = [self lengthToPoints:&current.fillPaint.p.gradient->u.linear.x1];
+					y1 = [self lengthToPoints:&current.fillPaint.p.gradient->u.linear.y1];
+					x2 = [self lengthToPoints:&current.fillPaint.p.gradient->u.linear.x2];
+					y2 = [self lengthToPoints:&current.fillPaint.p.gradient->u.linear.y2];
 					CGContextDrawLinearGradient(tempCtx, gradient, CGPointMake(x1, y1), CGPointMake(x2, y2), kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
 				}
 					break;
@@ -895,16 +890,13 @@
 				case SVG_GRADIENT_RADIAL:
 				{
 					CGFloat cx, cy, r, fx, fy;
-					cx = [self lengthToPoints:&current.fill_paint.p.gradient->u.radial.cx];
-					cy = [self lengthToPoints:&current.fill_paint.p.gradient->u.radial.cy];
-					r = [self lengthToPoints:&current.fill_paint.p.gradient->u.radial.r];
-					fx = [self lengthToPoints:&current.fill_paint.p.gradient->u.radial.fx];
-					fy = [self lengthToPoints:&current.fill_paint.p.gradient->u.radial.fy];
+					cx = [self lengthToPoints:&current.fillPaint.p.gradient->u.radial.cx];
+					cy = [self lengthToPoints:&current.fillPaint.p.gradient->u.radial.cy];
+					r = [self lengthToPoints:&current.fillPaint.p.gradient->u.radial.r];
+					fx = [self lengthToPoints:&current.fillPaint.p.gradient->u.radial.fx];
+					fy = [self lengthToPoints:&current.fillPaint.p.gradient->u.radial.fy];
 					CGContextDrawRadialGradient(tempCtx, gradient, CGPointMake(cx, cy), r, CGPointMake(fx, fy), r, kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
 				}
-					break;
-					
-				default:
 					break;
 			}
 			CGGradientRelease(gradient);
@@ -917,7 +909,7 @@
 			break;
 			
 		case SVG_PAINT_TYPE_COLOR:
-			[self setFillColor: &current->fill_paint.p.color alpha:current.fill_opacity];
+			[self setFillColor: &current->fillPaint.p.color alpha:current.fillOpacity];
 			CGContextSetTextDrawingMode(tempCtx, kCGTextFill);
 			CGContextShowGlyphs(tempCtx, glyphChars, str8len);
 			break;
@@ -926,7 +918,7 @@
 			break;
 	}
 	
-	switch (current.stroke_paint.type)
+	switch (current.strokePaint.type)
 	{
 		case SVG_PAINT_TYPE_GRADIENT:
 		{
@@ -934,16 +926,16 @@
 			CGContextSetTextDrawingMode(tempCtx, kCGTextStrokeClip);
 			CGContextShowGlyphs(tempCtx, glyphChars, str8len);
 			//CGContextClip(tempCtx);
-			CGGradientRef gradient = [SVGRenderContext createGradientFromSVGGradient:current.stroke_paint.p.gradient];
+			CGGradientRef gradient = CreateGradientRefFromSVGGradient(current.strokePaint.p.gradient);
 			
-			switch (current.stroke_paint.p.gradient->type) {
+			switch (current.strokePaint.p.gradient->type) {
 				case SVG_GRADIENT_LINEAR:
 				{
 					CGFloat x1, y1, x2, y2;
-					x1 = [self lengthToPoints:&current.fill_paint.p.gradient->u.linear.x1];
-					y1 = [self lengthToPoints:&current.fill_paint.p.gradient->u.linear.y1];
-					x2 = [self lengthToPoints:&current.fill_paint.p.gradient->u.linear.x2];
-					y2 = [self lengthToPoints:&current.fill_paint.p.gradient->u.linear.y2];
+					x1 = [self lengthToPoints:&current.fillPaint.p.gradient->u.linear.x1];
+					y1 = [self lengthToPoints:&current.fillPaint.p.gradient->u.linear.y1];
+					x2 = [self lengthToPoints:&current.fillPaint.p.gradient->u.linear.x2];
+					y2 = [self lengthToPoints:&current.fillPaint.p.gradient->u.linear.y2];
 					CGContextDrawLinearGradient(tempCtx, gradient, CGPointMake(x1, y1), CGPointMake(x2, y2), kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
 				}
 					break;
@@ -951,16 +943,13 @@
 				case SVG_GRADIENT_RADIAL:
 				{
 					CGFloat cx, cy, r, fx, fy;
-					cx = [self lengthToPoints:&current.fill_paint.p.gradient->u.radial.cx];
-					cy = [self lengthToPoints:&current.fill_paint.p.gradient->u.radial.cy];
-					r = [self lengthToPoints:&current.fill_paint.p.gradient->u.radial.r];
-					fx = [self lengthToPoints:&current.fill_paint.p.gradient->u.radial.fx];
-					fy = [self lengthToPoints:&current.fill_paint.p.gradient->u.radial.fy];
+					cx = [self lengthToPoints:&current.fillPaint.p.gradient->u.radial.cx];
+					cy = [self lengthToPoints:&current.fillPaint.p.gradient->u.radial.cy];
+					r = [self lengthToPoints:&current.fillPaint.p.gradient->u.radial.r];
+					fx = [self lengthToPoints:&current.fillPaint.p.gradient->u.radial.fx];
+					fy = [self lengthToPoints:&current.fillPaint.p.gradient->u.radial.fy];
 					CGContextDrawRadialGradient(tempCtx, gradient, CGPointMake(cx, cy), r, CGPointMake(fx, fy), r, kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
 				}
-					break;
-					
-				default:
 					break;
 			}
 			CGGradientRelease(gradient);
@@ -973,7 +962,7 @@
 			break;
 			
 		case SVG_PAINT_TYPE_COLOR:
-			[self setStrokeColor: &current->stroke_paint.p.color alpha:current.stroke_opacity];
+			[self setStrokeColor:&current->strokePaint.p.color alpha:current.strokeOpacity];
 			CGContextSetTextDrawingMode(tempCtx, kCGTextStroke);
 			CGContextShowGlyphs(tempCtx, glyphChars, str8len);
 			break;
@@ -1122,7 +1111,7 @@ static svg_status_t r_set_fill_opacity(void *closure, double opacity)
 	SVGRenderContext *self = (SVGRenderContext *)closure;
 	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
-	self.current.fill_opacity = opacity;
+	self.current.fillOpacity = opacity;
 	return SVG_STATUS_SUCCESS;
 }
 
@@ -1131,7 +1120,7 @@ static svg_status_t r_set_fill_paint(void *closure, const svg_paint_t *paint)
 	SVGRenderContext *self = (SVGRenderContext *)closure;
 	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
-	self.current.fill_paint = *paint;
+	self.current.fillPaint = *paint;
 	return SVG_STATUS_SUCCESS;
 }
 
@@ -1141,9 +1130,9 @@ static svg_status_t r_set_fill_rule(void *closure, svg_fill_rule_t fill_rule)
 	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
 	if (fill_rule == SVG_FILL_RULE_NONZERO)
-		self.current.fill_rule = 0;
+		self.current.fillRule = 0;
 	else
-		self.current.fill_rule = 1;
+		self.current.fillRule = 1;
 	return SVG_STATUS_SUCCESS;
 }
 
@@ -1152,7 +1141,7 @@ static svg_status_t r_set_font_family(void *closure, const char *family)
 	SVGRenderContext *self = (SVGRenderContext *)closure;
 	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
-	self.current.font_family = [NSString stringWithUTF8String:family];
+	self.current.fontFamily = [NSString stringWithUTF8String:family];
 	return SVG_STATUS_SUCCESS;
 }
 
@@ -1161,7 +1150,7 @@ static svg_status_t r_set_font_size(void *closure, double size)
 	SVGRenderContext *self = (SVGRenderContext *)closure;
 	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
-	self.current.font_size = size;
+	self.current.fontSize = size;
 	return SVG_STATUS_SUCCESS;
 }
 
@@ -1170,7 +1159,7 @@ static svg_status_t r_set_font_style(void *closure, svg_font_style_t style)
 	SVGRenderContext *self = (SVGRenderContext *)closure;
 	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
-	self.current.font_style = style;
+	self.current.fontStyle = style;
 	return SVG_STATUS_SUCCESS;
 }
 
@@ -1179,7 +1168,7 @@ static svg_status_t r_set_font_weight(void *closure, unsigned int weight)
 	SVGRenderContext *self = (SVGRenderContext *)closure;
 	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
-	self.current.font_weight = weight;
+	self.current.fontWeight = weight;
 	return SVG_STATUS_SUCCESS;
 }
 
@@ -1200,7 +1189,7 @@ static svg_status_t r_set_stroke_dash_array(void *closure, double *dashes, int n
 	if (self.current.dash)
 		free(self.current.dash);
 	self.current.dash = NULL;
-	self.current.num_dash = 0;
+	self.current.numDash = 0;
 
 	if (dashes && num_dashes)
 	{
@@ -1209,8 +1198,8 @@ static svg_status_t r_set_stroke_dash_array(void *closure, double *dashes, int n
 		for (i = 0;i < num_dashes;i++)
 			dash[i] = dashes[i];
 		self.current.dash = dash;
-		self.current.num_dash = num_dashes;
-		CGContextSetLineDash(CGCtx, self.current.dash_offset, self.current.dash, self.current.num_dash);
+		self.current.numDash = num_dashes;
+		CGContextSetLineDash(CGCtx, self.current.dashOffset, self.current.dash, self.current.numDash);
 	}
 	else
 		CGContextSetLineDash(CGCtx, 0.0, NULL, 0);
@@ -1223,8 +1212,8 @@ static svg_status_t r_set_stroke_dash_offset(void *closure, svg_length_t *offset
 	SVGRenderContext *self = (SVGRenderContext *)closure;
 	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
-	self.current.dash_offset = [self lengthToPoints:offset];
-	CGContextSetLineDash(CGCtx, self.current.dash_offset, self.current.dash, self.current.num_dash);
+	self.current.dashOffset = [self lengthToPoints:offset];
+	CGContextSetLineDash(CGCtx, self.current.dashOffset, self.current.dash, self.current.numDash);
 	return SVG_STATUS_SUCCESS;
 }
 
@@ -1290,7 +1279,7 @@ static svg_status_t r_set_stroke_opacity(void *closure, double opacity)
 	SVGRenderContext *self = (SVGRenderContext *)closure;
 	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
-	self.current.stroke_opacity = opacity;
+	self.current.strokeOpacity = opacity;
 	return SVG_STATUS_SUCCESS;
 }
 
@@ -1299,7 +1288,7 @@ static svg_status_t r_set_stroke_paint(void *closure, const svg_paint_t *paint)
 	SVGRenderContext *self = (SVGRenderContext *)closure;
 	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
-	self.current.stroke_paint = *paint;
+	self.current.strokePaint = *paint;
 	return SVG_STATUS_SUCCESS;
 }
 
@@ -1308,8 +1297,8 @@ static svg_status_t r_set_stroke_width(void *closure, svg_length_t *width)
 	SVGRenderContext *self = (SVGRenderContext *)closure;
 	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
-	self.current.stroke_width = [self lengthToPoints:width];
-	CGContextSetLineWidth(CGCtx, self.current.stroke_width);
+	self.current.strokeWidth = [self lengthToPoints:width];
+	CGContextSetLineWidth(CGCtx, self.current.strokeWidth);
 	return SVG_STATUS_SUCCESS;
 }
 
@@ -1318,7 +1307,7 @@ static svg_status_t r_set_text_anchor(void *closure, svg_text_anchor_t anchor)
 	SVGRenderContext *self = (SVGRenderContext *)closure;
 	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
-	self.current.text_anchor = anchor;
+	self.current.textAnchor = anchor;
 	return SVG_STATUS_SUCCESS;
 }
 

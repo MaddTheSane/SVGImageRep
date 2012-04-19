@@ -15,42 +15,42 @@
 @interface SVGRenderState : NSObject <NSCopying>
 {
 @public
-	svg_paint_t fill_paint, stroke_paint;
+	svg_paint_t fillPaint, strokePaint;
 @private
-	double fill_opacity, stroke_opacity;
+	double fillOpacity, strokeOpacity;
 	
 	svg_color_t color;
 	double opacity;
 	
-	double stroke_width;
+	double strokeWidth;
 	
-	int fill_rule;
+	int fillRule;
 	
-	NSString *font_family;
-	svg_font_style_t font_style;
-	double font_size;
-	double font_weight;
-	svg_text_anchor_t text_anchor;
+	NSString *fontFamily;
+	svg_font_style_t fontStyle;
+	double fontSize;
+	double fontWeight;
+	svg_text_anchor_t textAnchor;
 	
 	CGFloat *dash;
-	size_t num_dash;
-	CGFloat dash_offset;
+	size_t numDash;
+	CGFloat dashOffset;
 }
-@property (readwrite) svg_paint_t fill_paint;
-@property (readwrite) svg_paint_t stroke_paint;
-@property (readwrite) double fill_opacity;
-@property (readwrite) double stroke_opacity;
+@property (readwrite) svg_paint_t fillPaint;
+@property (readwrite) svg_paint_t strokePaint;
+@property (readwrite) double fillOpacity;
+@property (readwrite) double strokeOpacity;
 @property (readwrite) svg_color_t color;
 @property (readwrite) double opacity;
-@property (readwrite) double stroke_width;
-@property (readwrite) int fill_rule;
-@property (readwrite, copy) NSString *font_family;
-@property (readwrite) svg_font_style_t font_style;
-@property (readwrite) double font_size;
-@property (readwrite) double font_weight;
-@property (readwrite) svg_text_anchor_t text_anchor;
+@property (readwrite) double strokeWidth;
+@property (readwrite) int fillRule;
+@property (readwrite, copy) NSString *fontFamily;
+@property (readwrite) svg_font_style_t fontStyle;
+@property (readwrite) double fontSize;
+@property (readwrite) double fontWeight;
+@property (readwrite) svg_text_anchor_t textAnchor;
 @property (readwrite) CGFloat *dash;
-@property (readwrite) size_t num_dash;
-@property (readwrite) CGFloat dash_offset;
+@property (readwrite) size_t numDash;
+@property (readwrite) CGFloat dashOffset;
 
 @end

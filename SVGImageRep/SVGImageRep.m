@@ -73,10 +73,10 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 		return nil;
 	}
 
-	[self setColorSpaceName: NSCalibratedRGBColorSpace];
-	[self setAlpha: YES];
-	[self setBitsPerSample: 0];
-	[self setOpaque: NO];
+	[self setColorSpaceName:NSCalibratedRGBColorSpace];
+	[self setAlpha:YES];
+	[self setBitsPerSample:0];
+	[self setOpaque:NO];
 
 	{
 		svg_length_t w, h;

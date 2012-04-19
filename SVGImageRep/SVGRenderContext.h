@@ -37,6 +37,7 @@ extern svg_render_engine_t cocoa_svg_engine;
 @property (readonly) CGLayerRef renderLayer;
 
 - (void)prepareRender:(double)a_scale;
+- (void)prepareRenderFromRenderContext:(SVGRenderContext *)prevContext;
 - (void)finishRender;
 
 - (void)setStrokeColor:(svg_color_t *)c alpha:(CGFloat)alph;
