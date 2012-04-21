@@ -50,4 +50,23 @@
 	[SVGImageRepBundle release];
 }
 
+- (IBAction)selectSVG:(id)sender
+{
+	NSOpenPanel *op;
+	op = [NSOpenPanel openPanel];
+	[op setTitle: @"Open svg file"];
+	[op setAllowsMultipleSelection: NO];
+	[op setAllowedFileTypes:[NSArray arrayWithObjects:@"public.svg-image", @"svg", nil]];
+	[op setCanChooseDirectories: NO];
+	[op setCanChooseFiles: YES];
+	
+	if ([op runModal] != NSOKButton)
+		return;
+	NSURL *svgUrl = [[op URLs] objectAtIndex:0];
+
+	NSImage *selectImage = [[NSImage alloc] initWithContentsOfURL:svgUrl];
+	[svgSelected setImage:selectImage];
+	[selectImage release];
+}
+
 @end

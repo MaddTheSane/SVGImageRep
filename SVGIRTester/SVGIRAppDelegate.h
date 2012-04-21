@@ -16,8 +16,11 @@
 	IBOutlet NSImageCell *svgNote;
 	IBOutlet NSImageCell *svgTip;
 	IBOutlet NSImageCell *svgWarning;
+	IBOutlet NSImageCell *svgSelected;
 	NSWindow *_window;
 }
 @property (assign) IBOutlet NSWindow *window;
+
+- (IBAction)selectSVG:(id)sender;
 
 @end
