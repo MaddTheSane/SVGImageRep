@@ -301,6 +301,8 @@ _svg_image_read_png (const char		*filename,
     pixel_size = 4;
     *data = malloc (png_width * png_height * pixel_size);
     if (*data == NULL) {
+		png_read_end (png, info);
+		png_destroy_read_struct (&png, &info, NULL);
 		fclose (file);
 		return SVG_STATUS_NO_MEMORY;
     }
