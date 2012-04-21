@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		553711AB151BCF7300F8848A /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 553711AA151BCF7300F8848A /* ApplicationServices.framework */; };
-		553711C0151BCF9A00F8848A /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55AFA493151AA3BC00B5351D /* Cocoa.framework */; };
 		553712C8151BD0CD00F8848A /* cderror.h in Headers */ = {isa = PBXBuildFile; fileRef = 55371210151BD0CD00F8848A /* cderror.h */; };
 		553712C9151BD0CD00F8848A /* cdjpeg.c in Sources */ = {isa = PBXBuildFile; fileRef = 55371211151BD0CD00F8848A /* cdjpeg.c */; };
 		553712CA151BD0CD00F8848A /* cdjpeg.h in Headers */ = {isa = PBXBuildFile; fileRef = 55371212151BD0CD00F8848A /* cdjpeg.h */; };
@@ -25,7 +24,7 @@
 		553712D9151BD0CD00F8848A /* jcmarker.c in Sources */ = {isa = PBXBuildFile; fileRef = 5537122F151BD0CD00F8848A /* jcmarker.c */; };
 		553712DA151BD0CD00F8848A /* jcmaster.c in Sources */ = {isa = PBXBuildFile; fileRef = 55371230151BD0CD00F8848A /* jcmaster.c */; };
 		553712DB151BD0CD00F8848A /* jcomapi.c in Sources */ = {isa = PBXBuildFile; fileRef = 55371231151BD0CD00F8848A /* jcomapi.c */; };
-		553712DC151BD0CD00F8848A /* jconfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 55371235151BD0CD00F8848A /* jconfig.h */; };
+		553712DC151BD0CD00F8848A /* jconfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 55371235151BD0CD00F8848A /* jconfig.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		553712DD151BD0CD00F8848A /* jcparam.c in Sources */ = {isa = PBXBuildFile; fileRef = 5537123F151BD0CD00F8848A /* jcparam.c */; };
 		553712DE151BD0CD00F8848A /* jcprepct.c in Sources */ = {isa = PBXBuildFile; fileRef = 55371240151BD0CD00F8848A /* jcprepct.c */; };
 		553712DF151BD0CD00F8848A /* jcsample.c in Sources */ = {isa = PBXBuildFile; fileRef = 55371241151BD0CD00F8848A /* jcsample.c */; };
@@ -49,25 +48,25 @@
 		553712F1151BD0CD00F8848A /* jdsample.c in Sources */ = {isa = PBXBuildFile; fileRef = 55371253151BD0CD00F8848A /* jdsample.c */; };
 		553712F2151BD0CD00F8848A /* jdtrans.c in Sources */ = {isa = PBXBuildFile; fileRef = 55371254151BD0CD00F8848A /* jdtrans.c */; };
 		553712F3151BD0CD00F8848A /* jerror.c in Sources */ = {isa = PBXBuildFile; fileRef = 55371255151BD0CD00F8848A /* jerror.c */; };
-		553712F4151BD0CD00F8848A /* jerror.h in Headers */ = {isa = PBXBuildFile; fileRef = 55371256151BD0CD00F8848A /* jerror.h */; };
+		553712F4151BD0CD00F8848A /* jerror.h in Headers */ = {isa = PBXBuildFile; fileRef = 55371256151BD0CD00F8848A /* jerror.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		553712F5151BD0CD00F8848A /* jfdctflt.c in Sources */ = {isa = PBXBuildFile; fileRef = 55371257151BD0CD00F8848A /* jfdctflt.c */; };
 		553712F6151BD0CD00F8848A /* jfdctfst.c in Sources */ = {isa = PBXBuildFile; fileRef = 55371258151BD0CD00F8848A /* jfdctfst.c */; };
 		553712F7151BD0CD00F8848A /* jfdctint.c in Sources */ = {isa = PBXBuildFile; fileRef = 55371259151BD0CD00F8848A /* jfdctint.c */; };
 		553712F8151BD0CD00F8848A /* jidctflt.c in Sources */ = {isa = PBXBuildFile; fileRef = 5537125A151BD0CD00F8848A /* jidctflt.c */; };
 		553712F9151BD0CD00F8848A /* jidctfst.c in Sources */ = {isa = PBXBuildFile; fileRef = 5537125B151BD0CD00F8848A /* jidctfst.c */; };
 		553712FA151BD0CD00F8848A /* jidctint.c in Sources */ = {isa = PBXBuildFile; fileRef = 5537125C151BD0CD00F8848A /* jidctint.c */; };
-		553712FB151BD0CD00F8848A /* jinclude.h in Headers */ = {isa = PBXBuildFile; fileRef = 5537125D151BD0CD00F8848A /* jinclude.h */; };
+		553712FB151BD0CD00F8848A /* jinclude.h in Headers */ = {isa = PBXBuildFile; fileRef = 5537125D151BD0CD00F8848A /* jinclude.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		553712FC151BD0CD00F8848A /* jmemansi.c in Sources */ = {isa = PBXBuildFile; fileRef = 5537125E151BD0CD00F8848A /* jmemansi.c */; };
 		55371300151BD0CD00F8848A /* jmemmgr.c in Sources */ = {isa = PBXBuildFile; fileRef = 55371262151BD0CD00F8848A /* jmemmgr.c */; };
 		55371302151BD0CD00F8848A /* jmemnobs.c in Sources */ = {isa = PBXBuildFile; fileRef = 55371264151BD0CD00F8848A /* jmemnobs.c */; };
-		55371303151BD0CD00F8848A /* jmemsys.h in Headers */ = {isa = PBXBuildFile; fileRef = 55371265151BD0CD00F8848A /* jmemsys.h */; };
-		55371304151BD0CD00F8848A /* jmorecfg.h in Headers */ = {isa = PBXBuildFile; fileRef = 55371266151BD0CD00F8848A /* jmorecfg.h */; };
-		55371305151BD0CD00F8848A /* jpegint.h in Headers */ = {isa = PBXBuildFile; fileRef = 55371267151BD0CD00F8848A /* jpegint.h */; };
-		55371306151BD0CD00F8848A /* jpeglib.h in Headers */ = {isa = PBXBuildFile; fileRef = 55371268151BD0CD00F8848A /* jpeglib.h */; };
+		55371303151BD0CD00F8848A /* jmemsys.h in Headers */ = {isa = PBXBuildFile; fileRef = 55371265151BD0CD00F8848A /* jmemsys.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		55371304151BD0CD00F8848A /* jmorecfg.h in Headers */ = {isa = PBXBuildFile; fileRef = 55371266151BD0CD00F8848A /* jmorecfg.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		55371305151BD0CD00F8848A /* jpegint.h in Headers */ = {isa = PBXBuildFile; fileRef = 55371267151BD0CD00F8848A /* jpegint.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		55371306151BD0CD00F8848A /* jpeglib.h in Headers */ = {isa = PBXBuildFile; fileRef = 55371268151BD0CD00F8848A /* jpeglib.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		55371308151BD0CD00F8848A /* jquant1.c in Sources */ = {isa = PBXBuildFile; fileRef = 5537126B151BD0CD00F8848A /* jquant1.c */; };
 		55371309151BD0CD00F8848A /* jquant2.c in Sources */ = {isa = PBXBuildFile; fileRef = 5537126C151BD0CD00F8848A /* jquant2.c */; };
 		5537130A151BD0CD00F8848A /* jutils.c in Sources */ = {isa = PBXBuildFile; fileRef = 5537126D151BD0CD00F8848A /* jutils.c */; };
-		5537130B151BD0CD00F8848A /* jversion.h in Headers */ = {isa = PBXBuildFile; fileRef = 5537126E151BD0CD00F8848A /* jversion.h */; };
+		5537130B151BD0CD00F8848A /* jversion.h in Headers */ = {isa = PBXBuildFile; fileRef = 5537126E151BD0CD00F8848A /* jversion.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5537130D151BD0CD00F8848A /* rdbmp.c in Sources */ = {isa = PBXBuildFile; fileRef = 553712AA151BD0CD00F8848A /* rdbmp.c */; };
 		5537130E151BD0CD00F8848A /* rdcolmap.c in Sources */ = {isa = PBXBuildFile; fileRef = 553712AB151BD0CD00F8848A /* rdcolmap.c */; };
 		5537130F151BD0CD00F8848A /* rdgif.c in Sources */ = {isa = PBXBuildFile; fileRef = 553712AC151BD0CD00F8848A /* rdgif.c */; };
@@ -85,8 +84,8 @@
 		55371324151BD1AD00F8848A /* libpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 553711BF151BCF9A00F8848A /* libpng.a */; };
 		55371437151BD40500F8848A /* config.h in Headers */ = {isa = PBXBuildFile; fileRef = 55371341151BD40500F8848A /* config.h */; };
 		55371454151BD40500F8848A /* png.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713BD151BD40500F8848A /* png.c */; };
-		55371455151BD40500F8848A /* png.h in Headers */ = {isa = PBXBuildFile; fileRef = 553713BE151BD40500F8848A /* png.h */; };
-		55371456151BD40500F8848A /* pngconf.h in Headers */ = {isa = PBXBuildFile; fileRef = 553713C1151BD40500F8848A /* pngconf.h */; };
+		55371455151BD40500F8848A /* png.h in Headers */ = {isa = PBXBuildFile; fileRef = 553713BE151BD40500F8848A /* png.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		55371456151BD40500F8848A /* pngconf.h in Headers */ = {isa = PBXBuildFile; fileRef = 553713C1151BD40500F8848A /* pngconf.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		55371457151BD40500F8848A /* pngdebug.h in Headers */ = {isa = PBXBuildFile; fileRef = 553713C2151BD40500F8848A /* pngdebug.h */; };
 		55371458151BD40500F8848A /* pngerror.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713C3151BD40500F8848A /* pngerror.c */; };
 		55371459151BD40500F8848A /* pngget.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713C4151BD40500F8848A /* pngget.c */; };
@@ -126,9 +125,8 @@
 		55AFA4B7151AA3FB00B5351D /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 55AFA4B5151AA3FB00B5351D /* Credits.rtf */; };
 		55AFA4C6151AA43700B5351D /* SVGDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 55AFA4C5151AA43700B5351D /* SVGDocument.m */; };
 		55AFA4C8151AA5E500B5351D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 55AFA4C7151AA5E500B5351D /* main.m */; };
-		55AFA4CE151AA7E900B5351D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55AFA493151AA3BC00B5351D /* Cocoa.framework */; };
 		55AFA50C151AA82000B5351D /* svg.c in Sources */ = {isa = PBXBuildFile; fileRef = 55AFA4F1151AA82000B5351D /* svg.c */; };
-		55AFA50D151AA82000B5351D /* svg.h in Headers */ = {isa = PBXBuildFile; fileRef = 55AFA4F2151AA82000B5351D /* svg.h */; };
+		55AFA50D151AA82000B5351D /* svg.h in Headers */ = {isa = PBXBuildFile; fileRef = 55AFA4F2151AA82000B5351D /* svg.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		55AFA50E151AA82000B5351D /* svg_ascii.c in Sources */ = {isa = PBXBuildFile; fileRef = 55AFA4F3151AA82000B5351D /* svg_ascii.c */; };
 		55AFA50F151AA82000B5351D /* svg_ascii.h in Headers */ = {isa = PBXBuildFile; fileRef = 55AFA4F4151AA82000B5351D /* svg_ascii.h */; };
 		55AFA510151AA82000B5351D /* svg_attribute.c in Sources */ = {isa = PBXBuildFile; fileRef = 55AFA4F5151AA82000B5351D /* svg_attribute.c */; };
@@ -149,7 +147,7 @@
 		55AFA520151AA82000B5351D /* svg_style.c in Sources */ = {isa = PBXBuildFile; fileRef = 55AFA505151AA82000B5351D /* svg_style.c */; };
 		55AFA521151AA82000B5351D /* svg_text.c in Sources */ = {isa = PBXBuildFile; fileRef = 55AFA506151AA82000B5351D /* svg_text.c */; };
 		55AFA522151AA82000B5351D /* svg_transform.c in Sources */ = {isa = PBXBuildFile; fileRef = 55AFA507151AA82000B5351D /* svg_transform.c */; };
-		55AFA523151AA82000B5351D /* svg_version.h in Headers */ = {isa = PBXBuildFile; fileRef = 55AFA508151AA82000B5351D /* svg_version.h */; };
+		55AFA523151AA82000B5351D /* svg_version.h in Headers */ = {isa = PBXBuildFile; fileRef = 55AFA508151AA82000B5351D /* svg_version.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		55AFA524151AA82000B5351D /* svgint.h in Headers */ = {isa = PBXBuildFile; fileRef = 55AFA50A151AA82000B5351D /* svgint.h */; };
 		55AFA526151AA82D00B5351D /* config.h in Headers */ = {isa = PBXBuildFile; fileRef = 55AFA525151AA82D00B5351D /* config.h */; };
 		55AFA52A151AABB700B5351D /* SVGImageRep.m in Sources */ = {isa = PBXBuildFile; fileRef = 55AFA529151AABB700B5351D /* SVGImageRep.m */; };
@@ -163,6 +161,19 @@
 		55C87424152A6BBF00710A01 /* README in Resources */ = {isa = PBXBuildFile; fileRef = 55C87421152A6BBF00710A01 /* README */; };
 		55C87425152A6BBF00710A01 /* TODO in Resources */ = {isa = PBXBuildFile; fileRef = 55C87422152A6BBF00710A01 /* TODO */; };
 		55C87426152A6BBF00710A01 /* TODO in Resources */ = {isa = PBXBuildFile; fileRef = 55C87422152A6BBF00710A01 /* TODO */; };
+		55DFC3BE1543387F004C6238 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5560E6FF152B6F5C008FF127 /* main.m */; };
+		55DFC3BF1543387F004C6238 /* SVGIRAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5560E706152B6F5C008FF127 /* SVGIRAppDelegate.m */; };
+		55DFC3C11543387F004C6238 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55AFA493151AA3BC00B5351D /* Cocoa.framework */; };
+		55DFC3C31543387F004C6238 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5560E6FC152B6F5C008FF127 /* InfoPlist.strings */; };
+		55DFC3C41543387F004C6238 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 5560E702152B6F5C008FF127 /* Credits.rtf */; };
+		55DFC3C51543387F004C6238 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5560E708152B6F5C008FF127 /* MainMenu.xib */; };
+		55DFC3C61543387F004C6238 /* admon-bug.svg in Resources */ = {isa = PBXBuildFile; fileRef = 5560E712152B73D7008FF127 /* admon-bug.svg */; };
+		55DFC3C71543387F004C6238 /* admon-caution.svg in Resources */ = {isa = PBXBuildFile; fileRef = 5560E713152B73D7008FF127 /* admon-caution.svg */; };
+		55DFC3C81543387F004C6238 /* admon-important.svg in Resources */ = {isa = PBXBuildFile; fileRef = 5560E714152B73D7008FF127 /* admon-important.svg */; };
+		55DFC3C91543387F004C6238 /* admon-note.svg in Resources */ = {isa = PBXBuildFile; fileRef = 5560E715152B73D7008FF127 /* admon-note.svg */; };
+		55DFC3CA1543387F004C6238 /* admon-tip.svg in Resources */ = {isa = PBXBuildFile; fileRef = 5560E716152B73D7008FF127 /* admon-tip.svg */; };
+		55DFC3CB1543387F004C6238 /* admon-warning.svg in Resources */ = {isa = PBXBuildFile; fileRef = 5560E717152B73D7008FF127 /* admon-warning.svg */; };
+		55DFC3CD1543387F004C6238 /* SVGImageRep.bundle in CopyFiles */ = {isa = PBXBuildFile; fileRef = 55AFA490151AA3BC00B5351D /* SVGImageRep.bundle */; };
 		55F0FA88151CDCB6006426B8 /* jmemname.c in Sources */ = {isa = PBXBuildFile; fileRef = 55371263151BD0CD00F8848A /* jmemname.c */; };
 		55F0FA92151FBB80006426B8 /* SVGViewer.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55F0FA91151FBB80006426B8 /* SVGViewer.xib */; };
 		55F0FA94151FBE4A006426B8 /* SVGDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55F0FA93151FBE4A006426B8 /* SVGDocument.xib */; };
@@ -208,6 +219,13 @@
 			remoteGlobalIDString = 55AFA4CC151AA7E900B5351D;
 			remoteInfo = svg;
 		};
+		55DFC3BC1543387F004C6238 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 55AFA487151AA3BC00B5351D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 55AFA48F151AA3BC00B5351D;
+			remoteInfo = SVGImageRep;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -218,6 +236,16 @@
 			dstSubfolderSpec = 13;
 			files = (
 				5560E711152B6F9C008FF127 /* SVGImageRep.bundle in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		55DFC3CC1543387F004C6238 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				55DFC3CD1543387F004C6238 /* SVGImageRep.bundle in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -404,6 +432,7 @@
 		55AFA534151AB48C00B5351D /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		55C87421152A6BBF00710A01 /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README; sourceTree = SOURCE_ROOT; };
 		55C87422152A6BBF00710A01 /* TODO */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO; sourceTree = SOURCE_ROOT; };
+		55DFC3D11543387F004C6238 /* SVGIRTester-GC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SVGIRTester-GC.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		55F0FA8D151FBAB6006426B8 /* SVGViewer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVGViewer.h; sourceTree = "<group>"; };
 		55F0FA8E151FBAB6006426B8 /* SVGViewer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVGViewer.m; sourceTree = "<group>"; };
 		55F0FA91151FBB80006426B8 /* SVGViewer.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SVGViewer.xib; sourceTree = "<group>"; };
@@ -426,7 +455,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				553711C0151BCF9A00F8848A /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -469,7 +497,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				55AFA4CE151AA7E900B5351D /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		55DFC3C01543387F004C6238 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				55DFC3C11543387F004C6238 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -686,6 +721,7 @@
 				553711B0151BCF9100F8848A /* libjpeg.a */,
 				553711BF151BCF9A00F8848A /* libpng.a */,
 				5560E6F6152B6F5C008FF127 /* SVGIRTester.app */,
+				55DFC3D11543387F004C6238 /* SVGIRTester-GC.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -821,10 +857,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				553712C8151BD0CD00F8848A /* cderror.h in Headers */,
-				553712CA151BD0CD00F8848A /* cdjpeg.h in Headers */,
 				553712DC151BD0CD00F8848A /* jconfig.h in Headers */,
-				553712E8151BD0CD00F8848A /* jdct.h in Headers */,
 				553712F4151BD0CD00F8848A /* jerror.h in Headers */,
 				553712FB151BD0CD00F8848A /* jinclude.h in Headers */,
 				55371303151BD0CD00F8848A /* jmemsys.h in Headers */,
@@ -832,6 +865,9 @@
 				55371305151BD0CD00F8848A /* jpegint.h in Headers */,
 				55371306151BD0CD00F8848A /* jpeglib.h in Headers */,
 				5537130B151BD0CD00F8848A /* jversion.h in Headers */,
+				553712C8151BD0CD00F8848A /* cderror.h in Headers */,
+				553712CA151BD0CD00F8848A /* cdjpeg.h in Headers */,
+				553712E8151BD0CD00F8848A /* jdct.h in Headers */,
 				55371316151BD0CD00F8848A /* transupp.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -840,9 +876,9 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				55371437151BD40500F8848A /* config.h in Headers */,
 				55371455151BD40500F8848A /* png.h in Headers */,
 				55371456151BD40500F8848A /* pngconf.h in Headers */,
+				55371437151BD40500F8848A /* config.h in Headers */,
 				55371457151BD40500F8848A /* pngdebug.h in Headers */,
 				5537145A151BD40500F8848A /* pnginfo.h in Headers */,
 				5537145D151BD40500F8848A /* pngpriv.h in Headers */,
@@ -856,9 +892,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				55AFA50D151AA82000B5351D /* svg.h in Headers */,
+				55AFA523151AA82000B5351D /* svg_version.h in Headers */,
 				55AFA50F151AA82000B5351D /* svg_ascii.h in Headers */,
 				55AFA516151AA82000B5351D /* svg_hash.h in Headers */,
-				55AFA523151AA82000B5351D /* svg_version.h in Headers */,
 				55AFA524151AA82000B5351D /* svgint.h in Headers */,
 				55AFA526151AA82D00B5351D /* config.h in Headers */,
 			);
@@ -975,6 +1011,25 @@
 			productReference = 55AFA4CD151AA7E900B5351D /* libsvg.a */;
 			productType = "com.apple.product-type.library.static";
 		};
+		55DFC3BA1543387F004C6238 /* SVGIRTester-GC */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 55DFC3CE1543387F004C6238 /* Build configuration list for PBXNativeTarget "SVGIRTester-GC" */;
+			buildPhases = (
+				55DFC3BD1543387F004C6238 /* Sources */,
+				55DFC3C01543387F004C6238 /* Frameworks */,
+				55DFC3C21543387F004C6238 /* Resources */,
+				55DFC3CC1543387F004C6238 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				55DFC3BB1543387F004C6238 /* PBXTargetDependency */,
+			);
+			name = "SVGIRTester-GC";
+			productName = SVGIRTester;
+			productReference = 55DFC3D11543387F004C6238 /* SVGIRTester-GC.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -998,6 +1053,7 @@
 				55AFA48F151AA3BC00B5351D /* SVGImageRep */,
 				55AFA4A8151AA3FA00B5351D /* SVGViewer */,
 				5560E6F5152B6F5C008FF127 /* SVGIRTester */,
+				55DFC3BA1543387F004C6238 /* SVGIRTester-GC */,
 				55AFA4CC151AA7E900B5351D /* svg */,
 				553711AF151BCF9100F8848A /* jpeg */,
 				553711BE151BCF9A00F8848A /* png */,
@@ -1042,6 +1098,22 @@
 				55F0FA94151FBE4A006426B8 /* SVGDocument.xib in Resources */,
 				55C87424152A6BBF00710A01 /* README in Resources */,
 				55C87426152A6BBF00710A01 /* TODO in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		55DFC3C21543387F004C6238 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				55DFC3C31543387F004C6238 /* InfoPlist.strings in Resources */,
+				55DFC3C41543387F004C6238 /* Credits.rtf in Resources */,
+				55DFC3C51543387F004C6238 /* MainMenu.xib in Resources */,
+				55DFC3C61543387F004C6238 /* admon-bug.svg in Resources */,
+				55DFC3C71543387F004C6238 /* admon-caution.svg in Resources */,
+				55DFC3C81543387F004C6238 /* admon-important.svg in Resources */,
+				55DFC3C91543387F004C6238 /* admon-note.svg in Resources */,
+				55DFC3CA1543387F004C6238 /* admon-tip.svg in Resources */,
+				55DFC3CB1543387F004C6238 /* admon-warning.svg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1192,6 +1264,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		55DFC3BD1543387F004C6238 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				55DFC3BE1543387F004C6238 /* main.m in Sources */,
+				55DFC3BF1543387F004C6238 /* SVGIRAppDelegate.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -1219,6 +1300,11 @@
 			isa = PBXTargetDependency;
 			target = 55AFA4CC151AA7E900B5351D /* svg */;
 			targetProxy = 55C87413152A343C00710A01 /* PBXContainerItemProxy */;
+		};
+		55DFC3BB1543387F004C6238 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 55AFA48F151AA3BC00B5351D /* SVGImageRep */;
+			targetProxy = 55DFC3BC1543387F004C6238 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1315,6 +1401,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "png/png-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
 					HAVE_CONFIG_H,
 					PNG_CONFIGURE_LIBPNG,
 				);
@@ -1487,6 +1574,30 @@
 			};
 			name = Release;
 		};
+		55DFC3CF1543387F004C6238 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_ENABLE_OBJC_GC = required;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "SVGIRTester/SVGIRTester-Prefix.pch";
+				INFOPLIST_FILE = "SVGIRTester/SVGIRTester-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		55DFC3D01543387F004C6238 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_ENABLE_OBJC_GC = required;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "SVGIRTester/SVGIRTester-Prefix.pch";
+				INFOPLIST_FILE = "SVGIRTester/SVGIRTester-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1549,6 +1660,15 @@
 			buildConfigurations = (
 				55AFA4D6151AA7E900B5351D /* Debug */,
 				55AFA4D7151AA7E900B5351D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		55DFC3CE1543387F004C6238 /* Build configuration list for PBXNativeTarget "SVGIRTester-GC" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				55DFC3CF1543387F004C6238 /* Debug */,
+				55DFC3D01543387F004C6238 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
