@@ -14,9 +14,8 @@
 
 @interface SVGRenderState : NSObject <NSCopying>
 {
-@public
-	svg_paint_t fillPaint, strokePaint;
 @private
+	svg_paint_t fillPaint, strokePaint;
 	double fillOpacity, strokeOpacity;
 	
 	svg_color_t color;
