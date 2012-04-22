@@ -109,7 +109,6 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 	[super finalize];
 }
 
-
 - (BOOL)draw
 {
 	SVGRenderContext *svg_render_context;

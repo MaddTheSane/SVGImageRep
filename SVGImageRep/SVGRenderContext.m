@@ -565,6 +565,11 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 	CGContextRef tempCtx = CGLayerGetContext(unsizedRenderLayer);
 	if (current)
 	{
+		if (!hasSize)
+		{
+			fprintf(stderr, "beginGroup: with current but no size\n");
+			return SVG_STATUS_INVALID_CALL;
+		}
 		SVGRenderState *oldCurrent = current;
 		current = nil;
 		current = [oldCurrent copy];
@@ -604,7 +609,7 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 	
 	if (hasSize)
 	{
-		fprintf(stderr, "-[SVGRenderContext setViewportDimension]: Already have size, ignoring.");
+		fprintf(stderr, "-[SVGRenderContext setViewportDimension]: Already have size, ignoring.\n");
 		return SVG_STATUS_SUCCESS;
 	}
 	
@@ -629,9 +634,9 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 {
 	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
 	
-	CGFloat w,h;
-	w = [self lengthToPoints: width];
-	h = [self lengthToPoints: height];
+	double w,h;
+	w = [self lengthToPoints:width];
+	h = [self lengthToPoints:height];
 	CGContextScaleCTM(tempCtx, w / viewbox.box.width, h / viewbox.box.height);
 	CGContextTranslateCTM(tempCtx, -viewbox.box.x, -viewbox.box.y);
 	return SVG_STATUS_SUCCESS;
@@ -712,7 +717,7 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 			break;
 			
 		case SVG_PAINT_TYPE_COLOR:
-			[self setFillColor: &tempFill.p.color alpha:current.fillOpacity];
+			[self setFillColor:&tempFill.p.color alpha:current.fillOpacity];
 			if (tempStroke.type != SVG_PAINT_TYPE_NONE)
 				CGContextSaveGState(tempCtx);
 			if (current.fillRule)
@@ -1028,7 +1033,7 @@ static svg_status_t r_end_element(void *closure)
 	
 	CGContextRestoreGState(CGCtx);
 	[self.states removeObjectAtIndex:[self.states count] - 1];
-	if ([[self states] count])
+	if ([self.states count])
 		self.current = [self.states objectAtIndex:[self.states count] - 1];
 	else
 		self.current = nil;
@@ -1077,7 +1082,20 @@ static svg_status_t r_quadratic_curve_to(void *closure, double x1, double y1, do
 	SVGRenderContext *self = (SVGRenderContext *)closure;
 	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
+#ifndef DONTUSECGQUADCURVE
 	CGContextAddQuadCurveToPoint(CGCtx, x1, y1, x2, y2);
+#else
+	CGFloat x,y;
+	CGPoint currPoint = CGContextGetPathCurrentPoint(CGCtx);
+	x = currPoint.x; y = currPoint.y;
+	CGContextAddCurveToPoint(CGCtx,
+			   currPoint.x + 2.0/3.0 * (x1 - currPoint.x),
+			   currPoint.y + 2.0/3.0 * (y1 - currPoint.y),
+			   x2 + 2.0/3.0 * (x1 - x2),
+			   y2 + 2.0/3.0 * (y1 - y2),
+			   x2,y2);
+
+#endif
 	return SVG_STATUS_SUCCESS;
 }
 
