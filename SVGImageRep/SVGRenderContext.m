@@ -449,9 +449,6 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 					CGContextDrawRadialGradient(tempCtx, gradient, CGPointMake(cx, cy), r, CGPointMake(fx, fy), r, kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
 				}
 					break;
-
-				default:
-					break;
 			}
 			CGGradientRelease(gradient);
 			CGContextRestoreGState(tempCtx);
@@ -681,9 +678,6 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 					fy = [self lengthToPoints:&tempFill.p.gradient->u.radial.fy];
 					CGContextDrawRadialGradient(tempCtx, gradient, CGPointMake(cx, cy), r, CGPointMake(fx, fy), r, kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
 				}
-					break;
-					
-				default:
 					break;
 			}
 			CGGradientRelease(gradient);
@@ -1219,9 +1213,13 @@ static svg_status_t r_set_stroke_dash_array(void *closure, double *dashes, int n
 	if (dashes && num_dashes)
 	{
 		CGFloat *dash = malloc(sizeof(CGFloat) * num_dashes);
+#if CGFLOAT_IS_DOUBLE
+		memcpy(dash, dashes, sizeof(double) * num_dashes);
+#else
 		size_t i;
 		for (i = 0;i < num_dashes;i++)
 			dash[i] = dashes[i];
+#endif
 		self.current.dash = dash;
 		self.current.numDash = num_dashes;
 		CGContextSetLineDash(CGCtx, self.current.dashOffset, self.current.dash, self.current.numDash);
