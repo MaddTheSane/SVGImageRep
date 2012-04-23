@@ -6,7 +6,7 @@ include $(GNUSTEP_MAKEFILES)/common.make
 
 PACKAGE_NAME =	SVGViewer
 
-ADDITIONAL_OBJCFLAGS += -Wall `pkg-config --cflags libsvg`
+ADDITIONAL_OBJCFLAGS += -Wall `pkg-config --cflags libsvg` -ISVGImageRep
 
 APP_NAME = SVGViewer
 
@@ -26,7 +26,7 @@ SVGViewer_RESOURCE_FILES = \
 SVGViewer_LANGUAGES = \
 	SVGViewer/en
 
-SVGViewer_LDFLAGS += `pkg-config --libs libsvg` -lopal
+SVGViewer_LDFLAGS += `pkg-config --libs libsvg` -lopal -lgnustep-corebase
 
 BUNDLE_NAME = SVGImageRep
 
@@ -41,7 +41,7 @@ SVGImageRep_RESOURCE_FILES = \
 SVGImageRep_LANGUAGES = \
 	SVGImageRep/en
 
-SVGImageRep_LDFLAGS += `pkg-config --libs libsvg` -lopal
+SVGImageRep_LDFLAGS += `pkg-config --libs libsvg` -lopal -lgnustep-corebase
 SVGImageRep_PRINCIPAL_CLASS = SVGImageRep
 
 
