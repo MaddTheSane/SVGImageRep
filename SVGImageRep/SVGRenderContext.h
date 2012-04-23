@@ -8,7 +8,7 @@
 
 #import <Foundation/NSObject.h>
 #import <Foundation/NSGeometry.h>
-#include <ApplicationServices/ApplicationServices.h>
+#include <CoreGraphics/CoreGraphics.h>
 
 #include <svg.h>
 

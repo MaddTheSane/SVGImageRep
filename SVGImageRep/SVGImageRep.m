@@ -11,7 +11,7 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 #import <Foundation/NSGeometry.h>
 #import <AppKit/NSGraphics.h>
 #import <AppKit/NSGraphicsContext.h>
-#include <ApplicationServices/ApplicationServices.h>
+#include <CoreGraphics/CoreGraphics.h>
 
 #import "SVGRenderContext.h"
 

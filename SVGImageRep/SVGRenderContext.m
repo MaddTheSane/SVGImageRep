@@ -20,6 +20,7 @@
 #import <AppKit/NSFont.h>
 #import <AppKit/NSFontDescriptor.h>
 #import <AppKit/NSAttributedString.h>
+#include <CoreText/CoreText.h>
 #import "SVGRenderState.h"
 
 @implementation SVGRenderContext
