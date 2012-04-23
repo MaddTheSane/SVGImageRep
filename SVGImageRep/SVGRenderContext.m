@@ -1085,9 +1085,7 @@ static svg_status_t r_quadratic_curve_to(void *closure, double x1, double y1, do
 #ifndef DONTUSECGQUADCURVE
 	CGContextAddQuadCurveToPoint(CGCtx, x1, y1, x2, y2);
 #else
-	CGFloat x,y;
 	CGPoint currPoint = CGContextGetPathCurrentPoint(CGCtx);
-	x = currPoint.x; y = currPoint.y;
 	CGContextAddCurveToPoint(CGCtx,
 			   currPoint.x + 2.0/3.0 * (x1 - currPoint.x),
 			   currPoint.y + 2.0/3.0 * (y1 - currPoint.y),
