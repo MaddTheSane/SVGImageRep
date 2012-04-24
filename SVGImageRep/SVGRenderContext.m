@@ -661,7 +661,6 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 			
 		case SVG_PAINT_TYPE_PATTERN:
 #warning SVG_PAINT_TYPE_PATTERN not handled yet!
-#if 0
 			CGContextSaveGState(tempCtx);
 		{
 			CGContextClip(tempCtx);
@@ -677,12 +676,23 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 			h = [self lengthToPoints:&pattern->height];
 			x = [self lengthToPoints:&pattern->x];
 			y = [self lengthToPoints:&pattern->y];
+			int xIter = 0, yIter = 0;
+			CGFloat imgSizeX = size.width / scale, imgSizeY = size.height / scale;
+
 			//TODO: handle transform
-			CGContextDrawLayerInRect(tempCtx, CGRectMake(x, y, w, h), patternRender.renderLayer);
+			//FIXME: there has to be a better way of drawing this.
+			do {
+				yIter++;
+				xIter = 0;
+				do {
+					xIter++;
+					CGContextDrawLayerInRect(tempCtx, CGRectMake((x * xIter), (y * yIter), w, h), patternRender.renderLayer);
+				} while (imgSizeX > (x + xIter * w));
+			} while (imgSizeY > (y + yIter * h));
+			//CGContextDrawLayerInRect(tempCtx, CGRectMake(x, y, w, h), patternRender.renderLayer);
 			[patternRender release];
 		}
 			CGContextRestoreGState(tempCtx);
-#endif
 			break;
 			
 		case SVG_PAINT_TYPE_COLOR:
