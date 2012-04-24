@@ -383,6 +383,8 @@
 		5560E715152B73D7008FF127 /* admon-note.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "admon-note.svg"; sourceTree = "<group>"; };
 		5560E716152B73D7008FF127 /* admon-tip.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "admon-tip.svg"; sourceTree = "<group>"; };
 		5560E717152B73D7008FF127 /* admon-warning.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "admon-warning.svg"; sourceTree = "<group>"; };
+		55863C87154736B600A73C76 /* SVGRenderContext-MacOS.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "SVGRenderContext-MacOS.m"; sourceTree = "<group>"; };
+		55863C891547370000A73C76 /* SVGRenderContext-iOS.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "SVGRenderContext-iOS.m"; sourceTree = "<group>"; };
 		55AFA490151AA3BC00B5351D /* SVGImageRep.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SVGImageRep.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		55AFA493151AA3BC00B5351D /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		55AFA496151AA3BC00B5351D /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -754,6 +756,8 @@
 				55AFA529151AABB700B5351D /* SVGImageRep.m */,
 				553711A8151BCDB900F8848A /* SVGImageRep.h */,
 				55F0FACB1520E9F8006426B8 /* SVGRenderContext.m */,
+				55863C87154736B600A73C76 /* SVGRenderContext-MacOS.m */,
+				55863C891547370000A73C76 /* SVGRenderContext-iOS.m */,
 				55F0FACA1520E9F8006426B8 /* SVGRenderContext.h */,
 				55F0FAC71520E925006426B8 /* SVGRenderState.m */,
 				55F0FAC61520E925006426B8 /* SVGRenderState.h */,
