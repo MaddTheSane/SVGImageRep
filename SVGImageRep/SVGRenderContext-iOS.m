@@ -74,7 +74,7 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 
 	{
 		CFMutableDictionaryRef fontTraits = CFDictionaryCreateMutable(kCFAllocatorDefault, 1, &kCFCopyStringDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
-		CFMutableDictionaryRef desAttribs = CFDictionaryCreateMutable(kCFAllocatorDefault, 2, &kCFCopyStringDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+		CFMutableDictionaryRef desAttribs = CFDictionaryCreateMutable(kCFAllocatorDefault, 3, &kCFCopyStringDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
 
 		int fontTrait = 0;
 		if (current.fontStyle > SVG_FONT_STYLE_NORMAL) {
@@ -91,12 +91,13 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 		CFDictionaryRef tempDesDict = CTFontDescriptorCopyAttributes(tempDes);
 		CFRelease(tempDes);
 		CFStringRef fontFam = CFDictionaryGetValue(tempDesDict, kCTFontFamilyNameAttribute);
-		CFRelease(tempDesDict);
 		CFDictionaryAddValue(desAttribs, kCTFontFamilyNameAttribute, fontFam);
+		CFRelease(tempDesDict);
 
 		CTFontDescriptorRef theDescriptor = CTFontDescriptorCreateWithAttributes(desAttribs);
 		tmpfont = CTFontCreateWithFontDescriptor(theDescriptor, current.fontSize, NULL);
 		CFRelease(fontTraits);
+		CFRelease(theDescriptor);
 		CFRelease(desAttribs);
 	}
 
@@ -239,5 +240,19 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 
 static svg_status_t r_render_image(void *closure, unsigned char *data, unsigned int data_width, unsigned int data_height, svg_length_t *x, svg_length_t *y, svg_length_t *width, svg_length_t *height)
 { 
+	SVGRenderContext *self = (SVGRenderContext *)closure;
+	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
+	{
+		CGFloat cx, cy, cw, ch;
+		cx = [self lengthToPoints:x];
+		cy = [self lengthToPoints:y];
+		cw = [self lengthToPoints:width];
+		ch = [self lengthToPoints:height];
+		NSData *imageData = [[NSData alloc] initWithBytes:data length:data_width * data_height * 32 * 4];//FIXME: Is this math right?
+		UIImage *temprep = [[UIImage alloc] initWithData:imageData];
+		CGContextDrawImage(CGCtx, CGRectMake(cx, cy, cw, ch), [temprep CGImage]);
+		[temprep release];
+	}
 	
+	return SVG_STATUS_SUCCESS;
 }
