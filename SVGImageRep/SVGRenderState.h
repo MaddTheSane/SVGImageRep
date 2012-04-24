@@ -7,7 +7,9 @@
 //
 
 #import <Foundation/NSObject.h>
+#if !(TARGET_OS_EMBEDDED || TARGET_OS_IPHONE)
 #import <Foundation/NSGeometry.h>
+#endif
 #include <svg.h>
 
 @class NSString;

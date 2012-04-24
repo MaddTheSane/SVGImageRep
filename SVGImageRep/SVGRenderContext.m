@@ -19,19 +19,11 @@
 
 @synthesize size, states, current, scale, renderLayer;
 
-static inline CGColorRef CreateColorRefFromSVGColor(svg_color_t *c, CGFloat alpha)
-{
-	return CGColorCreateGenericRGB(svg_color_get_red(c)/255.0, svg_color_get_green(c)/255.0, svg_color_get_blue(c)/255.0, alpha);
-}
-
-static CGColorSpaceRef GetGenericRGBColorSpace()
-{
-	static CGColorSpaceRef theSpace = NULL;
-	if (theSpace == NULL) {
-		theSpace = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
-	}
-	return theSpace;
-}
+#if !(TARGET_OS_EMBEDDED || TARGET_OS_IPHONE)
+#import "SVGRenderContext-MacOS.m"
+#else
+#import "SVGRenderContext-iOS.m"
+#endif
 
 static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 {
@@ -61,12 +53,6 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 	size = prevContext.size;
 	unsizedRenderLayer = CGLayerCreateWithContext(CGLayerGetContext(prevContext.renderLayer), NSSizeToCGSize(size), NULL);
 }
-
-#ifdef TARGET_OS_MAC
-#import "SVGRenderContext-MacOS.m"
-#else
-#import "SVGRenderContext-iOS.m"
-#endif
 
 - (void)finishRender
 {

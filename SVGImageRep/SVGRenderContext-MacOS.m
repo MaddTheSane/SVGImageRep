@@ -7,6 +7,20 @@
 #import <AppKit/NSAttributedString.h>
 #include <CoreText/CoreText.h>
 
+static inline CGColorRef CreateColorRefFromSVGColor(svg_color_t *c, CGFloat alpha)
+{
+	return CGColorCreateGenericRGB(svg_color_get_red(c)/255.0, svg_color_get_green(c)/255.0, svg_color_get_blue(c)/255.0, alpha);
+}
+
+static CGColorSpaceRef GetGenericRGBColorSpace()
+{
+	static CGColorSpaceRef theSpace = NULL;
+	if (theSpace == NULL) {
+		theSpace = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
+	}
+	return theSpace;
+}
+
 - (void)prepareRender:(double)a_scale
 {
 	states = [[NSMutableArray alloc] init];

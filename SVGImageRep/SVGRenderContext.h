@@ -7,8 +7,14 @@
 //
 
 #import <Foundation/NSObject.h>
-#import <Foundation/NSGeometry.h>
 #include <CoreGraphics/CoreGraphics.h>
+#if !(TARGET_OS_EMBEDDED || TARGET_OS_IPHONE)
+#import <Foundation/NSGeometry.h>
+#else
+typedef CGSize NSSize;
+#define NSSizeToCGSize(x) x
+#define NSMakeSize CGSizeMake
+#endif
 
 #include <svg.h>
 
