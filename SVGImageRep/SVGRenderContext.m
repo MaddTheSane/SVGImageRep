@@ -1208,7 +1208,7 @@ static svg_status_t r_set_stroke_dash_array(void *closure, double *dashes, int n
 	if (self.current.dash)
 		free(self.current.dash);
 	self.current.dash = NULL;
-	self.current.numDash = 0;
+	self.current.dashLength = 0;
 
 	if (dashes && num_dashes)
 	{
@@ -1221,8 +1221,8 @@ static svg_status_t r_set_stroke_dash_array(void *closure, double *dashes, int n
 			dash[i] = dashes[i];
 #endif
 		self.current.dash = dash;
-		self.current.numDash = num_dashes;
-		CGContextSetLineDash(CGCtx, self.current.dashOffset, self.current.dash, self.current.numDash);
+		self.current.dashLength = num_dashes;
+		CGContextSetLineDash(CGCtx, self.current.dashOffset, self.current.dash, self.current.dashLength);
 	}
 	else
 		CGContextSetLineDash(CGCtx, 0.0, NULL, 0);
@@ -1236,7 +1236,7 @@ static svg_status_t r_set_stroke_dash_offset(void *closure, svg_length_t *offset
 	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
 	self.current.dashOffset = [self lengthToPoints:offset];
-	CGContextSetLineDash(CGCtx, self.current.dashOffset, self.current.dash, self.current.numDash);
+	CGContextSetLineDash(CGCtx, self.current.dashOffset, self.current.dash, self.current.dashLength);
 	return SVG_STATUS_SUCCESS;
 }
 

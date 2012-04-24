@@ -32,7 +32,7 @@
 	svg_text_anchor_t textAnchor;
 	
 	CGFloat *dash;
-	size_t numDash;
+	size_t dashLength;
 	CGFloat dashOffset;
 }
 @property (readwrite) svg_paint_t fillPaint;
@@ -49,7 +49,7 @@
 @property (readwrite) double fontWeight;
 @property (readwrite) svg_text_anchor_t textAnchor;
 @property (readwrite) CGFloat *dash;
-@property (readwrite) size_t numDash;
+@property (readwrite) size_t dashLength;
 @property (readwrite) CGFloat dashOffset;
 
 @end

@@ -11,7 +11,7 @@
 
 @implementation SVGRenderState
 
-@synthesize strokeOpacity, dash, color, opacity, numDash, fillRule;
+@synthesize strokeOpacity, dash, color, opacity, dashLength, fillRule;
 @synthesize fontSize, fillPaint, fontStyle, dashOffset, fontFamily, fontWeight;
 @synthesize textAnchor, fillOpacity, strokePaint, strokeWidth;
 
@@ -19,7 +19,7 @@
 {
 	SVGRenderState *new = [[SVGRenderState allocWithZone:zone] init];
 	
-	new.numDash = numDash;
+	new.dashLength = dashLength;
 	new.strokeOpacity = strokeOpacity;
 	new.color = color;
 	new.opacity = opacity;
@@ -37,8 +37,8 @@
 	
 	if (dash)
 	{
-		new.dash = malloc(sizeof(CGFloat) * new.numDash);
-		memcpy(new.dash, dash, sizeof(CGFloat) * new.numDash);
+		new.dash = malloc(sizeof(CGFloat) * dashLength);
+		memcpy(new.dash, dash, sizeof(CGFloat) * dashLength);
 	}
 	
 	return new;
