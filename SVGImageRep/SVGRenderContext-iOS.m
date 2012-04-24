@@ -120,7 +120,7 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 	unichar *chars = malloc(sizeof(unichar) * str8len);
 	CGGlyph *glyphChars = malloc(sizeof(CGGlyph) * str8len);
 	[utfString getCharacters:chars range:NSMakeRange(0, str8len)];
-	CTFontGetGlyphsForCharacters((CTFontRef)tmpfont, chars, glyphChars, str8len);
+	CTFontGetGlyphsForCharacters(tmpfont, chars, glyphChars, str8len);
 
 	switch (tempFill.type)
 	{
@@ -250,6 +250,7 @@ static svg_status_t r_render_image(void *closure, unsigned char *data, unsigned 
 		ch = [self lengthToPoints:height];
 		NSData *imageData = [[NSData alloc] initWithBytes:data length:data_width * data_height * 32 * 4];//FIXME: Is this math right?
 		UIImage *temprep = [[UIImage alloc] initWithData:imageData];
+		[imageData release];
 		CGContextDrawImage(CGCtx, CGRectMake(cx, cy, cw, ch), [temprep CGImage]);
 		[temprep release];
 	}
