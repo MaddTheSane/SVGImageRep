@@ -4,8 +4,7 @@
 static CGColorRef CreateColorRefFromSVGColor(svg_color_t *c, CGFloat alpha)
 {
 	UIColor *tempColor = [UIColor colorWithRed:svg_color_get_red(c)/255.0 green:svg_color_get_green(c)/255.0 blue:svg_color_get_blue(c)/255.0 alpha:alpha];
-	CGColorRef returnColor = CGColorRetain([tempColor CGColor]); //Need this to make it compatible with the Mac version, which returns a created CGColor
-	return returnColor;
+	return CGColorRetain([tempColor CGColor]); //Need this to make it compatible with the Mac version, which returns a created CGColor
 }
 
 static CGColorSpaceRef GetGenericRGBColorSpace()
@@ -24,7 +23,7 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 	hasSize = NO;
 	scale = a_scale;
 	size = CGSizeMake(500 * scale, 500 * scale);
-	unsizedRenderLayer = CGLayerCreateWithContext(UIGraphicsGetCurrentContext(), NSSizeToCGSize(size), NULL);
+	unsizedRenderLayer = CGLayerCreateWithContext(UIGraphicsGetCurrentContext(), size, NULL);
 }
 
 - (svg_status_t)renderText:(const char *)utf8 atX:(CGFloat)xPos y:(CGFloat)yPos
@@ -248,7 +247,7 @@ static svg_status_t r_render_image(void *closure, unsigned char *data, unsigned 
 		cy = [self lengthToPoints:y];
 		cw = [self lengthToPoints:width];
 		ch = [self lengthToPoints:height];
-		NSData *imageData = [[NSData alloc] initWithBytes:data length:data_width * data_height * 32 * 4];//FIXME: Is this math right?
+		NSData *imageData = [[NSData alloc] initWithBytes:data length:data_width * data_height * 32 * 8];//FIXME: Is this math right?
 		UIImage *temprep = [[UIImage alloc] initWithData:imageData];
 		[imageData release];
 		CGContextDrawImage(CGCtx, CGRectMake(cx, cy, cw, ch), [temprep CGImage]);

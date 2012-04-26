@@ -431,8 +431,26 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 			
 		case SVG_PAINT_TYPE_PATTERN:
 #warning SVG_PAINT_TYPE_PATTERN not handled yet!
-#if 0
+			CGContextSaveGState(tempCtx);
 		{
+			
+			if (rx > 0 || ry > 0)
+			{
+				CGContextMoveToPoint(tempCtx, cx + crx, cy);
+				CGContextAddLineToPoint(tempCtx, cx + cw - crx, cy);
+				[self arcTo: crx : cry : 0 : 0 : 1 : cx + cw : cy + cry];
+				CGContextAddLineToPoint(tempCtx, cx + cw, cy + ch - cry);
+				[self arcTo: crx : cry : 0 : 0 : 1 : cx + cw - crx : cy + ch];
+				CGContextAddLineToPoint(tempCtx, cx + crx, cy + ch);
+				[self arcTo: crx : cry : 0 : 0 : 1 : cx : cy + ch - cry];
+				CGContextAddLineToPoint(tempCtx, cx, cy + cry);
+				[self arcTo: crx : cry : 0 : 0 : 1 : cx + crx : cy];
+				CGContextClosePath(tempCtx);
+				CGContextClip(tempCtx);
+			}
+			else
+				CGContextClipToRect(tempCtx, CGRectMake(cx, cy, cw, ch));
+
 			svg_element_t *tempElement = tempFill.p.pattern_element;
 			SVGRenderContext *patternRender = [[SVGRenderContext alloc] init];
 			svg_pattern_t *pattern = svg_element_pattern(tempElement);
@@ -445,11 +463,23 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 			h = [self lengthToPoints:&pattern->height];
 			x = [self lengthToPoints:&pattern->x];
 			y = [self lengthToPoints:&pattern->y];
+			int xIter = 0, yIter = 0;
+			CGFloat imgSizeX = size.width / scale, imgSizeY = size.height / scale;
+			
 			//TODO: handle transform
-			CGContextDrawLayerInRect(tempCtx, CGRectMake(x, y, w, h), patternRender.renderLayer);
+			//FIXME: there has to be a better way of drawing this.
+			do {
+				yIter++;
+				xIter = 0;
+				do {
+					xIter++;
+					CGContextDrawLayerInRect(tempCtx, CGRectMake((x * xIter), (y * yIter), w, h), patternRender.renderLayer);
+				} while (imgSizeX > (x + xIter * w));
+			} while (imgSizeY > (y + yIter * h));
+			//CGContextDrawLayerInRect(tempCtx, CGRectMake(x, y, w, h), patternRender.renderLayer);
 			[patternRender release];
 		}
-#endif
+			CGContextRestoreGState(tempCtx);
 			break;
 			
 		case SVG_PAINT_TYPE_COLOR:
