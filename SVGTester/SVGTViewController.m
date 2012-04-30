@@ -21,7 +21,7 @@
 	NSURL *imageLoc = [[NSBundle mainBundle] URLForResource:@"admon-caution" withExtension:@"svg"];
 	// Do any additional setup after loading the view, typically from a nib.
 	NSData *imgData = [NSData dataWithContentsOfURL:imageLoc];
-	CGImageRef tempImage = CreateSVGImageFromData(imgData);
+	CGImageRef tempImage = CreateSVGImageFromDataWithScale(imgData, 3.0);
 	self.testView.image = [UIImage imageWithCGImage:tempImage];
 	CGImageRelease(tempImage);
 }
