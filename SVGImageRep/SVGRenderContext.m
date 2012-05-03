@@ -19,6 +19,8 @@
 
 @synthesize size, states, current, scale, renderLayer;
 
+static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient);
+
 #if !(TARGET_OS_EMBEDDED || TARGET_OS_IPHONE)
 #import "SVGRenderContext-MacOS.m"
 #else
