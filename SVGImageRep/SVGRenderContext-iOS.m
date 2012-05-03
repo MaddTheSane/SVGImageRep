@@ -247,7 +247,7 @@ static svg_status_t r_render_image(void *closure, unsigned char *data, unsigned 
 		cy = [self lengthToPoints:y];
 		cw = [self lengthToPoints:width];
 		ch = [self lengthToPoints:height];
-		NSData *imageData = [[NSData alloc] initWithBytes:data length:data_width * data_height * 32 * 8];//FIXME: Is this math right?
+		NSData *imageData = [[NSData alloc] initWithBytes:data length:data_width * data_height * 4];//FIXME: Is this math right?
 		UIImage *temprep = [[UIImage alloc] initWithData:imageData];
 		[imageData release];
 		CGContextDrawImage(CGCtx, CGRectMake(cx, cy, cw, ch), [temprep CGImage]);
