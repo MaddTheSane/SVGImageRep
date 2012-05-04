@@ -9,5 +9,6 @@
 #import <UIKit/UIKit.h>
 
 extern CGImageRef CreateSVGImageFromData(NSData* data);
+extern CGImageRef CreateSVGImageFromDataWithScaleAutoScale(NSData *data, CGFloat scale, BOOL autoscale);
 extern CGImageRef CreateSVGImageFromDataWithScale(NSData *data, CGFloat scale);
 extern CGSize GetSVGImageSizeFromData(NSData *data);

@@ -34,10 +34,15 @@ extern CGSize GetSVGImageSizeFromData(NSData *data)
 
 extern CGImageRef CreateSVGImageFromData(NSData* data)
 {
-	return CreateSVGImageFromDataWithScale(data, 1.0);
+	return CreateSVGImageFromDataWithScaleAutoScale(data, 1.0, YES);
 }
 
 extern CGImageRef CreateSVGImageFromDataWithScale(NSData *data, CGFloat scale)
+{
+	return CreateSVGImageFromDataWithScaleAutoScale(data, scale, YES);
+}
+
+extern CGImageRef CreateSVGImageFromDataWithScaleAutoScale(NSData *data, CGFloat scale, BOOL autoscale)
 {
 	svg_t *svg_test;
 	svg_status_t status;
@@ -52,12 +57,17 @@ extern CGImageRef CreateSVGImageFromDataWithScale(NSData *data, CGFloat scale)
 	SVGRenderContext *svg_render_context;
 	svg_render_context = [[SVGRenderContext alloc] init];
 	
+#if 0
+	UIGraphicsBeginImageContextWithOptions(GetSVGImageSizeFromData(data), NO, autoscale ? 0.0 : 1.0);
+#endif
+	
 	[svg_render_context prepareRender:scale];
 	svg_status_t rendered = svg_render(svg_test, &cocoa_svg_engine, svg_render_context);
 	[svg_render_context finishRender];
 	
 	if (rendered == SVG_STATUS_SUCCESS) {
 		CGSize renderSize = [svg_render_context size];
+#if 1
 		unsigned rowBytes = 4 * renderSize.width;
 		void *imageBuffer = malloc(rowBytes * renderSize.height);
 		static CGColorSpaceRef defaultSpace = NULL;
@@ -73,7 +83,17 @@ extern CGImageRef CreateSVGImageFromDataWithScale(NSData *data, CGFloat scale)
 
 		returntype = CGImageCreate(renderSize.width, renderSize.height, 8, 32, rowBytes, defaultSpace, kCGImageAlphaPremultipliedLast, dataProvider, NULL, false, kCGRenderingIntentDefault);
 		CGDataProviderRelease(dataProvider);
+#else
+		CGContextDrawLayerInRect(UIGraphicsGetCurrentContext(), CGRectMake(0,0,renderSize.width, renderSize.height), svg_render_context.renderLayer);
+		UIImage *tempImage = UIGraphicsGetImageFromCurrentImageContext();
+		returntype = CGImageRetain([tempImage CGImage]);
+#endif
 	}
+	
+#if 0
+	UIGraphicsEndImageContext();
+#endif
+	
 	[svg_render_context release];
 	
 	svg_destroy(svg_test);
