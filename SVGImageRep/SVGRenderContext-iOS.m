@@ -247,9 +247,15 @@ static svg_status_t r_render_image(void *closure, unsigned char *data, unsigned 
 		cy = [self lengthToPoints:y];
 		cw = [self lengthToPoints:width];
 		ch = [self lengthToPoints:height];
-		NSData *imageData = [[NSData alloc] initWithBytes:data length:data_width * data_height * 4];//FIXME: Is this math right?
+		NSData *imageData = [[NSData alloc] initWithBytes:data length:data_width * data_height * 4];
+		if (!imageData) {
+			return SVG_STATUS_NO_MEMORY;
+		}
 		UIImage *temprep = [[UIImage alloc] initWithData:imageData];
 		[imageData release];
+		if (!temprep) {
+			return SVG_STATUS_NO_MEMORY;
+		}
 		CGContextDrawImage(CGCtx, CGRectMake(cx, cy, cw, ch), [temprep CGImage]);
 		[temprep release];
 	}
