@@ -1,6 +1,3 @@
-#import <UIKit/UIKit.h>
-#import <CoreText/CoreText.h>
-
 static CGColorRef CreateColorRefFromSVGColor(svg_color_t *c, CGFloat alpha)
 {
 	UIColor *tempColor = [UIColor colorWithRed:svg_color_get_red(c)/255.0 green:svg_color_get_green(c)/255.0 blue:svg_color_get_blue(c)/255.0 alpha:alpha];

@@ -1,12 +1,3 @@
-#import <AppKit/NSFontManager.h>
-#import <AppKit/NSGraphics.h>
-#import <AppKit/NSBitmapImageRep.h>
-#import <AppKit/NSGraphicsContext.h>
-#import <AppKit/NSFont.h>
-#import <AppKit/NSFontDescriptor.h>
-#import <AppKit/NSAttributedString.h>
-#include <CoreText/CoreText.h>
-
 static inline CGColorRef CreateColorRefFromSVGColor(svg_color_t *c, CGFloat alpha)
 {
 	return CGColorCreateGenericRGB(svg_color_get_red(c)/255.0, svg_color_get_green(c)/255.0, svg_color_get_blue(c)/255.0, alpha);
@@ -36,7 +27,7 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
 	NSFont *f = nil, *tmpfont = nil;
 	NSFontManager *fm = [NSFontManager sharedFontManager];
-	int w = ceil(current.fontWeight / 80.0);
+	NSInteger w = ceil(current.fontWeight / 80.0);
 	NSInteger i;
 
 	svg_paint_t tempFill = current.fillPaint, tempStroke = current.strokePaint;

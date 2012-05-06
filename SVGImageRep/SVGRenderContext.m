@@ -14,6 +14,19 @@
 #import <Foundation/NSAttributedString.h>
 #import <Foundation/NSValue.h>
 #import "SVGRenderState.h"
+#include <CoreText/CoreText.h>
+
+#if !(TARGET_OS_EMBEDDED || TARGET_OS_IPHONE)
+#import <AppKit/NSFontManager.h>
+#import <AppKit/NSGraphics.h>
+#import <AppKit/NSBitmapImageRep.h>
+#import <AppKit/NSGraphicsContext.h>
+#import <AppKit/NSFont.h>
+#import <AppKit/NSFontDescriptor.h>
+#import <AppKit/NSAttributedString.h>
+#else
+#import <UIKit/UIKit.h>
+#endif
 
 @implementation SVGRenderContext
 
