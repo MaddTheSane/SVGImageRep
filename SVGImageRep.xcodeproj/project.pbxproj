@@ -317,6 +317,8 @@
 		55DFC3CA1543387F004C6238 /* admon-tip.svg in Resources */ = {isa = PBXBuildFile; fileRef = 5560E716152B73D7008FF127 /* admon-tip.svg */; };
 		55DFC3CB1543387F004C6238 /* admon-warning.svg in Resources */ = {isa = PBXBuildFile; fileRef = 5560E717152B73D7008FF127 /* admon-warning.svg */; };
 		55DFC3CD1543387F004C6238 /* SVGImageRep.bundle in CopyFiles */ = {isa = PBXBuildFile; fileRef = 55AFA490151AA3BC00B5351D /* SVGImageRep.bundle */; };
+		55EC29BB156D973B00384A86 /* SVGImageView.h in Headers */ = {isa = PBXBuildFile; fileRef = 55EC29B9156D973B00384A86 /* SVGImageView.h */; };
+		55EC29BC156D973B00384A86 /* SVGImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 55EC29BA156D973B00384A86 /* SVGImageView.m */; };
 		55F0FA88151CDCB6006426B8 /* jmemname.c in Sources */ = {isa = PBXBuildFile; fileRef = 55371263151BD0CD00F8848A /* jmemname.c */; };
 		55F0FA92151FBB80006426B8 /* SVGViewer.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55F0FA91151FBB80006426B8 /* SVGViewer.xib */; };
 		55F0FA94151FBE4A006426B8 /* SVGDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55F0FA93151FBE4A006426B8 /* SVGDocument.xib */; };
@@ -628,6 +630,8 @@
 		55CDE6FF1549C8EA00EACD41 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/SVGTViewController_iPhone.xib; sourceTree = "<group>"; };
 		55CDE7021549C8EA00EACD41 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/SVGTViewController_iPad.xib; sourceTree = "<group>"; };
 		55DFC3D11543387F004C6238 /* SVGIRTester-GC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SVGIRTester-GC.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		55EC29B9156D973B00384A86 /* SVGImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVGImageView.h; sourceTree = "<group>"; };
+		55EC29BA156D973B00384A86 /* SVGImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVGImageView.m; sourceTree = "<group>"; };
 		55F0FA8D151FBAB6006426B8 /* SVGViewer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVGViewer.h; sourceTree = "<group>"; };
 		55F0FA8E151FBAB6006426B8 /* SVGViewer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVGViewer.m; sourceTree = "<group>"; };
 		55F0FA91151FBB80006426B8 /* SVGViewer.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SVGViewer.xib; sourceTree = "<group>"; };
@@ -948,6 +952,8 @@
 				55863C94154738DE00A73C76 /* SVGImageRepiOS.h */,
 				55863C95154738DE00A73C76 /* SVGImageRepiOS.m */,
 				55863C92154738DE00A73C76 /* Supporting Files */,
+				55EC29B9156D973B00384A86 /* SVGImageView.h */,
+				55EC29BA156D973B00384A86 /* SVGImageView.m */,
 			);
 			path = SVGImageRepiOS;
 			sourceTree = "<group>";
@@ -1199,6 +1205,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				55EC29BB156D973B00384A86 /* SVGImageView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1691,6 +1698,7 @@
 				55863C96154738DE00A73C76 /* SVGImageRepiOS.m in Sources */,
 				55863D3D15473B9200A73C76 /* SVGRenderState.m in Sources */,
 				55863D3E15473B9600A73C76 /* SVGRenderContext.m in Sources */,
+				55EC29BC156D973B00384A86 /* SVGImageView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2543,6 +2551,7 @@
 				55CDE7061549C8EA00EACD41 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		55DFC3CE1543387F004C6238 /* Build configuration list for PBXNativeTarget "SVGIRTester-GC" */ = {
 			isa = XCConfigurationList;
