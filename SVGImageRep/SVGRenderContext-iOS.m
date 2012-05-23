@@ -108,8 +108,8 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 		CFDictionaryRef tempDesDict = CTFontDescriptorCopyAttributes(tempDes);
 		CFRelease(tempDes);
 		CFStringRef psFontName = CFDictionaryGetValue(tempDesDict, kCTFontNameAttribute);
-		CFRelease(tempDesDict);
 		CFStringGetCString(psFontName, psFontChar, 511, kCFStringEncodingUTF8);
+		CFRelease(tempDesDict);
 	}
 	CGContextSelectFont(tempCtx, psFontChar, current.fontSize, kCGEncodingFontSpecific);
 	NSUInteger str8len = [utfString length];

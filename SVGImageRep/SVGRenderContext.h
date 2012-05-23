@@ -39,7 +39,7 @@ extern svg_render_engine_t cocoa_svg_engine;
 @property (readwrite, nonatomic, assign) SVGRenderState *current;
 @property (readonly, nonatomic) NSMutableArray *states;
 @property (readonly, nonatomic) NSSize size;
-@property (readwrite, nonatomic) double scale;
+@property (readonly, nonatomic) double scale;
 @property (readonly, nonatomic) CGLayerRef renderLayer;
 
 - (void)prepareRender:(double)a_scale;
