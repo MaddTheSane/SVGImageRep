@@ -54,8 +54,7 @@ extern CGImageRef CreateSVGImageFromDataWithScaleAutoScale(NSData *data, CGFloat
 	
 	CGImageRef returntype = NULL;
 	
-	SVGRenderContext *svg_render_context;
-	svg_render_context = [[SVGRenderContext alloc] init];
+	SVGRenderContext *svg_render_context = [[SVGRenderContext alloc] init];
 	
 #if 0
 	UIGraphicsBeginImageContextWithOptions(GetSVGImageSizeFromData(data), NO, autoscale ? 0.0 : 1.0);
@@ -76,7 +75,7 @@ extern CGImageRef CreateSVGImageFromDataWithScaleAutoScale(NSData *data, CGFloat
 		}
 
 		CGContextRef bitmapContext = CGBitmapContextCreate(imageBuffer, renderSize.width, renderSize.height, 8, rowBytes, defaultSpace, kCGImageAlphaPremultipliedLast);
-		CGContextClearRect(bitmapContext, CGRectMake(0,0,renderSize.width, renderSize.height));
+		CGContextClearRect(bitmapContext, CGRectMake(0, 0, renderSize.width, renderSize.height));
 		CGContextDrawLayerInRect(bitmapContext, CGRectMake(0, 0, renderSize.width, renderSize.height), svg_render_context.renderLayer);
 		CGContextRelease(bitmapContext);
 		CGDataProviderRef dataProvider = CGDataProviderCreateWithData(NULL, imageBuffer, rowBytes * renderSize.height, DataProviderReleasseCallback);
