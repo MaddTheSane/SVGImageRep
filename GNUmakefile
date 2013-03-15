@@ -27,6 +27,7 @@ SVGViewer_LANGUAGES = \
 	SVGViewer/en
 
 SVGViewer_LDFLAGS += `pkg-config --libs libsvg` -lopal -lgnustep-corebase
+ADDITIONAL_TOOL_LIBS = `pkg-config --libs libsvg` -lopal -lgnustep-corebase
 
 BUNDLE_NAME = SVGImageRep
 
