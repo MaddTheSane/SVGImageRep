@@ -955,8 +955,9 @@ static svg_status_t r_set_font_family(void *closure, const char *family)
 {
 	SVGRenderContext *self = (SVGRenderContext *)closure;
 	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
-	
-	self.current.fontFamily = [NSString stringWithUTF8String:family];
+	NSString *tempString = [[NSString alloc] initWithUTF8String:family];
+	self.current.fontFamily = tempString;
+	[tempString release];
 	return SVG_STATUS_SUCCESS;
 }
 
