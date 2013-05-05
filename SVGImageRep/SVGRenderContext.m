@@ -1013,7 +1013,7 @@ static svg_status_t r_set_stroke_dash_array(void *closure, double *dashes, int n
 		memcpy(dash, dashes, sizeof(double) * num_dashes);
 #else
 		size_t i;
-		for (i = 0;i < num_dashes;i++)
+		for (i = 0; i < num_dashes; i++)
 			dash[i] = dashes[i];
 #endif
 		self.current.dash = dash;
