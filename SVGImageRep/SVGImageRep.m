@@ -15,8 +15,6 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 
 #import "SVGRenderContext.h"
 
-#include <svg.h>
-
 @implementation SVGImageRep
 
 + (NSArray *)imageUnfilteredFileTypes
