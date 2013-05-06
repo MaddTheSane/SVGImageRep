@@ -70,14 +70,28 @@
 	[self setNeedsDisplay];
 }
 
-- (void)setSVGFileName:(NSString *)path
+- (void)setSVGFilePath:(NSString *)path
 {
-	[self setData:[NSData dataWithContentsOfFile:path]];
+	if (svgPrivate) {
+		svg_destroy(svgPrivate);
+	}
+	svg_create((svg_t **)&svgPrivate);
+	svg_status_t status = svg_parse(svgPrivate, [path fileSystemRepresentation]);
+	if (status != SVG_STATUS_SUCCESS) {
+		svg_destroy(svgPrivate);
+		svgPrivate = NULL;
+		return;
+	}
+	[self setNeedsDisplay];
 }
 
 - (void)setSVGFileURL:(NSURL *)url
 {
-	[self setData:[NSData dataWithContentsOfURL:url]];
+	if ([url isFileURL]) {
+		[self setSVGFilePath:[url path]];
+	} else {
+		[self setData:[NSData dataWithContentsOfURL:url]];
+	}
 }
 
 @end

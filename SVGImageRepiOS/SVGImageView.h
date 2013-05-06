@@ -12,7 +12,8 @@
 	void *svgPrivate;
 }
 
-- (void)setSVGFileName:(NSString *)path;
+- (void)setData:(NSData *)data;
+- (void)setSVGFilePath:(NSString *)path;
 - (void)setSVGFileURL:(NSURL *)url;
 
 @end
