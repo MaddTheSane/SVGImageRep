@@ -15,12 +15,7 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 
 - (void)prepareRender:(double)a_scale
 {
-	states = [[NSMutableArray alloc] init];
-	current = nil;
-	hasSize = NO;
-	scale = a_scale;
-	size = CGSizeMake(500 * scale, 500 * scale);
-	unsizedRenderLayer = CGLayerCreateWithContext(UIGraphicsGetCurrentContext(), size, NULL);
+	[self prepareRenderWithScale:a_scale renderContext:UIGraphicsGetCurrentContext()];
 }
 
 - (svg_status_t)renderText:(const char *)utf8 atX:(CGFloat)xPos y:(CGFloat)yPos

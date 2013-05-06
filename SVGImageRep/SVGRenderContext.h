@@ -14,6 +14,8 @@
 typedef CGSize NSSize;
 #define NSSizeToCGSize(x) x
 #define NSMakeSize CGSizeMake
+#define NSEqualSizes CGSizeEqualToSize
+#define NSZeroSize CGSizeZero
 #endif
 
 #include <svg.h>
@@ -42,6 +44,7 @@ extern svg_render_engine_t cocoa_svg_engine;
 	
 	SVGRenderState *current;
 	NSMutableArray *states;
+	int theIndent;
 }
 
 @property (readwrite, nonatomic, assign) SVGRenderState *current;

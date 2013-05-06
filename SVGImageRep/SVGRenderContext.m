@@ -28,9 +28,18 @@
 #import <UIKit/UIKit.h>
 #endif
 
+@interface SVGRenderContext ()
+
+- (void)prepareRenderWithScale:(double)a_scale renderContext:(CGContextRef)thecontext;
+
+@property (readwrite, nonatomic) int indent;
+
+@end
+
 @implementation SVGRenderContext
 
 @synthesize size, states, current, scale, renderLayer;
+@synthesize indent = theIndent;
 
 static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient);
 
@@ -57,16 +66,28 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 	return CGgradient;
 }
 
-- (void)prepareRenderFromRenderContext:(SVGRenderContext *)prevContext
+- (void)prepareRenderWithScale:(double)a_scale renderContext:(CGContextRef)theContext
 {
 	states = [[NSMutableArray alloc] init];
+	current = nil;
+	hasSize = NO;
+	scale = a_scale;
+	if (NSEqualSizes(size, NSZeroSize)) {
+		size = NSMakeSize(500 * scale, 500 * scale);
+	}
+	theIndent = 1;
+	unsizedRenderLayer = CGLayerCreateWithContext(theContext, NSSizeToCGSize(size), NULL);
+}
+
+- (void)prepareRenderFromRenderContext:(SVGRenderContext *)prevContext
+{
+	size = prevContext.size;
+	[self prepareRenderWithScale:prevContext.scale renderContext:CGLayerGetContext(prevContext.renderLayer)];
+	
 	current = [prevContext.current copy];
 	[states addObject:current];
 	[current release];
 	hasSize = NO;
-	scale = prevContext.scale;
-	size = prevContext.size;
-	unsizedRenderLayer = CGLayerCreateWithContext(CGLayerGetContext(prevContext.renderLayer), NSSizeToCGSize(size), NULL);
 }
 
 - (void)finishRender
@@ -803,12 +824,10 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 
 @end
 
-static int indent = 1;
-
 static svg_status_t r_begin_group(void *closure, double opacity)
 {
 	SVGRenderContext *self = (SVGRenderContext *)closure;
-	indent += 3;
+	self.indent += 3;
 	
 	return [self beginGroup:opacity];
 }
@@ -817,7 +836,7 @@ static svg_status_t r_begin_element(void *closure)
 {
 	SVGRenderContext *self = (SVGRenderContext *)closure;
 	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
-	indent += 3;
+	self.indent += 3;
 	
 	CGContextSaveGState(CGCtx);
 	SVGRenderState *tempState = [self.current copy];
@@ -832,7 +851,7 @@ static svg_status_t r_end_element(void *closure)
 {
 	SVGRenderContext *self = (SVGRenderContext *)closure;
 	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
-	indent -= 3;
+	self.indent -= 3;
 	
 	CGContextRestoreGState(CGCtx);
 	[self.states removeObjectAtIndex:[self.states count] - 1];
@@ -847,7 +866,7 @@ static svg_status_t r_end_element(void *closure)
 static svg_status_t r_end_group(void *closure, double opacity)
 {
 	SVGRenderContext *self = (SVGRenderContext *)closure;
-	indent -= 3;
+	self.indent -= 3;
 	
 	return [self endGroup:opacity];
 }
