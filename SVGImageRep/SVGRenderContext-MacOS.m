@@ -129,7 +129,7 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 	unichar *chars = malloc(sizeof(unichar) * str8len);
 	CGGlyph *glyphChars = malloc(sizeof(CGGlyph) * str8len);
 	[utfString getCharacters:chars range:NSMakeRange(0, str8len)];
-	CTFontGetGlyphsForCharacters((CTFontRef)f, chars, glyphChars, str8len);
+	CTFontGetGlyphsForCharacters(BRIDGE(CTFontRef, f), chars, glyphChars, str8len);
 
 	switch (tempFill.type)
 	{
@@ -248,7 +248,7 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 
 static svg_status_t r_render_image(void *closure, unsigned char *data, unsigned int data_width, unsigned int data_height, svg_length_t *x, svg_length_t *y, svg_length_t *width, svg_length_t *height)
 { 
-	SVGRenderContext *self = (SVGRenderContext *)closure;
+	SVGRenderContext *self = BRIDGE(SVGRenderContext *, closure);
 	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	{
 		CGFloat cx, cy, cw, ch;
@@ -258,7 +258,7 @@ static svg_status_t r_render_image(void *closure, unsigned char *data, unsigned 
 		ch = [self lengthToPoints:height];
 		NSBitmapImageRep *temprep = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:&data pixelsWide:data_width pixelsHigh:data_height bitsPerSample:8 samplesPerPixel:4 hasAlpha:YES isPlanar:NO colorSpaceName:NSCalibratedRGBColorSpace bytesPerRow:data_width * 4 bitsPerPixel:32];
 		CGContextDrawImage(CGCtx, CGRectMake(cx, cy, cw, ch), [temprep CGImage]);
-		[temprep release];
+		RELEASEOBJ(temprep);
 	}
 	
 	return SVG_STATUS_SUCCESS;

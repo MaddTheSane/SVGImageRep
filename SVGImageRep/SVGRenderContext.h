@@ -18,6 +18,8 @@ typedef CGSize NSSize;
 #define NSZeroSize CGSizeZero
 #endif
 
+#import "ARCBridge.h"
+
 #include <svg.h>
 
 @class SVGRenderState, NSMutableArray;
@@ -34,12 +36,12 @@ extern const svg_render_engine_t cocoa_svg_engine;
 	
 	double scale;
 	
-	SVGRenderState *current;
+	__arcweak SVGRenderState *current;
 	NSMutableArray *states;
 	int theIndent;
 }
 
-@property (readwrite, nonatomic, assign) SVGRenderState *current;
+@property (readwrite, nonatomic, arcweak) SVGRenderState *current;
 @property (readonly, nonatomic) NSMutableArray *states;
 @property (readonly, nonatomic) NSSize size;
 @property (readonly, nonatomic) double scale;

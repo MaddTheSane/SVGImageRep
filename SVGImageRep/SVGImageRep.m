@@ -14,6 +14,7 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 #include <CoreGraphics/CoreGraphics.h>
 
 #import "SVGRenderContext.h"
+#import "ARCBridge.h"
 
 @implementation SVGImageRep
 
@@ -53,7 +54,7 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 
 + (NSImageRep *)imageRepWithData:(NSData *)d
 {
-	return [[[self alloc] initWithData:d] autorelease];
+	return AUTORELEASEOBJ([[self alloc] initWithData:d]);
 }
 
 - (id)initWithData:(NSData *)d
@@ -67,7 +68,7 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 	status = svg_parse_buffer(svg, [d bytes], [d length]);
 	if (status != SVG_STATUS_SUCCESS)
 	{
-		[self autorelease];
+		AUTORELEASEOBJNORETURN(self);
 		return nil;
 	}
 
@@ -97,7 +98,7 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 {
 	svg_destroy(svg);
 	
-	[super dealloc];
+	SUPERDEALLOC;
 }
 
 - (void)finalize
@@ -118,7 +119,7 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 	svg_status_t rendered;
 	@autoreleasepool {
 		[svg_render_context prepareRender:MIN(scaleTrans.a, scaleTrans.d)];
-		rendered = svg_render(svg, &cocoa_svg_engine, svg_render_context);
+		rendered = svg_render(svg, &cocoa_svg_engine, BRIDGE(void*,svg_render_context));
 		[svg_render_context finishRender];
 	}
 
@@ -127,7 +128,7 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 		CGContextDrawLayerInRect(CGCtx, CGRectMake(0, 0, renderSize.width, renderSize.height), svg_render_context.renderLayer);
 		didRender = YES;
 	}
-	[svg_render_context release];
+	RELEASEOBJ(svg_render_context);
 	return didRender;
 }
 

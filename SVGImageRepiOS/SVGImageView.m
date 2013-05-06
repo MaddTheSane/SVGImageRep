@@ -44,34 +44,23 @@
 	svg_status_t rendered;
 	@autoreleasepool {
 		[svg_render_context prepareRender:MIN(xScale, yScale)];
-		rendered = svg_render(svgPrivate, &cocoa_svg_engine, svg_render_context);
+		rendered = svg_render(svgPrivate, &cocoa_svg_engine, (__bridge void *)(svg_render_context));
 		[svg_render_context finishRender];
 	}
 	
 	if (rendered == SVG_STATUS_SUCCESS) {
 		CGContextDrawLayerInRect(CGCtx, rect, svg_render_context.renderLayer);
 	}
-	[svg_render_context release];
-
 }
 
 - (void)dealloc
 {
 	svg_destroy(svgPrivate);
-	
-	[super dealloc];
-}
-
-- (void)finalize
-{
-	svg_destroy(svgPrivate);
-	
-	[super finalize];
 }
 
 - (void)setData:(NSData *)data
 {
-	svg_create(&svgPrivate);
+	svg_create((svg_t **)&svgPrivate);
 	svg_status_t status = svg_parse_buffer(svgPrivate, [data bytes], [data length]);
 	if (status != SVG_STATUS_SUCCESS) {
 		svg_destroy(svgPrivate);

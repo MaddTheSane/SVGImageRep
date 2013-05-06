@@ -61,7 +61,7 @@ extern CGImageRef CreateSVGImageFromDataWithScaleAutoScale(NSData *data, CGFloat
 #endif
 	
 	[svg_render_context prepareRender:scale];
-	svg_status_t rendered = svg_render(svg_test, &cocoa_svg_engine, svg_render_context);
+	svg_status_t rendered = svg_render(svg_test, &cocoa_svg_engine, (__bridge void *)(svg_render_context));
 	[svg_render_context finishRender];
 	
 	if (rendered == SVG_STATUS_SUCCESS) {
@@ -92,8 +92,6 @@ extern CGImageRef CreateSVGImageFromDataWithScaleAutoScale(NSData *data, CGFloat
 #if 0
 	UIGraphicsEndImageContext();
 #endif
-	
-	[svg_render_context release];
 	
 	svg_destroy(svg_test);
 	

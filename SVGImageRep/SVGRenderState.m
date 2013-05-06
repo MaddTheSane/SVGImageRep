@@ -8,6 +8,7 @@
 
 #import "SVGRenderState.h"
 #import <Foundation/NSString.h>
+#import "ARCBridge.h"
 
 @implementation SVGRenderState
 
@@ -48,9 +49,9 @@
 {
 	if (dash)
 		free(dash);
-	[fontFamily release];
+	RELEASEOBJ(fontFamily);
 	
-	[super dealloc];
+	SUPERDEALLOC;
 }
 
 - (void)finalize

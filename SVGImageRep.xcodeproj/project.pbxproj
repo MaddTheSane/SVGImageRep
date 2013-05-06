@@ -541,6 +541,7 @@
 		553713D5151BD40500F8848A /* pngwtran.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pngwtran.c; sourceTree = "<group>"; };
 		553713D6151BD40500F8848A /* pngwutil.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pngwutil.c; sourceTree = "<group>"; };
 		5537146D151BD54A00F8848A /* pnglibconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pnglibconf.h; sourceTree = "<group>"; };
+		5540E661173827A2004029EF /* ARCBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ARCBridge.h; sourceTree = "<group>"; };
 		5560E6F6152B6F5C008FF127 /* SVGIRTester.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SVGIRTester.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5560E6FB152B6F5C008FF127 /* SVGIRTester-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "SVGIRTester-Info.plist"; sourceTree = "<group>"; };
 		5560E6FD152B6F5C008FF127 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -1038,6 +1039,7 @@
 		55AFA499151AA3BC00B5351D /* SVGImageRep */ = {
 			isa = PBXGroup;
 			children = (
+				5540E661173827A2004029EF /* ARCBridge.h */,
 				55AFA529151AABB700B5351D /* SVGImageRep.m */,
 				553711A8151BCDB900F8848A /* SVGImageRep.h */,
 				55F0FACB1520E9F8006426B8 /* SVGRenderContext.m */,
@@ -2095,8 +2097,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
 				DSTROOT = /tmp/SVGImageRepiOS.dst;
-				GCC_ENABLE_OBJC_GC = supported;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SVGImageRepiOS/SVGImageRepiOS-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
@@ -2116,8 +2118,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
 				DSTROOT = /tmp/SVGImageRepiOS.dst;
-				GCC_ENABLE_OBJC_GC = supported;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SVGImageRepiOS/SVGImageRepiOS-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
@@ -2147,6 +2149,7 @@
 					"\"${SRCROOT}\"/jpeg/jpeg-8d",
 					"\"${SRCROOT}\"/png/libpng-1.5.9",
 				);
+				MACOSX_DEPLOYMENT_TARGET = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 			};
@@ -2165,6 +2168,7 @@
 					"\"${SRCROOT}\"/jpeg/jpeg-8d",
 					"\"${SRCROOT}\"/png/libpng-1.5.9",
 				);
+				MACOSX_DEPLOYMENT_TARGET = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 			};
@@ -2256,7 +2260,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 			};
@@ -2280,7 +2284,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				SDKROOT = macosx;
 			};
 			name = Release;
@@ -2288,9 +2292,11 @@
 		55AFA4A3151AA3BC00B5351D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				"CLANG_ENABLE_OBJC_ARC[arch=x86_64]" = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = /System/Library/Frameworks/ApplicationServices.framework/Frameworks;
 				GCC_ENABLE_OBJC_GC = supported;
+				"GCC_ENABLE_OBJC_GC[arch=x86_64]" = unsupported;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SVGImageRep/SVGImageRep-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
@@ -2307,9 +2313,11 @@
 		55AFA4A4151AA3BC00B5351D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				"CLANG_ENABLE_OBJC_ARC[arch=x86_64]" = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = /System/Library/Frameworks/ApplicationServices.framework/Frameworks;
 				GCC_ENABLE_OBJC_GC = supported;
+				"GCC_ENABLE_OBJC_GC[arch=x86_64]" = unsupported;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SVGImageRep/SVGImageRep-Prefix.pch";
 				HEADER_SEARCH_PATHS = (

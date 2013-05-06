@@ -84,15 +84,15 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 	size = prevContext.size;
 	[self prepareRenderWithScale:prevContext.scale renderContext:CGLayerGetContext(prevContext.renderLayer)];
 	
-	current = [prevContext.current copy];
-	[states addObject:current];
-	[current release];
+	[states addObject:[prevContext.current copy]];
+	current = [states objectAtIndex:[states count] - 1];
+	RELEASEOBJ(current);
 	hasSize = NO;
 }
 
 - (void)finishRender
 {
-	[states release]; states = nil;
+	RELEASEOBJ(states); states = nil;
 	hasSize = NO;
 	CGLayerRelease(unsizedRenderLayer);
 	unsizedRenderLayer = NULL;
@@ -102,7 +102,7 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 {
 	CGLayerRelease(renderLayer);
 	
-	[super dealloc];
+	SUPERDEALLOC;
 }
 
 - (void)finalize
@@ -492,7 +492,7 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 			svg_pattern_t *pattern = svg_element_pattern(tempElement);
 			[patternRender prepareRenderFromRenderContext:self];
 			[patternRender setViewportDimensionWidth:&pattern->width height:&pattern->height];
-			svg_element_render(tempElement, &cocoa_svg_engine, patternRender);
+			svg_element_render(tempElement, &cocoa_svg_engine, BRIDGE(void*,patternRender));
 			[patternRender finishRender];
 			CGFloat w, h, x, y;
 			w = [self lengthToPoints:&pattern->width];
@@ -513,7 +513,7 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 				} while (imgSizeX > (x + xIter * w));
 			} while (imgSizeY > (y + yIter * h));
 			//CGContextDrawLayerInRect(tempCtx, CGRectMake(x, y, w, h), patternRender.renderLayer);
-			[patternRender release];
+			RELEASEOBJ(patternRender);
 		}
 			CGContextRestoreGState(tempCtx);
 			break;
@@ -600,6 +600,7 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 - (svg_status_t)beginGroup:(double)opacity
 {
 	CGContextRef tempCtx = CGLayerGetContext(unsizedRenderLayer);
+	SVGRenderState *newCurrent = nil;
 	if (current)
 	{
 		if (!hasSize)
@@ -609,17 +610,18 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 		}
 		SVGRenderState *oldCurrent = current;
 		current = nil;
-		current = [oldCurrent copy];
+		newCurrent = [oldCurrent copy];
 		
 		CGContextSaveGState(tempCtx);
 	}
 	else
 	{
 		CGContextSaveGState(tempCtx);
-		current = [[SVGRenderState alloc] init];
+		newCurrent = [[SVGRenderState alloc] init];
 	}
-	[states addObject:current];
-	[current release];
+	[states addObject:newCurrent];
+	current = newCurrent;
+	RELEASEOBJ(current);
 	
 	return SVG_STATUS_SUCCESS;
 }
@@ -732,7 +734,7 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 			svg_pattern_t *pattern = svg_element_pattern(tempElement);
 			[patternRender prepareRenderFromRenderContext:self];
 			[patternRender setViewportDimensionWidth:&pattern->width height:&pattern->height];
-			svg_element_render(tempElement, &cocoa_svg_engine, patternRender);
+			svg_element_render(tempElement, &cocoa_svg_engine, BRIDGE(void*, patternRender));
 			[patternRender finishRender];
 			CGFloat w, h, x, y;
 			w = [self lengthToPoints:&pattern->width];
@@ -753,7 +755,7 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 				} while (imgSizeX > (x + xIter * w));
 			} while (imgSizeY > (y + yIter * h));
 			//CGContextDrawLayerInRect(tempCtx, CGRectMake(x, y, w, h), patternRender.renderLayer);
-			[patternRender release];
+			RELEASEOBJ(patternRender);
 		}
 			CGContextRestoreGState(tempCtx);
 			break;
@@ -811,7 +813,7 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 
 static svg_status_t r_begin_group(void *closure, double opacity)
 {
-	SVGRenderContext *self = (SVGRenderContext *)closure;
+	SVGRenderContext *self = BRIDGE(SVGRenderContext *, closure);
 	self.indent += 3;
 	
 	return [self beginGroup:opacity];
@@ -819,7 +821,7 @@ static svg_status_t r_begin_group(void *closure, double opacity)
 
 static svg_status_t r_begin_element(void *closure)
 {
-	SVGRenderContext *self = (SVGRenderContext *)closure;
+	SVGRenderContext *self = BRIDGE(SVGRenderContext *, closure);
 	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	self.indent += 3;
 	
@@ -827,14 +829,14 @@ static svg_status_t r_begin_element(void *closure)
 	SVGRenderState *tempState = [self.current copy];
 	self.current = tempState;
 	[self.states addObject:self.current];
-	[tempState release];
+	RELEASEOBJ(tempState);
 	
 	return SVG_STATUS_SUCCESS;
 }
 
 static svg_status_t r_end_element(void *closure)
 {
-	SVGRenderContext *self = (SVGRenderContext *)closure;
+	SVGRenderContext *self = BRIDGE(SVGRenderContext *, closure);
 	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	self.indent -= 3;
 	
@@ -850,7 +852,7 @@ static svg_status_t r_end_element(void *closure)
 
 static svg_status_t r_end_group(void *closure, double opacity)
 {
-	SVGRenderContext *self = (SVGRenderContext *)closure;
+	SVGRenderContext *self = BRIDGE(SVGRenderContext *, closure);
 	self.indent -= 3;
 	
 	return [self endGroup:opacity];
@@ -859,7 +861,7 @@ static svg_status_t r_end_group(void *closure, double opacity)
 
 static svg_status_t r_move_to(void *closure, double x, double y)
 {
-	SVGRenderContext *self = (SVGRenderContext *)closure;
+	SVGRenderContext *self = BRIDGE(SVGRenderContext *, closure);
 	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
 	CGContextMoveToPoint(CGCtx, x, y);
@@ -868,7 +870,7 @@ static svg_status_t r_move_to(void *closure, double x, double y)
 
 static svg_status_t r_line_to(void *closure, double x, double y)
 {
-	SVGRenderContext *self = (SVGRenderContext *)closure;
+	SVGRenderContext *self = BRIDGE(SVGRenderContext *, closure);
 	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
 	CGContextAddLineToPoint(CGCtx, x, y);
@@ -877,7 +879,7 @@ static svg_status_t r_line_to(void *closure, double x, double y)
 
 static svg_status_t r_curve_to(void *closure, double x1, double y1, double x2, double y2, double x3, double y3)
 {
-	SVGRenderContext *self = (SVGRenderContext *)closure;
+	SVGRenderContext *self = BRIDGE(SVGRenderContext *, closure);
 	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
 	CGContextAddCurveToPoint(CGCtx, x1, y1, x2, y2, x3, y3);
@@ -886,7 +888,7 @@ static svg_status_t r_curve_to(void *closure, double x1, double y1, double x2, d
 
 static svg_status_t r_quadratic_curve_to(void *closure, double x1, double y1, double x2, double y2)
 {
-	SVGRenderContext *self = (SVGRenderContext *)closure;
+	SVGRenderContext *self = BRIDGE(SVGRenderContext *, closure);
 	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
 #ifndef DONTUSECGQUADCURVE
@@ -906,7 +908,7 @@ static svg_status_t r_quadratic_curve_to(void *closure, double x1, double y1, do
 
 static svg_status_t r_arc_to(void *closure, double rx, double ry, double x_axis_rotation, int large_arc_flag, int sweep_flag, double x, double y)
 {
-	SVGRenderContext *self = (SVGRenderContext *)closure;
+	SVGRenderContext *self = BRIDGE(SVGRenderContext *, closure);
 	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	[self arcTo: rx
 			   : ry
@@ -920,7 +922,7 @@ static svg_status_t r_arc_to(void *closure, double rx, double ry, double x_axis_
 
 static svg_status_t r_close_path(void *closure)
 {
-	SVGRenderContext *self = (SVGRenderContext *)closure;
+	SVGRenderContext *self = BRIDGE(SVGRenderContext *, closure);
 	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
 	CGContextClosePath(CGCtx);
@@ -930,7 +932,7 @@ static svg_status_t r_close_path(void *closure)
 
 static svg_status_t r_set_color(void *closure, const svg_color_t *color)
 {
-	SVGRenderContext *self = (SVGRenderContext *)closure;
+	SVGRenderContext *self = BRIDGE(SVGRenderContext *, closure);
 	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
 	self.current.color = *color;
@@ -939,7 +941,7 @@ static svg_status_t r_set_color(void *closure, const svg_color_t *color)
 
 static svg_status_t r_set_fill_opacity(void *closure, double opacity)
 {
-	SVGRenderContext *self = (SVGRenderContext *)closure;
+	SVGRenderContext *self = BRIDGE(SVGRenderContext *, closure);
 	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
 	self.current.fillOpacity = opacity;
@@ -948,7 +950,7 @@ static svg_status_t r_set_fill_opacity(void *closure, double opacity)
 
 static svg_status_t r_set_fill_paint(void *closure, const svg_paint_t *paint)
 {
-	SVGRenderContext *self = (SVGRenderContext *)closure;
+	SVGRenderContext *self = BRIDGE(SVGRenderContext *, closure);
 	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
 	self.current.fillPaint = *paint;
@@ -957,7 +959,7 @@ static svg_status_t r_set_fill_paint(void *closure, const svg_paint_t *paint)
 
 static svg_status_t r_set_fill_rule(void *closure, svg_fill_rule_t fill_rule)
 {
-	SVGRenderContext *self = (SVGRenderContext *)closure;
+	SVGRenderContext *self = BRIDGE(SVGRenderContext *, closure);
 	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
 	if (fill_rule == SVG_FILL_RULE_NONZERO)
@@ -969,17 +971,17 @@ static svg_status_t r_set_fill_rule(void *closure, svg_fill_rule_t fill_rule)
 
 static svg_status_t r_set_font_family(void *closure, const char *family)
 {
-	SVGRenderContext *self = (SVGRenderContext *)closure;
+	SVGRenderContext *self = BRIDGE(SVGRenderContext *, closure);
 	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	NSString *tempString = [[NSString alloc] initWithUTF8String:family];
 	self.current.fontFamily = tempString;
-	[tempString release];
+	RELEASEOBJ(tempString);
 	return SVG_STATUS_SUCCESS;
 }
 
 static svg_status_t r_set_font_size(void *closure, double size)
 {
-	SVGRenderContext *self = (SVGRenderContext *)closure;
+	SVGRenderContext *self = BRIDGE(SVGRenderContext *, closure);
 	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
 	self.current.fontSize = size;
@@ -988,7 +990,7 @@ static svg_status_t r_set_font_size(void *closure, double size)
 
 static svg_status_t r_set_font_style(void *closure, svg_font_style_t style)
 {
-	SVGRenderContext *self = (SVGRenderContext *)closure;
+	SVGRenderContext *self = BRIDGE(SVGRenderContext *, closure);
 	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
 	self.current.fontStyle = style;
@@ -997,7 +999,7 @@ static svg_status_t r_set_font_style(void *closure, svg_font_style_t style)
 
 static svg_status_t r_set_font_weight(void *closure, unsigned int weight)
 {
-	SVGRenderContext *self = (SVGRenderContext *)closure;
+	SVGRenderContext *self = BRIDGE(SVGRenderContext *, closure);
 	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
 	self.current.fontWeight = weight;
@@ -1006,7 +1008,7 @@ static svg_status_t r_set_font_weight(void *closure, unsigned int weight)
 
 static svg_status_t r_set_opacity(void *closure, double opacity)
 {
-	SVGRenderContext *self = (SVGRenderContext *)closure;
+	SVGRenderContext *self = BRIDGE(SVGRenderContext *, closure);
 	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
 	self.current.opacity = opacity;
@@ -1015,7 +1017,7 @@ static svg_status_t r_set_opacity(void *closure, double opacity)
 
 static svg_status_t r_set_stroke_dash_array(void *closure, double *dashes, int num_dashes)
 {
-	SVGRenderContext *self = (SVGRenderContext *)closure;
+	SVGRenderContext *self = BRIDGE(SVGRenderContext *, closure);
 	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
 	if (self.current.dash)
@@ -1045,7 +1047,7 @@ static svg_status_t r_set_stroke_dash_array(void *closure, double *dashes, int n
 
 static svg_status_t r_set_stroke_dash_offset(void *closure, svg_length_t *offset)
 {
-	SVGRenderContext *self = (SVGRenderContext *)closure;
+	SVGRenderContext *self = BRIDGE(SVGRenderContext *, closure);
 	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
 	self.current.dashOffset = [self lengthToPoints:offset];
@@ -1055,7 +1057,7 @@ static svg_status_t r_set_stroke_dash_offset(void *closure, svg_length_t *offset
 
 static svg_status_t r_set_stroke_line_cap(void *closure, svg_stroke_line_cap_t line_cap)
 {
-	SVGRenderContext *self = (SVGRenderContext *)closure;
+	SVGRenderContext *self = BRIDGE(SVGRenderContext *, closure);
 	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	CGLineCap i;
 
@@ -1079,7 +1081,7 @@ static svg_status_t r_set_stroke_line_cap(void *closure, svg_stroke_line_cap_t l
 
 static svg_status_t r_set_stroke_line_join(void *closure, svg_stroke_line_join_t line_join)
 {
-	SVGRenderContext *self = (SVGRenderContext *)closure;
+	SVGRenderContext *self = BRIDGE(SVGRenderContext *, closure);
 	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	CGLineJoin i;
 
@@ -1103,7 +1105,7 @@ static svg_status_t r_set_stroke_line_join(void *closure, svg_stroke_line_join_t
 
 static svg_status_t r_set_stroke_miter_limit(void *closure, double miter_limit)
 {
-	SVGRenderContext *self = (SVGRenderContext *)closure;
+	SVGRenderContext *self = BRIDGE(SVGRenderContext *, closure);
 	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
 	CGContextSetMiterLimit(CGCtx, miter_limit);
@@ -1112,7 +1114,7 @@ static svg_status_t r_set_stroke_miter_limit(void *closure, double miter_limit)
 
 static svg_status_t r_set_stroke_opacity(void *closure, double opacity)
 {
-	SVGRenderContext *self = (SVGRenderContext *)closure;
+	SVGRenderContext *self = BRIDGE(SVGRenderContext *, closure);
 	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
 	self.current.strokeOpacity = opacity;
@@ -1121,7 +1123,7 @@ static svg_status_t r_set_stroke_opacity(void *closure, double opacity)
 
 static svg_status_t r_set_stroke_paint(void *closure, const svg_paint_t *paint)
 {
-	SVGRenderContext *self = (SVGRenderContext *)closure;
+	SVGRenderContext *self = BRIDGE(SVGRenderContext *, closure);
 	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
 	self.current.strokePaint = *paint;
@@ -1130,7 +1132,7 @@ static svg_status_t r_set_stroke_paint(void *closure, const svg_paint_t *paint)
 
 static svg_status_t r_set_stroke_width(void *closure, svg_length_t *width)
 {
-	SVGRenderContext *self = (SVGRenderContext *)closure;
+	SVGRenderContext *self = BRIDGE(SVGRenderContext *, closure);
 	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
 	self.current.strokeWidth = [self lengthToPoints:width];
@@ -1140,7 +1142,7 @@ static svg_status_t r_set_stroke_width(void *closure, svg_length_t *width)
 
 static svg_status_t r_set_text_anchor(void *closure, svg_text_anchor_t anchor) 
 {
-	SVGRenderContext *self = (SVGRenderContext *)closure;
+	SVGRenderContext *self = BRIDGE(SVGRenderContext *, closure);
 	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
 	self.current.textAnchor = anchor;
@@ -1149,7 +1151,7 @@ static svg_status_t r_set_text_anchor(void *closure, svg_text_anchor_t anchor)
 
 static svg_status_t r_transform(void *closure, double a, double b, double c, double d, double e, double f)
 {
-	SVGRenderContext *self = (SVGRenderContext *)closure;
+	SVGRenderContext *self = BRIDGE(SVGRenderContext *, closure);
 	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
 	CGContextConcatCTM(CGCtx, CGAffineTransformMake(a, b, c, d, e, f));
@@ -1158,7 +1160,7 @@ static svg_status_t r_transform(void *closure, double a, double b, double c, dou
 
 static svg_status_t r_apply_viewbox(void *closure, svg_view_box_t viewbox, svg_length_t *width, svg_length_t *height)
 {
-	SVGRenderContext *self = (SVGRenderContext *)closure;
+	SVGRenderContext *self = BRIDGE(SVGRenderContext *, closure);
 	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
 	return [self applyViewbox: viewbox withWidth:width height:height];
@@ -1166,7 +1168,7 @@ static svg_status_t r_apply_viewbox(void *closure, svg_view_box_t viewbox, svg_l
 
 static svg_status_t r_set_viewport_dimension(void *closure, svg_length_t *width, svg_length_t *height)
 {
-	SVGRenderContext *self = (SVGRenderContext *)closure;
+	SVGRenderContext *self = BRIDGE(SVGRenderContext *, closure);
 	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
 	return [self setViewportDimensionWidth:width height:height];
@@ -1174,7 +1176,7 @@ static svg_status_t r_set_viewport_dimension(void *closure, svg_length_t *width,
 
 static svg_status_t r_render_line(void *closure, svg_length_t *x1, svg_length_t *y1, svg_length_t *x2, svg_length_t *y2)
 {
-	SVGRenderContext *self = (SVGRenderContext *)closure;
+	SVGRenderContext *self = BRIDGE(SVGRenderContext *, closure);
 	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
 	CGContextMoveToPoint(CGCtx, [self lengthToPoints:x1], [self lengthToPoints:y1]);
@@ -1185,7 +1187,7 @@ static svg_status_t r_render_line(void *closure, svg_length_t *x1, svg_length_t 
 
 static svg_status_t r_render_path(void *closure)
 {
-	SVGRenderContext *self = (SVGRenderContext *)closure;
+	SVGRenderContext *self = BRIDGE(SVGRenderContext *, closure);
 	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
 	return [self renderPath];
@@ -1193,7 +1195,7 @@ static svg_status_t r_render_path(void *closure)
 
 static svg_status_t r_render_ellipse(void *closure, svg_length_t *cx, svg_length_t *cy, svg_length_t *rx, svg_length_t *ry)
 {
-	SVGRenderContext *self = (SVGRenderContext *)closure;
+	SVGRenderContext *self = BRIDGE(SVGRenderContext *, closure);
 	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
 	return [self renderEllipseWithCx:cx cy:cy rx:rx ry:ry];
@@ -1201,7 +1203,7 @@ static svg_status_t r_render_ellipse(void *closure, svg_length_t *cx, svg_length
 
 static svg_status_t r_render_rect(void *closure, svg_length_t *x, svg_length_t *y, svg_length_t *width, svg_length_t *height, svg_length_t *rx, svg_length_t *ry)
 {
-	SVGRenderContext *self = (SVGRenderContext *)closure;
+	SVGRenderContext *self = BRIDGE(SVGRenderContext *, closure);
 	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
 	return [self renderRectWithX:x y:y width:width height:height rx:rx ry:ry];
@@ -1209,7 +1211,7 @@ static svg_status_t r_render_rect(void *closure, svg_length_t *x, svg_length_t *
 
 static svg_status_t r_render_text(void *closure, svg_length_t *x, svg_length_t *y, const char *utf8)
 {
-	SVGRenderContext *self = (SVGRenderContext *)closure;
+	SVGRenderContext *self = BRIDGE(SVGRenderContext *, closure);
 	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 
 	@autoreleasepool {
