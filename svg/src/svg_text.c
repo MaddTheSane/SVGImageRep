@@ -67,8 +67,8 @@ _svg_text_deinit (svg_text_t *text)
 
 svg_status_t
 _svg_text_append_chars (svg_text_t	*text,
-			const char	*chars,
-			int		len)
+						const char	*chars,
+						size_t		len)
 {
     char *new_chars;
 

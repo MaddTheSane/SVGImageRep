@@ -146,7 +146,7 @@ _svg_parser_parse_pattern (svg_parser_t	*parser,
 static svg_status_t
 _svg_parser_parse_text_characters (svg_parser_t		*parser,
 				   const char	*ch,
-				   int			len);
+				   size_t			len);
 
 typedef struct svg_parser_map {
     char		*name;
@@ -770,8 +770,8 @@ _svg_parser_parse_pattern (svg_parser_t		*parser,
 
 static svg_status_t
 _svg_parser_parse_text_characters (svg_parser_t		*parser,
-				   const char	*ch,
-				   int			len)
+								   const char		*ch,
+								   size_t			len)
 {
     svg_status_t status;
     svg_text_t *text;

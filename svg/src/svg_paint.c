@@ -38,7 +38,7 @@ _svg_paint_init (svg_paint_t *paint, svg_t *svg, const char *str)
     if (strncmp (str, "url(#", 5) == 0 && strchr (str, ')')) {
     	svg_element_t	*element = NULL;
     	const char	*end = strchr (str, ')');
-    	int 		length = end - (str + 5);
+    	long 		length = end - (str + 5);
     	char		*id = malloc (length+1);
     	if (!id)
 			return SVG_STATUS_NO_MEMORY;

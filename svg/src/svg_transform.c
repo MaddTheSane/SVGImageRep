@@ -257,7 +257,7 @@ _svg_transform_render (svg_transform_t		*transform,
 extern svg_status_t
 _svg_transform_parse_str (svg_transform_t *transform, const char *str)
 {
-    int idx;
+    intptr_t idx;
     svg_status_t status;
     char keyword[32];
     double args[6];

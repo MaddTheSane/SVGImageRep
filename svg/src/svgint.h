@@ -331,7 +331,7 @@ typedef svg_status_t (svg_parser_parse_element_t)(svg_parser_t	*parser,
 
 typedef svg_status_t (svg_parser_parse_characters_t) (svg_parser_t	*parser,
 						      const char	*ch,
-						      int		len);
+						      size_t		len);
 
 typedef struct svg_parser_cb {
     svg_parser_parse_element_t		*parse_element;
@@ -859,7 +859,7 @@ _svg_text_deinit (svg_text_t *text);
 svg_status_t
 _svg_text_append_chars (svg_text_t	*text,
 			const char	*chars,
-			int		len);
+			size_t		len);
 
 svg_status_t
 _svg_text_render (svg_text_t		*text,

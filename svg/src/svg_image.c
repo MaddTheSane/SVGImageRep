@@ -215,7 +215,7 @@ _svg_image_read_png (const char		*filename,
     FILE *file;
     static const int PNG_SIG_SIZE = 8;
     unsigned char png_sig[PNG_SIG_SIZE];
-    int sig_bytes;
+    size_t sig_bytes;
     png_struct *png;
     png_info *info;
     png_uint_32 png_width, png_height;

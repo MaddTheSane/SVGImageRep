@@ -101,7 +101,7 @@ _svg_ascii_strtod (const char  *nptr,
 	double val;
 	struct lconv *locale_data;
 	const char *decimal_point;
-	int decimal_point_len;
+	long decimal_point_len;
 	const char *p, *decimal_point_pos;
 	const char *end = NULL; /* Silence gcc */
 
