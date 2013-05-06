@@ -633,7 +633,7 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 - (svg_status_t)endGroup:(double)opacity
 {
 	CGContextRef tempCtx;
-	if (theIndent == 4) {
+	if (theIndent == 1) {
 		tempCtx= CGLayerGetContext(unsizedRenderLayer);
 	} else {
 		tempCtx = CGLayerGetContext(renderLayer);
