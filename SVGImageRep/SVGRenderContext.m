@@ -375,6 +375,13 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 						  : (svg_length_t *)width : (svg_length_t *)height
 						  : (svg_length_t *)rx : (svg_length_t *)ry
 {
+	return [self renderRectWithX:x y:y width:width height:height rx:rx ry:ry];
+}
+
+- (svg_status_t)renderRectWithX: (svg_length_t *)x y: (svg_length_t *)y
+						  width: (svg_length_t *)width height: (svg_length_t *)height
+							 rx: (svg_length_t *)rx ry: (svg_length_t *)ry;
+{
 	double cx, cy, cw, ch;
 	double crx, cry;
 	

@@ -18,6 +18,14 @@ typedef CGSize NSSize;
 
 #include <svg.h>
 
+#ifndef DEPRECATED_ATTRIBUTE
+#if defined(__GNUC__) && ((__GNUC__ >= 4) || ((__GNUC__ == 3) && (__GNUC_MINOR__ >= 1)))
+#define DEPRECATED_ATTRIBUTE __attribute__((deprecated))
+#else
+#define DEPRECATED_ATTRIBUTE
+#endif
+#endif
+
 @class SVGRenderState, NSMutableArray;
 
 extern svg_render_engine_t cocoa_svg_engine;
@@ -61,16 +69,20 @@ extern svg_render_engine_t cocoa_svg_engine;
 - (svg_status_t)beginGroup: (double)opacity;
 - (svg_status_t)endGroup: (double)opacity;
 
-- (svg_status_t)setViewportDimension: (svg_length_t *)width :(svg_length_t *)height;
+- (svg_status_t)setViewportDimension: (svg_length_t *)width :(svg_length_t *)height DEPRECATED_ATTRIBUTE;
 - (svg_status_t)applyViewbox: (svg_view_box_t)viewbox
-							: (svg_length_t *)width : (svg_length_t *)height;
+							: (svg_length_t *)width : (svg_length_t *)height DEPRECATED_ATTRIBUTE;
 
 - (svg_status_t)renderRect: (svg_length_t *)x : (svg_length_t *)y
 						  : (svg_length_t *)width : (svg_length_t *)height
-						  : (svg_length_t *)rx : (svg_length_t *)ry;
+						  : (svg_length_t *)rx : (svg_length_t *)ry DEPRECATED_ATTRIBUTE;
+- (svg_status_t)renderRectWithX: (svg_length_t *)x y: (svg_length_t *)y
+						  width: (svg_length_t *)width height: (svg_length_t *)height
+						  rx: (svg_length_t *)rx ry: (svg_length_t *)ry;
+
 - (svg_status_t)renderPath;
 - (svg_status_t)renderText:(const char *)utf8 atX:(CGFloat)xPos y:(CGFloat)yPos;
 - (svg_status_t)renderEllipse: (svg_length_t *)cx : (svg_length_t *)cy
-							 : (svg_length_t *)rx : (svg_length_t *)ry;
+							 : (svg_length_t *)rx : (svg_length_t *)ry DEPRECATED_ATTRIBUTE;
 
 @end
