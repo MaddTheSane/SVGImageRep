@@ -77,6 +77,8 @@ extern const svg_render_engine_t cocoa_svg_engine;
 
 - (svg_status_t)applyViewbox: (svg_view_box_t)viewbox
 							: (svg_length_t *)width : (svg_length_t *)height DEPRECATED_ATTRIBUTE;
+- (svg_status_t)applyViewbox: (svg_view_box_t)viewbox withWidth: (svg_length_t *)width height: (svg_length_t *)height;
+
 
 - (svg_status_t)renderRect: (svg_length_t *)x : (svg_length_t *)y
 						  : (svg_length_t *)width : (svg_length_t *)height

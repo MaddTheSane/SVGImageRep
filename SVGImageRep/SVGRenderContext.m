@@ -682,6 +682,10 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 - (svg_status_t)applyViewbox: (svg_view_box_t)viewbox
 							: (svg_length_t *)width : (svg_length_t *)height
 {
+	return [self applyViewbox:viewbox withWidth:width height:height];
+}
+- (svg_status_t)applyViewbox: (svg_view_box_t)viewbox withWidth: (svg_length_t *)width height: (svg_length_t *)height
+{
 	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
 	
 	double w,h;
@@ -1176,7 +1180,7 @@ static svg_status_t r_apply_viewbox(void *closure, svg_view_box_t viewbox, svg_l
 	SVGRenderContext *self = (SVGRenderContext *)closure;
 	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
-	return [self applyViewbox: viewbox :width :height];
+	return [self applyViewbox: viewbox withWidth:width height:height];
 }
 
 static svg_status_t r_set_viewport_dimension(void *closure, svg_length_t *width, svg_length_t *height)
