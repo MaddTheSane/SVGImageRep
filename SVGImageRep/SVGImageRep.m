@@ -118,12 +118,10 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 	CGAffineTransform scaleTrans = CGContextGetCTM(CGCtx);
 
 	svg_status_t rendered;
-	{
-		NSAutoreleasePool *pool = [NSAutoreleasePool new];
+	@autoreleasepool {
 		[svg_render_context prepareRender:MIN(scaleTrans.a, scaleTrans.d)];
 		rendered = svg_render(svg, &cocoa_svg_engine, svg_render_context);
 		[svg_render_context finishRender];
-		[pool drain];
 	}
 
 	if (rendered == SVG_STATUS_SUCCESS) {
