@@ -392,13 +392,6 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
     }
 }
 
-- (svg_status_t)renderRect:(svg_length_t *)x : (svg_length_t *)y
-						  : (svg_length_t *)width : (svg_length_t *)height
-						  : (svg_length_t *)rx : (svg_length_t *)ry
-{
-	return [self renderRectWithX:x y:y width:width height:height rx:rx ry:ry];
-}
-
 - (svg_status_t)renderRectWithX: (svg_length_t *)x y: (svg_length_t *)y
 						  width: (svg_length_t *)width height: (svg_length_t *)height
 							 rx: (svg_length_t *)rx ry: (svg_length_t *)ry;
@@ -577,8 +570,7 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 	return SVG_STATUS_SUCCESS;
 }
 
-- (svg_status_t)renderEllipse:(svg_length_t *)lcx : (svg_length_t *)lcy
-							 : (svg_length_t *)lrx : (svg_length_t *)lry
+- (svg_status_t)renderEllipseWithCx:(svg_length_t *)lcx cy:(svg_length_t *)lcy rx:(svg_length_t *)lrx ry:(svg_length_t *)lry;
 {
 	double cx, cy, rx, ry;
 	
@@ -647,12 +639,6 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 	return SVG_STATUS_SUCCESS;
 }
 
-
-- (svg_status_t)setViewportDimension:(svg_length_t *)width :(svg_length_t *)height
-{
-	return [self setViewportDimensionWidth:width height:height];
-}
-
 - (svg_status_t)setViewportDimensionWidth:(svg_length_t *)width height:(svg_length_t *)height
 {
 	CGFloat w, h;
@@ -679,12 +665,7 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 	return SVG_STATUS_SUCCESS;
 }
 
-- (svg_status_t)applyViewbox: (svg_view_box_t)viewbox
-							: (svg_length_t *)width : (svg_length_t *)height
-{
-	return [self applyViewbox:viewbox withWidth:width height:height];
-}
-- (svg_status_t)applyViewbox: (svg_view_box_t)viewbox withWidth: (svg_length_t *)width height: (svg_length_t *)height
+- (svg_status_t)applyViewbox:(svg_view_box_t)viewbox withWidth:(svg_length_t *)width height:(svg_length_t *)height
 {
 	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
 	
@@ -1048,7 +1029,7 @@ static svg_status_t r_set_stroke_dash_array(void *closure, double *dashes, int n
 #if CGFLOAT_IS_DOUBLE
 		memcpy(dash, dashes, sizeof(double) * num_dashes);
 #else
-		size_t i;
+		int i;
 		for (i = 0; i < num_dashes; i++)
 			dash[i] = dashes[i];
 #endif
@@ -1215,7 +1196,7 @@ static svg_status_t r_render_ellipse(void *closure, svg_length_t *cx, svg_length
 	SVGRenderContext *self = (SVGRenderContext *)closure;
 	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
-	return [self renderEllipse: cx : cy : rx : ry];
+	return [self renderEllipseWithCx:cx cy:cy rx:rx ry:ry];
 }
 
 static svg_status_t r_render_rect(void *closure, svg_length_t *x, svg_length_t *y, svg_length_t *width, svg_length_t *height, svg_length_t *rx, svg_length_t *ry)
