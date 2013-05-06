@@ -56,42 +56,26 @@ extern CGImageRef CreateSVGImageFromDataWithScaleAutoScale(NSData *data, CGFloat
 	
 	SVGRenderContext *svg_render_context = [[SVGRenderContext alloc] init];
 	
-#if 0
-	UIGraphicsBeginImageContextWithOptions(GetSVGImageSizeFromData(data), NO, autoscale ? 0.0 : 1.0);
-#endif
+	svg_status_t rendered = 0;
 	
-	[svg_render_context prepareRender:scale];
-	svg_status_t rendered = svg_render(svg_test, &cocoa_svg_engine, (__bridge void *)(svg_render_context));
-	[svg_render_context finishRender];
+	@autoreleasepool {
+		[svg_render_context prepareRender:scale];
+		rendered = svg_render(svg_test, &cocoa_svg_engine, (__bridge void *)svg_render_context);
+		[svg_render_context finishRender];
+	}
 	
 	if (rendered == SVG_STATUS_SUCCESS) {
 		CGSize renderSize = [svg_render_context size];
-#if 1
 		unsigned rowBytes = 4 * renderSize.width;
-		void *imageBuffer = malloc(rowBytes * renderSize.height);
-		static CGColorSpaceRef defaultSpace = NULL;
-		if (defaultSpace == NULL) {
-			defaultSpace = CGColorSpaceCreateDeviceRGB();
-		}
-
-		CGContextRef bitmapContext = CGBitmapContextCreate(imageBuffer, renderSize.width, renderSize.height, 8, rowBytes, defaultSpace, kCGImageAlphaPremultipliedLast);
+		CGColorSpaceRef defaultSpace = CGColorSpaceCreateDeviceRGB();
+		
+		CGContextRef bitmapContext = CGBitmapContextCreateWithData(NULL, renderSize.width, renderSize.height, 8, rowBytes, defaultSpace, kCGImageAlphaPremultipliedLast, NULL, NULL);
+		CGColorSpaceRelease(defaultSpace);
 		CGContextClearRect(bitmapContext, CGRectMake(0, 0, renderSize.width, renderSize.height));
 		CGContextDrawLayerInRect(bitmapContext, CGRectMake(0, 0, renderSize.width, renderSize.height), svg_render_context.renderLayer);
+		returntype = CGBitmapContextCreateImage(bitmapContext);
 		CGContextRelease(bitmapContext);
-		CGDataProviderRef dataProvider = CGDataProviderCreateWithData(NULL, imageBuffer, rowBytes * renderSize.height, DataProviderReleasseCallback);
-
-		returntype = CGImageCreate(renderSize.width, renderSize.height, 8, 32, rowBytes, defaultSpace, kCGImageAlphaPremultipliedLast, dataProvider, NULL, false, kCGRenderingIntentDefault);
-		CGDataProviderRelease(dataProvider);
-#else
-		CGContextDrawLayerInRect(UIGraphicsGetCurrentContext(), CGRectMake(0,0,renderSize.width, renderSize.height), svg_render_context.renderLayer);
-		UIImage *tempImage = UIGraphicsGetImageFromCurrentImageContext();
-		returntype = CGImageRetain([tempImage CGImage]);
-#endif
 	}
-	
-#if 0
-	UIGraphicsEndImageContext();
-#endif
 	
 	svg_destroy(svg_test);
 	
