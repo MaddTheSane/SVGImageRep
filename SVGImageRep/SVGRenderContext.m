@@ -786,7 +786,7 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 
 - (NSString *)description
 {
-	return [NSString stringWithFormat:@"Size: (%fx%f) is set: %@ scale: %f States: %i Current: %@", size.width, size.height, hasSize ? @"Yes" : @"No", scale, [states count], [current description]];
+	return [NSString stringWithFormat:@"Size: (%fx%f) is set: %@ scale: %f States: %li Current: %@", size.width, size.height, hasSize ? @"Yes" : @"No", scale, (long)[states count], [current description]];
 }
 
 @end
