@@ -14,6 +14,8 @@
 typedef CGSize NSSize;
 #define NSSizeToCGSize(x) x
 #define NSMakeSize CGSizeMake
+#define NSEqualSizes CGSizeEqualToSize
+#define NSZeroSize CGSizeZero
 #endif
 
 #include <svg.h>
@@ -28,7 +30,7 @@ typedef CGSize NSSize;
 
 @class SVGRenderState, NSMutableArray;
 
-extern svg_render_engine_t cocoa_svg_engine;
+extern const svg_render_engine_t cocoa_svg_engine;
 
 @interface SVGRenderContext : NSObject
 {
@@ -42,6 +44,7 @@ extern svg_render_engine_t cocoa_svg_engine;
 	
 	SVGRenderState *current;
 	NSMutableArray *states;
+	int theIndent;
 }
 
 @property (readwrite, nonatomic, assign) SVGRenderState *current;
@@ -70,8 +73,12 @@ extern svg_render_engine_t cocoa_svg_engine;
 - (svg_status_t)endGroup: (double)opacity;
 
 - (svg_status_t)setViewportDimension: (svg_length_t *)width :(svg_length_t *)height DEPRECATED_ATTRIBUTE;
+- (svg_status_t)setViewportDimensionWidth: (svg_length_t *)width height:(svg_length_t *)height;
+
 - (svg_status_t)applyViewbox: (svg_view_box_t)viewbox
 							: (svg_length_t *)width : (svg_length_t *)height DEPRECATED_ATTRIBUTE;
+- (svg_status_t)applyViewbox: (svg_view_box_t)viewbox withWidth: (svg_length_t *)width height: (svg_length_t *)height;
+
 
 - (svg_status_t)renderRect: (svg_length_t *)x : (svg_length_t *)y
 						  : (svg_length_t *)width : (svg_length_t *)height

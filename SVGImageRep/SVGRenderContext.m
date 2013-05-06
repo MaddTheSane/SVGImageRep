@@ -28,9 +28,18 @@
 #import <UIKit/UIKit.h>
 #endif
 
+@interface SVGRenderContext ()
+
+- (void)prepareRenderWithScale:(double)a_scale renderContext:(CGContextRef)thecontext;
+
+@property (readwrite, nonatomic) int indent;
+
+@end
+
 @implementation SVGRenderContext
 
 @synthesize size, states, current, scale, renderLayer;
+@synthesize indent = theIndent;
 
 static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient);
 
@@ -57,16 +66,28 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 	return CGgradient;
 }
 
-- (void)prepareRenderFromRenderContext:(SVGRenderContext *)prevContext
+- (void)prepareRenderWithScale:(double)a_scale renderContext:(CGContextRef)theContext
 {
 	states = [[NSMutableArray alloc] init];
+	current = nil;
+	hasSize = NO;
+	scale = a_scale;
+	if (NSEqualSizes(size, NSZeroSize)) {
+		size = NSMakeSize(500 * scale, 500 * scale);
+	}
+	theIndent = 1;
+	unsizedRenderLayer = CGLayerCreateWithContext(theContext, NSSizeToCGSize(size), NULL);
+}
+
+- (void)prepareRenderFromRenderContext:(SVGRenderContext *)prevContext
+{
+	size = prevContext.size;
+	[self prepareRenderWithScale:prevContext.scale renderContext:CGLayerGetContext(prevContext.renderLayer)];
+	
 	current = [prevContext.current copy];
 	[states addObject:current];
 	[current release];
 	hasSize = NO;
-	scale = prevContext.scale;
-	size = prevContext.size;
-	unsizedRenderLayer = CGLayerCreateWithContext(CGLayerGetContext(prevContext.renderLayer), NSSizeToCGSize(size), NULL);
 }
 
 - (void)finishRender
@@ -477,7 +498,7 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 			SVGRenderContext *patternRender = [[SVGRenderContext alloc] init];
 			svg_pattern_t *pattern = svg_element_pattern(tempElement);
 			[patternRender prepareRenderFromRenderContext:self];
-			[patternRender setViewportDimension:&pattern->width :&pattern->height];
+			[patternRender setViewportDimensionWidth:&pattern->width height:&pattern->height];
 			svg_element_render(tempElement, &cocoa_svg_engine, patternRender);
 			[patternRender finishRender];
 			CGFloat w, h, x, y;
@@ -629,6 +650,11 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 
 - (svg_status_t)setViewportDimension:(svg_length_t *)width :(svg_length_t *)height
 {
+	return [self setViewportDimensionWidth:width height:height];
+}
+
+- (svg_status_t)setViewportDimensionWidth:(svg_length_t *)width height:(svg_length_t *)height
+{
 	CGFloat w, h;
 	
 	if (hasSize)
@@ -655,6 +681,10 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 
 - (svg_status_t)applyViewbox: (svg_view_box_t)viewbox
 							: (svg_length_t *)width : (svg_length_t *)height
+{
+	return [self applyViewbox:viewbox withWidth:width height:height];
+}
+- (svg_status_t)applyViewbox: (svg_view_box_t)viewbox withWidth: (svg_length_t *)width height: (svg_length_t *)height
 {
 	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
 	
@@ -720,7 +750,7 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 			SVGRenderContext *patternRender = [[SVGRenderContext alloc] init];
 			svg_pattern_t *pattern = svg_element_pattern(tempElement);
 			[patternRender prepareRenderFromRenderContext:self];
-			[patternRender setViewportDimension:&pattern->width :&pattern->height];
+			[patternRender setViewportDimensionWidth:&pattern->width height:&pattern->height];
 			svg_element_render(tempElement, &cocoa_svg_engine, patternRender);
 			[patternRender finishRender];
 			CGFloat w, h, x, y;
@@ -798,12 +828,10 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 
 @end
 
-static int indent = 1;
-
 static svg_status_t r_begin_group(void *closure, double opacity)
 {
 	SVGRenderContext *self = (SVGRenderContext *)closure;
-	indent += 3;
+	self.indent += 3;
 	
 	return [self beginGroup:opacity];
 }
@@ -812,7 +840,7 @@ static svg_status_t r_begin_element(void *closure)
 {
 	SVGRenderContext *self = (SVGRenderContext *)closure;
 	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
-	indent += 3;
+	self.indent += 3;
 	
 	CGContextSaveGState(CGCtx);
 	SVGRenderState *tempState = [self.current copy];
@@ -827,7 +855,7 @@ static svg_status_t r_end_element(void *closure)
 {
 	SVGRenderContext *self = (SVGRenderContext *)closure;
 	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
-	indent -= 3;
+	self.indent -= 3;
 	
 	CGContextRestoreGState(CGCtx);
 	[self.states removeObjectAtIndex:[self.states count] - 1];
@@ -842,7 +870,7 @@ static svg_status_t r_end_element(void *closure)
 static svg_status_t r_end_group(void *closure, double opacity)
 {
 	SVGRenderContext *self = (SVGRenderContext *)closure;
-	indent -= 3;
+	self.indent -= 3;
 	
 	return [self endGroup:opacity];
 }
@@ -1152,7 +1180,7 @@ static svg_status_t r_apply_viewbox(void *closure, svg_view_box_t viewbox, svg_l
 	SVGRenderContext *self = (SVGRenderContext *)closure;
 	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
-	return [self applyViewbox: viewbox :width :height];
+	return [self applyViewbox: viewbox withWidth:width height:height];
 }
 
 static svg_status_t r_set_viewport_dimension(void *closure, svg_length_t *width, svg_length_t *height)
@@ -1160,7 +1188,7 @@ static svg_status_t r_set_viewport_dimension(void *closure, svg_length_t *width,
 	SVGRenderContext *self = (SVGRenderContext *)closure;
 	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
-	return [self setViewportDimension: width: height];
+	return [self setViewportDimensionWidth:width height:height];
 }
 
 static svg_status_t r_render_line(void *closure, svg_length_t *x1, svg_length_t *y1, svg_length_t *x2, svg_length_t *y2)
@@ -1195,18 +1223,23 @@ static svg_status_t r_render_rect(void *closure, svg_length_t *x, svg_length_t *
 	SVGRenderContext *self = (SVGRenderContext *)closure;
 	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
-	return [self renderRect: x:y :width:height :rx:ry];
+	return [self renderRectWithX:x y:y width:width height:height rx:rx ry:ry];
 }
 
 static svg_status_t r_render_text(void *closure, svg_length_t *x, svg_length_t *y, const char *utf8)
 {
 	SVGRenderContext *self = (SVGRenderContext *)closure;
 	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
-	
-	return [self renderText:utf8 atX:[self lengthToPoints:x] y:[self lengthToPoints:y]];
+	svg_status_t retStat = 0;
+	{
+		NSAutoreleasePool *pool = [NSAutoreleasePool new];
+		retStat = [self renderText:utf8 atX:[self lengthToPoints:x] y:[self lengthToPoints:y]];
+		[pool drain];
+	}
+	return retStat;
 }
 
-svg_render_engine_t cocoa_svg_engine =
+const svg_render_engine_t cocoa_svg_engine =
 {
 	r_begin_group,
 	r_begin_element,
