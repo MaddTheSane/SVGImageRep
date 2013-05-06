@@ -91,5 +91,7 @@ extern const svg_render_engine_t cocoa_svg_engine;
 - (svg_status_t)renderText:(const char *)utf8 atX:(CGFloat)xPos y:(CGFloat)yPos;
 - (svg_status_t)renderEllipse: (svg_length_t *)cx : (svg_length_t *)cy
 							 : (svg_length_t *)rx : (svg_length_t *)ry DEPRECATED_ATTRIBUTE;
+- (svg_status_t)renderEllipseWithCx: (svg_length_t *)cx cy:(svg_length_t *)cy rx:(svg_length_t *)rx ry:(svg_length_t *)ry;
+
 
 @end

@@ -580,6 +580,11 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 - (svg_status_t)renderEllipse:(svg_length_t *)lcx : (svg_length_t *)lcy
 							 : (svg_length_t *)lrx : (svg_length_t *)lry
 {
+	return [self renderEllipseWithCx:lcx cy:lcy rx:lrx ry:lry];
+}
+
+- (svg_status_t)renderEllipseWithCx: (svg_length_t *)lcx cy:(svg_length_t *)lcy rx:(svg_length_t *)lrx ry:(svg_length_t *)lry;
+{
 	double cx, cy, rx, ry;
 	
 	cx = [self lengthToPoints:lcx];
