@@ -1235,7 +1235,7 @@ static svg_status_t r_render_text(void *closure, svg_length_t *x, svg_length_t *
 	return retStat;
 }
 
-svg_render_engine_t cocoa_svg_engine =
+const svg_render_engine_t cocoa_svg_engine =
 {
 	r_begin_group,
 	r_begin_element,

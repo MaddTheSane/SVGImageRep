@@ -30,7 +30,7 @@ typedef CGSize NSSize;
 
 @class SVGRenderState, NSMutableArray;
 
-extern svg_render_engine_t cocoa_svg_engine;
+extern const svg_render_engine_t cocoa_svg_engine;
 
 @interface SVGRenderContext : NSObject
 {
