@@ -59,21 +59,28 @@
 
 - (void)dealloc
 {
-	svg_destroy(svgPrivate);
+	if (svgPrivate) {
+		svg_destroy(svgPrivate);
+	}
 	
 	[super dealloc];
 }
 
 - (void)finalize
 {
-	svg_destroy(svgPrivate);
+	if (svgPrivate) {
+		svg_destroy(svgPrivate);
+	}
 	
 	[super finalize];
 }
 
 - (void)setData:(NSData *)data
 {
-	svg_create(&svgPrivate);
+	if (svgPrivate) {
+		svg_destroy(svgPrivate);
+	}
+	svg_create((svg_t **)&svgPrivate);
 	svg_status_t status = svg_parse_buffer(svgPrivate, [data bytes], [data length]);
 	if (status != SVG_STATUS_SUCCESS) {
 		svg_destroy(svgPrivate);
@@ -83,14 +90,28 @@
 	[self setNeedsDisplay];
 }
 
-- (void)setSVGFileName:(NSString *)path
+- (void)setSVGFilePath:(NSString *)path
 {
-	[self setData:[NSData dataWithContentsOfFile:path]];
+	if (svgPrivate) {
+		svg_destroy(svgPrivate);
+	}
+	svg_create((svg_t **)&svgPrivate);
+	svg_status_t status = svg_parse(svgPrivate, [path fileSystemRepresentation]);
+	if (status != SVG_STATUS_SUCCESS) {
+		svg_destroy(svgPrivate);
+		svgPrivate = NULL;
+		return;
+	}
+	[self setNeedsDisplay];
 }
 
 - (void)setSVGFileURL:(NSURL *)url
 {
-	[self setData:[NSData dataWithContentsOfURL:url]];
+	if ([url isFileURL]) {
+		[self setSVGFilePath:[url path]];
+	} else {
+		[self setData:[NSData dataWithContentsOfURL:url]];
+	}
 }
 
 @end
