@@ -599,7 +599,13 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 
 - (svg_status_t)beginGroup:(double)opacity
 {
-	CGContextRef tempCtx = CGLayerGetContext(unsizedRenderLayer);
+	CGContextRef tempCtx;
+	if (theIndent == 4) {
+		tempCtx= CGLayerGetContext(unsizedRenderLayer);
+	} else {
+		tempCtx = CGLayerGetContext(renderLayer);
+	}
+	 
 	SVGRenderState *newCurrent = nil;
 	if (current)
 	{

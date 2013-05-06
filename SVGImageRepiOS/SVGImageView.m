@@ -55,11 +55,16 @@
 
 - (void)dealloc
 {
-	svg_destroy(svgPrivate);
+	if (svgPrivate) {
+		svg_destroy(svgPrivate);
+	}
 }
 
 - (void)setData:(NSData *)data
 {
+	if (svgPrivate) {
+		svg_destroy(svgPrivate);
+	}
 	svg_create((svg_t **)&svgPrivate);
 	svg_status_t status = svg_parse_buffer(svgPrivate, [data bytes], [data length]);
 	if (status != SVG_STATUS_SUCCESS) {
