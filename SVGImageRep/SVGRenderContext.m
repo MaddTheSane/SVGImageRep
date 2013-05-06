@@ -1226,8 +1226,13 @@ static svg_status_t r_render_text(void *closure, svg_length_t *x, svg_length_t *
 {
 	SVGRenderContext *self = (SVGRenderContext *)closure;
 	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
-	
-	return [self renderText:utf8 atX:[self lengthToPoints:x] y:[self lengthToPoints:y]];
+	svg_status_t retStat = 0;
+	{
+		NSAutoreleasePool *pool = [NSAutoreleasePool new];
+		retStat = [self renderText:utf8 atX:[self lengthToPoints:x] y:[self lengthToPoints:y]];
+		[pool drain];
+	}
+	return retStat;
 }
 
 svg_render_engine_t cocoa_svg_engine =
