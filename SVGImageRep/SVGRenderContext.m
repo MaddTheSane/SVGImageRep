@@ -477,7 +477,7 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 			SVGRenderContext *patternRender = [[SVGRenderContext alloc] init];
 			svg_pattern_t *pattern = svg_element_pattern(tempElement);
 			[patternRender prepareRenderFromRenderContext:self];
-			[patternRender setViewportDimension:&pattern->width :&pattern->height];
+			[patternRender setViewportDimensionWidth:&pattern->width height:&pattern->height];
 			svg_element_render(tempElement, &cocoa_svg_engine, patternRender);
 			[patternRender finishRender];
 			CGFloat w, h, x, y;
@@ -629,6 +629,11 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 
 - (svg_status_t)setViewportDimension:(svg_length_t *)width :(svg_length_t *)height
 {
+	return [self setViewportDimensionWidth:width height:height];
+}
+
+- (svg_status_t)setViewportDimensionWidth:(svg_length_t *)width height:(svg_length_t *)height
+{
 	CGFloat w, h;
 	
 	if (hasSize)
@@ -720,7 +725,7 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 			SVGRenderContext *patternRender = [[SVGRenderContext alloc] init];
 			svg_pattern_t *pattern = svg_element_pattern(tempElement);
 			[patternRender prepareRenderFromRenderContext:self];
-			[patternRender setViewportDimension:&pattern->width :&pattern->height];
+			[patternRender setViewportDimensionWidth:&pattern->width height:&pattern->height];
 			svg_element_render(tempElement, &cocoa_svg_engine, patternRender);
 			[patternRender finishRender];
 			CGFloat w, h, x, y;
@@ -1160,7 +1165,7 @@ static svg_status_t r_set_viewport_dimension(void *closure, svg_length_t *width,
 	SVGRenderContext *self = (SVGRenderContext *)closure;
 	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
-	return [self setViewportDimension: width: height];
+	return [self setViewportDimensionWidth:width height:height];
 }
 
 static svg_status_t r_render_line(void *closure, svg_length_t *x1, svg_length_t *y1, svg_length_t *x2, svg_length_t *y2)
@@ -1195,7 +1200,7 @@ static svg_status_t r_render_rect(void *closure, svg_length_t *x, svg_length_t *
 	SVGRenderContext *self = (SVGRenderContext *)closure;
 	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
-	return [self renderRect: x:y :width:height :rx:ry];
+	return [self renderRectWithX:x y:y width:width height:height rx:rx ry:ry];
 }
 
 static svg_status_t r_render_text(void *closure, svg_length_t *x, svg_length_t *y, const char *utf8)
