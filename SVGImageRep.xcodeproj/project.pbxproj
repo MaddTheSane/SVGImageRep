@@ -2143,7 +2143,7 @@
 				GCC_PREFIX_HEADER = "svg/svg-Prefix.pch";
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = (
-					/usr/include/libxml2,
+					"${SDK_DIR}/usr/include/libxml2",
 					"\"${SRCROOT}\"/jpeg/jpeg-8d",
 					"\"${SRCROOT}\"/png/libpng-1.5.9",
 				);
@@ -2161,7 +2161,7 @@
 				GCC_PREFIX_HEADER = "svg/svg-Prefix.pch";
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = (
-					/usr/include/libxml2,
+					"${SDK_DIR}/usr/include/libxml2",
 					"\"${SRCROOT}\"/jpeg/jpeg-8d",
 					"\"${SRCROOT}\"/png/libpng-1.5.9",
 				);
@@ -2370,7 +2370,7 @@
 				GCC_PREFIX_HEADER = "svg/svg-Prefix.pch";
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = (
-					/usr/include/libxml2,
+					"${SDK_DIR}/usr/include/libxml2",
 					"\"${SRCROOT}\"/jpeg/jpeg-8d",
 					"\"${SRCROOT}\"/png/libpng-1.5.9",
 				);
@@ -2388,7 +2388,7 @@
 				GCC_PREFIX_HEADER = "svg/svg-Prefix.pch";
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = (
-					/usr/include/libxml2,
+					"${SDK_DIR}/usr/include/libxml2",
 					"\"${SRCROOT}\"/jpeg/jpeg-8d",
 					"\"${SRCROOT}\"/png/libpng-1.5.9",
 				);
