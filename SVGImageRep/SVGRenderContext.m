@@ -1239,6 +1239,28 @@ static svg_status_t r_render_text(void *closure, svg_length_t *x, svg_length_t *
 	return retStat;
 }
 
+static svg_status_t r_render_image(void *closure, unsigned char *data, unsigned int data_width, unsigned int data_height, svg_length_t *x, svg_length_t *y, svg_length_t *width, svg_length_t *height)
+{
+	SVGRenderContext *self = (SVGRenderContext *)closure;
+	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
+	{
+		CGFloat cx, cy, cw, ch;
+		cx = [self lengthToPoints:x];
+		cy = [self lengthToPoints:y];
+		cw = [self lengthToPoints:width];
+		ch = [self lengthToPoints:height];
+		NSData *tmpData = [[NSData alloc] initWithBytesNoCopy:data length:data_width * data_height * 4 freeWhenDone:NO];
+		CGDataProviderRef theData = CGDataProviderCreateWithCFData((CFDataRef)tmpData);
+		[tmpData release];
+		CGImageRef theImage = CGImageCreate(data_width, data_height, 8, 32, data_width * 4, GetGenericRGBColorSpace(), kCGImageAlphaFirst, theData, NULL, FALSE, kCGRenderingIntentDefault);
+		CGContextDrawImage(CGCtx, CGRectMake(cx, cy, cw, ch), theImage);
+		CGImageRelease(theImage);
+	}
+	
+	return SVG_STATUS_SUCCESS;
+}
+
+
 const svg_render_engine_t cocoa_svg_engine =
 {
 	r_begin_group,
