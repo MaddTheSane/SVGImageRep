@@ -875,7 +875,6 @@ static svg_status_t r_end_group(void *closure, double opacity)
 	return [self endGroup:opacity];
 }
 
-
 static svg_status_t r_move_to(void *closure, double x, double y)
 {
 	SVGRenderContext *self = (SVGRenderContext *)closure;

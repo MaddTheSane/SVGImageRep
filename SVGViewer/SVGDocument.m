@@ -22,8 +22,8 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 {
 	if(s != svg)
 	{
-		[svg release];
 		[s retain];
+		[svg release];
 		svg = s;
 	}
 	[self setNeedsDisplay: YES];
@@ -57,23 +57,48 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 
 @end
 
+@interface SVGDocument ()
+@property (readwrite, copy) NSData *documentData;
+@end
+
 @implementation SVGDocument
+
+@synthesize documentData;
 
 - (IBAction)reload:(id)sender
 {
 	{
 		svg_t *svg;
-		SVGRenderContext *svg_render_context = [[SVGRenderContext alloc] init];
 
 		svg_create(&svg);
-		svg_parse_buffer(svg, [documentData bytes], [documentData length]);
+		
+		svg_status_t status = svg_parse_buffer(svg, [documentData bytes], [documentData length]);
+		if (status != SVG_STATUS_SUCCESS) {
+			svg_destroy(svg);
+			return;
+		}
+		NSRect scaledRect = NSZeroRect;
+		{
+			svg_length_t height, width;
+			svg_get_size(svg, &width, &height);
+			scaledRect.size = NSMakeSize([SVGRenderContext lengthToPoints:&width] * scale, [SVGRenderContext lengthToPoints:&height]*scale);
+		}
+		SVGRenderContext *svg_render_context = [[SVGRenderContext alloc] init];
 
-		[svg_render_context prepareRender: scale];
-		svg_render(svg, &cocoa_svg_engine, svg_render_context);
-		[svg_render_context finishRender];
+		{
+			NSAutoreleasePool *pool = [NSAutoreleasePool new];
+			[svg_render_context prepareRender: scale];
+			status = svg_render(svg, &cocoa_svg_engine, svg_render_context);
+			[svg_render_context finishRender];
+			[pool drain];
+		}
 
-		NSSize contextSize = [svg_render_context size];
-		[svg_view setFrame:NSMakeRect(0, 0, contextSize.width, contextSize.height)];
+		if (status != SVG_STATUS_SUCCESS) {
+			[svg_render_context release];
+			svg_destroy(svg);
+			return;
+		}
+		[svg_view setFrame:scaledRect];
 		[svg_view setSVGRenderContext:svg_render_context];
 		[svg_render_context release];
 
@@ -116,7 +141,7 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 		
 		return NO;
 	}
-	documentData = [data copy];
+	self.documentData = data;
 	
 	svg_destroy(svg);
 	return YES;
