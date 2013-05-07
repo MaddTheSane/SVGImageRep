@@ -490,10 +490,14 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 			svg_element_t *tempElement = tempFill.p.pattern_element;
 			SVGRenderContext *patternRender = [[SVGRenderContext alloc] init];
 			svg_pattern_t *pattern = svg_element_pattern(tempElement);
-			[patternRender prepareRenderFromRenderContext:self];
-			[patternRender setViewportDimensionWidth:&pattern->width height:&pattern->height];
-			svg_element_render(tempElement, &cocoa_svg_engine, patternRender);
-			[patternRender finishRender];
+			{
+				NSAutoreleasePool *pool = [NSAutoreleasePool new];
+				[patternRender prepareRenderFromRenderContext:self];
+				[patternRender setViewportDimensionWidth:&pattern->width height:&pattern->height];
+				svg_element_render(tempElement, &cocoa_svg_engine, patternRender);
+				[patternRender finishRender];
+				[pool drain];
+			}
 			CGFloat w, h, x, y;
 			w = [self lengthToPoints:&pattern->width];
 			h = [self lengthToPoints:&pattern->height];
@@ -741,10 +745,14 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 			svg_element_t *tempElement = tempFill.p.pattern_element;
 			SVGRenderContext *patternRender = [[SVGRenderContext alloc] init];
 			svg_pattern_t *pattern = svg_element_pattern(tempElement);
-			[patternRender prepareRenderFromRenderContext:self];
-			[patternRender setViewportDimensionWidth:&pattern->width height:&pattern->height];
-			svg_element_render(tempElement, &cocoa_svg_engine, patternRender);
-			[patternRender finishRender];
+			{
+				NSAutoreleasePool *pool = [NSAutoreleasePool new];
+				[patternRender prepareRenderFromRenderContext:self];
+				[patternRender setViewportDimensionWidth:&pattern->width height:&pattern->height];
+				svg_element_render(tempElement, &cocoa_svg_engine, patternRender);
+				[patternRender finishRender];
+				[pool drain];
+			}
 			CGFloat w, h, x, y;
 			w = [self lengthToPoints:&pattern->width];
 			h = [self lengthToPoints:&pattern->height];
