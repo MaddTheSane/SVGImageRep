@@ -2145,7 +2145,7 @@
 				GCC_PREFIX_HEADER = "svg/svg-Prefix.pch";
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = (
-					/usr/include/libxml2,
+					"${SDK_DIR}/usr/include/libxml2",
 					"\"${SRCROOT}\"/jpeg/jpeg-8d",
 					"\"${SRCROOT}\"/png/libpng-1.5.9",
 				);
@@ -2164,7 +2164,7 @@
 				GCC_PREFIX_HEADER = "svg/svg-Prefix.pch";
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = (
-					/usr/include/libxml2,
+					"${SDK_DIR}/usr/include/libxml2",
 					"\"${SRCROOT}\"/jpeg/jpeg-8d",
 					"\"${SRCROOT}\"/png/libpng-1.5.9",
 				);
@@ -2294,6 +2294,7 @@
 			buildSettings = {
 				"CLANG_ENABLE_OBJC_ARC[arch=x86_64]" = YES;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = NO;
 				FRAMEWORK_SEARCH_PATHS = /System/Library/Frameworks/ApplicationServices.framework/Frameworks;
 				GCC_ENABLE_OBJC_GC = supported;
 				"GCC_ENABLE_OBJC_GC[arch=x86_64]" = unsupported;
@@ -2315,6 +2316,7 @@
 			buildSettings = {
 				"CLANG_ENABLE_OBJC_ARC[arch=x86_64]" = YES;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
 				FRAMEWORK_SEARCH_PATHS = /System/Library/Frameworks/ApplicationServices.framework/Frameworks;
 				GCC_ENABLE_OBJC_GC = supported;
 				"GCC_ENABLE_OBJC_GC[arch=x86_64]" = unsupported;
@@ -2376,7 +2378,7 @@
 				GCC_PREFIX_HEADER = "svg/svg-Prefix.pch";
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = (
-					/usr/include/libxml2,
+					"${SDK_DIR}/usr/include/libxml2",
 					"\"${SRCROOT}\"/jpeg/jpeg-8d",
 					"\"${SRCROOT}\"/png/libpng-1.5.9",
 				);
@@ -2394,7 +2396,7 @@
 				GCC_PREFIX_HEADER = "svg/svg-Prefix.pch";
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = (
-					/usr/include/libxml2,
+					"${SDK_DIR}/usr/include/libxml2",
 					"\"${SRCROOT}\"/jpeg/jpeg-8d",
 					"\"${SRCROOT}\"/png/libpng-1.5.9",
 				);
