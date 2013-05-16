@@ -15,6 +15,7 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 
 #include <svg.h>
 #import "SVGRenderContext.h"
+#import "ARCBridge.h"
 
 @implementation SVGView
 
@@ -22,9 +23,13 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 {
 	if(s != svg)
 	{
+#if __has_feature(objc_arc)
+		svg = s;
+#else
 		[s retain];
 		[svg release];
 		svg = s;
+#endif
 	}
 	[self setNeedsDisplay: YES];
 }
@@ -48,12 +53,14 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 	}
 }
 
+#if !__has_feature(objc_arc)
 - (void)dealloc
 {
 	[svg release];
 	
 	[super dealloc];
 }
+#endif
 
 @end
 
@@ -85,22 +92,20 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 		}
 		SVGRenderContext *svg_render_context = [[SVGRenderContext alloc] init];
 
-		{
-			NSAutoreleasePool *pool = [NSAutoreleasePool new];
+		@autoreleasepool {
 			[svg_render_context prepareRender: scale];
-			status = svg_render(svg, &cocoa_svg_engine, svg_render_context);
+			status = svg_render(svg, &cocoa_svg_engine, BRIDGE(void*, svg_render_context));
 			[svg_render_context finishRender];
-			[pool drain];
 		}
 
 		if (status != SVG_STATUS_SUCCESS) {
-			[svg_render_context release];
+			RELEASEOBJ(svg_render_context);
 			svg_destroy(svg);
 			return;
 		}
 		[svg_view setFrame:scaledRect];
 		[svg_view setSVGRenderContext:svg_render_context];
-		[svg_render_context release];
+		RELEASEOBJ(svg_render_context);
 
 		svg_destroy(svg);
 	}
@@ -147,12 +152,14 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 	return YES;
 }
 
+#if !__has_feature(objc_arc)
 - (void)dealloc
 {
 	[documentData release];
 	
 	[super dealloc];
 }
+#endif
 
 #define SCALE(a,b) \
 	- (IBAction)scale_##a##_##b:(id)sender \

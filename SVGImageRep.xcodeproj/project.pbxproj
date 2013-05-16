@@ -61,7 +61,6 @@
 		55371302151BD0CD00F8848A /* jmemnobs.c in Sources */ = {isa = PBXBuildFile; fileRef = 55371264151BD0CD00F8848A /* jmemnobs.c */; };
 		55371303151BD0CD00F8848A /* jmemsys.h in Headers */ = {isa = PBXBuildFile; fileRef = 55371265151BD0CD00F8848A /* jmemsys.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		55371304151BD0CD00F8848A /* jmorecfg.h in Headers */ = {isa = PBXBuildFile; fileRef = 55371266151BD0CD00F8848A /* jmorecfg.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		55371305151BD0CD00F8848A /* jpegint.h in Headers */ = {isa = PBXBuildFile; fileRef = 55371267151BD0CD00F8848A /* jpegint.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		55371306151BD0CD00F8848A /* jpeglib.h in Headers */ = {isa = PBXBuildFile; fileRef = 55371268151BD0CD00F8848A /* jpeglib.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		55371308151BD0CD00F8848A /* jquant1.c in Sources */ = {isa = PBXBuildFile; fileRef = 5537126B151BD0CD00F8848A /* jquant1.c */; };
 		55371309151BD0CD00F8848A /* jquant2.c in Sources */ = {isa = PBXBuildFile; fileRef = 5537126C151BD0CD00F8848A /* jquant2.c */; };
@@ -89,7 +88,6 @@
 		55371457151BD40500F8848A /* pngdebug.h in Headers */ = {isa = PBXBuildFile; fileRef = 553713C2151BD40500F8848A /* pngdebug.h */; };
 		55371458151BD40500F8848A /* pngerror.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713C3151BD40500F8848A /* pngerror.c */; };
 		55371459151BD40500F8848A /* pngget.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713C4151BD40500F8848A /* pngget.c */; };
-		5537145A151BD40500F8848A /* pnginfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 553713C5151BD40500F8848A /* pnginfo.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5537145B151BD40500F8848A /* pngmem.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713C6151BD40500F8848A /* pngmem.c */; };
 		5537145C151BD40500F8848A /* pngpread.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713C8151BD40500F8848A /* pngpread.c */; };
 		5537145D151BD40500F8848A /* pngpriv.h in Headers */ = {isa = PBXBuildFile; fileRef = 553713C9151BD40500F8848A /* pngpriv.h */; };
@@ -98,7 +96,6 @@
 		55371460151BD40500F8848A /* pngrtran.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713CC151BD40500F8848A /* pngrtran.c */; };
 		55371461151BD40500F8848A /* pngrutil.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713CD151BD40500F8848A /* pngrutil.c */; };
 		55371462151BD40500F8848A /* pngset.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713CE151BD40500F8848A /* pngset.c */; };
-		55371463151BD40500F8848A /* pngstruct.h in Headers */ = {isa = PBXBuildFile; fileRef = 553713CF151BD40500F8848A /* pngstruct.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		55371465151BD40500F8848A /* pngtrans.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713D2151BD40500F8848A /* pngtrans.c */; };
 		55371466151BD40500F8848A /* pngwio.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713D3151BD40500F8848A /* pngwio.c */; };
 		55371467151BD40500F8848A /* pngwrite.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713D4151BD40500F8848A /* pngwrite.c */; };
@@ -329,40 +326,19 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		55AFA52B151AACE200B5351D /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 55AFA487151AA3BC00B5351D /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 55AFA4CC151AA7E900B5351D;
-			remoteInfo = svg;
-		};
-		55C87404152A2EDB00710A01 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 55AFA487151AA3BC00B5351D /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 55AFA4CC151AA7E900B5351D;
-			remoteInfo = svg;
-		};
-		55C87406152A2F2C00710A01 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 55AFA487151AA3BC00B5351D /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 553711AF151BCF9100F8848A;
-			remoteInfo = jpeg;
-		};
-		55C87408152A2F2C00710A01 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 55AFA487151AA3BC00B5351D /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 553711BE151BCF9A00F8848A;
-			remoteInfo = png;
-		};
 		5560E70E152B6F72008FF127 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 55AFA487151AA3BC00B5351D /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 55AFA48F151AA3BC00B5351D;
 			remoteInfo = SVGImageRep;
+		};
+		5580EBDC17454BE2005BE5AC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 55AFA487151AA3BC00B5351D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 553711AF151BCF9100F8848A;
+			remoteInfo = jpeg;
 		};
 		55863D2E154739DE00A73C76 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -385,14 +361,14 @@
 			remoteGlobalIDString = 55863C9B1547396700A73C76;
 			remoteInfo = svgiOS;
 		};
-		55AFA52B151AACE200B5351D /* PBXContainerItemProxy */ = {
+		55C87406152A2F2C00710A01 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 55AFA487151AA3BC00B5351D /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 553711AF151BCF9100F8848A;
 			remoteInfo = jpeg;
 		};
-		55C8740C152A2F3300710A01 /* PBXContainerItemProxy */ = {
+		55C87408152A2F2C00710A01 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 55AFA487151AA3BC00B5351D /* Project object */;
 			proxyType = 1;
@@ -1905,26 +1881,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		55AFA52C151AACE200B5351D /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 55AFA4CC151AA7E900B5351D /* svg */;
-			targetProxy = 55AFA52B151AACE200B5351D /* PBXContainerItemProxy */;
-		};
-		55C87405152A2EDB00710A01 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 55AFA4CC151AA7E900B5351D /* svg */;
-			targetProxy = 55C87404152A2EDB00710A01 /* PBXContainerItemProxy */;
-		};
-		55C87407152A2F2C00710A01 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 553711AF151BCF9100F8848A /* jpeg */;
-			targetProxy = 55C87406152A2F2C00710A01 /* PBXContainerItemProxy */;
-		};
-		55C87409152A2F2C00710A01 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 553711BE151BCF9A00F8848A /* png */;
-			targetProxy = 55C87408152A2F2C00710A01 /* PBXContainerItemProxy */;
-		};
 		5560E70F152B6F72008FF127 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 55AFA48F151AA3BC00B5351D /* SVGImageRep */;
@@ -1948,12 +1904,17 @@
 		55AFA52C151AACE200B5351D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 553711AF151BCF9100F8848A /* jpeg */;
-			targetProxy = 55C8740A152A2F3300710A01 /* PBXContainerItemProxy */;
+			targetProxy = 5580EBDC17454BE2005BE5AC /* PBXContainerItemProxy */;
 		};
-		55C8740D152A2F3300710A01 /* PBXTargetDependency */ = {
+		55C87407152A2F2C00710A01 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 553711AF151BCF9100F8848A /* jpeg */;
+			targetProxy = 55C87406152A2F2C00710A01 /* PBXContainerItemProxy */;
+		};
+		55C87409152A2F2C00710A01 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 553711BE151BCF9A00F8848A /* png */;
-			targetProxy = 55C8740C152A2F3300710A01 /* PBXContainerItemProxy */;
+			targetProxy = 55C87408152A2F2C00710A01 /* PBXContainerItemProxy */;
 		};
 		55C87414152A343C00710A01 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -2369,8 +2330,11 @@
 		55AFA4C2151AA3FB00B5351D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				"CLANG_ENABLE_OBJC_ARC[arch=x86_64]" = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = /System/Library/Frameworks/ApplicationServices.framework/Frameworks;
+				GCC_ENABLE_OBJC_GC = supported;
+				"GCC_ENABLE_OBJC_GC[arch=x86_64]" = unsupported;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SVGViewer/SVGViewer-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
@@ -2386,9 +2350,12 @@
 		55AFA4C3151AA3FB00B5351D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				"CLANG_ENABLE_OBJC_ARC[arch=x86_64]" = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEAD_CODE_STRIPPING = YES;
 				FRAMEWORK_SEARCH_PATHS = /System/Library/Frameworks/ApplicationServices.framework/Frameworks;
+				GCC_ENABLE_OBJC_GC = supported;
+				"GCC_ENABLE_OBJC_GC[arch=x86_64]" = unsupported;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SVGViewer/SVGViewer-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
