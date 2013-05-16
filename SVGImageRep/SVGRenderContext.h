@@ -36,12 +36,11 @@ extern const svg_render_engine_t cocoa_svg_engine;
 	
 	double scale;
 	
-	__arcweak SVGRenderState *current;
 	NSMutableArray *states;
 	int theIndent;
 }
 
-@property (readwrite, nonatomic, arcweak) SVGRenderState *current;
+@property (readonly, nonatomic, unsafe_unretained) SVGRenderState *current;
 @property (readonly, nonatomic) NSMutableArray *states;
 @property (readonly, nonatomic) NSSize size;
 @property (readonly, nonatomic) double scale;

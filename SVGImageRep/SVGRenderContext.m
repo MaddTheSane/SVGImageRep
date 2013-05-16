@@ -83,9 +83,13 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 	size = prevContext.size;
 	[self prepareRenderWithScale:prevContext.scale renderContext:CGLayerGetContext(prevContext.renderLayer)];
 	
+#if __has_feature(objc_arc)
 	[states addObject:[prevContext.current copy]];
-	current = [states objectAtIndex:[states count] - 1];
-	RELEASEOBJ(current);
+#else
+	SVGRenderState *tmpRenderState = [prevContext.current copy];
+	[states addObject:tmpRenderState];
+	[tmpRenderState release];
+#endif
 	hasSize = NO;
 }
 
@@ -612,6 +616,13 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 
 - (void)pushRenderState
 {
+#if __has_feature(objc_arc)
+	if ([states count]) {
+		[states addObject:[self.current copy]];
+	} else {
+		[states addObject:[[SVGRenderState alloc] init]];
+	}
+#else
 	if ([states count]) {
 		SVGRenderState *tmp = [self.current copy];
 		[states addObject:tmp];
@@ -621,6 +632,7 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 		[states addObject:tmp];
 		[tmp release];
 	}
+#endif
 }
 
 - (void)popRenderState
@@ -640,28 +652,17 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 		tempCtx = CGLayerGetContext(renderLayer);
 	}
 	 
-	SVGRenderState *newCurrent = nil;
-	if (current)
+	if (self.current)
 	{
 		if (!hasSize)
 		{
 			fprintf(stderr, "beginGroup: with current but no size\n");
 			return SVG_STATUS_INVALID_CALL;
 		}
-		SVGRenderState *oldCurrent = current;
-		current = nil;
-		newCurrent = [oldCurrent copy];
-		
-		CGContextSaveGState(tempCtx);
 	}
-	else
-	{
-		CGContextSaveGState(tempCtx);
-		newCurrent = [[SVGRenderState alloc] init];
-	}
-	[states addObject:newCurrent];
-	current = newCurrent;
-	RELEASEOBJ(current);
+	
+	CGContextSaveGState(tempCtx);
+	[self pushRenderState];
 	
 	return SVG_STATUS_SUCCESS;
 }
@@ -869,10 +870,7 @@ static svg_status_t r_begin_element(void *closure)
 	self.indent += 3;
 	
 	CGContextSaveGState(CGCtx);
-	SVGRenderState *tempState = [self.current copy];
-	self.current = tempState;
-	[self.states addObject:self.current];
-	RELEASEOBJ(tempState);
+	[self pushRenderState];
 	
 	return SVG_STATUS_SUCCESS;
 }
