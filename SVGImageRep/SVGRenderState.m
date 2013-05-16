@@ -49,11 +49,15 @@
 {
 	if (dash)
 		free(dash);
-	RELEASEOBJ(fontFamily);
 	
-	SUPERDEALLOC;
+#if !__has_feature(objc_arc)
+	[fontFamily release];
+	
+	[super dealloc];
+#endif
 }
 
+#if !__has_feature(objc_arc)
 - (void)finalize
 {
 	if (dash)
@@ -61,5 +65,6 @@
 	
 	[super finalize];
 }
+#endif
 
 @end

@@ -101,12 +101,14 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 	SUPERDEALLOC;
 }
 
+#if !__has_feature(objc_arc)
 - (void)finalize
 {
 	svg_destroy(svg);
 	
 	[super finalize];
 }
+#endif
 
 - (BOOL)draw
 {
