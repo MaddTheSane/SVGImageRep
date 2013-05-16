@@ -107,17 +107,15 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 	
 #if !__has_feature(objc_arc)
 	[super dealloc];
-#endif
 }
 
-#if !__has_feature(objc_arc)
 - (void)finalize
 {
 	CGLayerRelease(renderLayer);
 	
 	[super finalize];
-}
 #endif
+}
 
 + (double)lengthToPoints:(svg_length_t *)l
 {
