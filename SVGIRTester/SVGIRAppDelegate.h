@@ -17,7 +17,7 @@
 	IBOutlet NSImageCell *svgTip;
 	IBOutlet NSImageCell *svgWarning;
 	IBOutlet NSImageCell *svgSelected;
-	NSWindow *_window;
+	__unsafe_unretained NSWindow *_window;
 }
 @property (assign) IBOutlet NSWindow *window;
 

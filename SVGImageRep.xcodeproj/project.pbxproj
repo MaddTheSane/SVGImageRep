@@ -2066,6 +2066,7 @@
 		5560E70C152B6F5C008FF127 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				"CLANG_ENABLE_OBJC_ARC[arch=x86_64]" = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SVGIRTester/SVGIRTester-Prefix.pch";
@@ -2078,6 +2079,7 @@
 		5560E70D152B6F5C008FF127 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				"CLANG_ENABLE_OBJC_ARC[arch=x86_64]" = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SVGIRTester/SVGIRTester-Prefix.pch";
