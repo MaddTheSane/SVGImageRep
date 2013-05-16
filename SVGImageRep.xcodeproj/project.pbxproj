@@ -2295,7 +2295,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SVGImageRep/SVGImageRep-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
-					/usr/include/libxml2,
+					"${SDK_DIR}/usr/include/libxml2",
 					"\"${SRCROOT}\"/svg/src",
 				);
 				INFOPLIST_FILE = "SVGImageRep/SVGImageRep-Info.plist";
@@ -2315,7 +2315,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SVGImageRep/SVGImageRep-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
-					/usr/include/libxml2,
+					"${SDK_DIR}/usr/include/libxml2",
 					"\"${SRCROOT}\"/svg/src",
 				);
 				INFOPLIST_FILE = "SVGImageRep/SVGImageRep-Info.plist";
@@ -2333,7 +2333,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SVGViewer/SVGViewer-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
-					/usr/include/libxml2,
+					"${SDK_DIR}/usr/include/libxml2",
 					"\"${SRCROOT}\"/svg/src",
 				);
 				INFOPLIST_FILE = "SVGViewer/SVGViewer-Info.plist";
@@ -2351,7 +2351,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SVGViewer/SVGViewer-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
-					/usr/include/libxml2,
+					"${SDK_DIR}/usr/include/libxml2",
 					"\"${SRCROOT}\"/svg/src",
 				);
 				INFOPLIST_FILE = "SVGViewer/SVGViewer-Info.plist";
