@@ -79,6 +79,7 @@
 {
 	if (svgPrivate) {
 		svg_destroy(svgPrivate);
+		svgPrivate = NULL;
 	}
 	svg_create((svg_t **)&svgPrivate);
 	svg_status_t status = svg_parse_buffer(svgPrivate, [data bytes], [data length]);
@@ -94,6 +95,7 @@
 {
 	if (svgPrivate) {
 		svg_destroy(svgPrivate);
+		svgPrivate = NULL;
 	}
 	svg_create((svg_t **)&svgPrivate);
 	svg_status_t status = svg_parse(svgPrivate, [path fileSystemRepresentation]);
