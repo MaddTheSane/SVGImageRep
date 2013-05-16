@@ -228,30 +228,3 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 
 	return SVG_STATUS_SUCCESS;
 }
-
-static svg_status_t r_render_image(void *closure, unsigned char *data, unsigned int data_width, unsigned int data_height, svg_length_t *x, svg_length_t *y, svg_length_t *width, svg_length_t *height)
-{ 
-	@autoreleasepool {
-		SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
-		CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
-		{
-			CGFloat cx, cy, cw, ch;
-			cx = [self lengthToPoints:x];
-			cy = [self lengthToPoints:y];
-			cw = [self lengthToPoints:width];
-			ch = [self lengthToPoints:height];
-			NSData *imageData = [[NSData alloc] initWithBytesNoCopy:data length:data_width * data_height * 4 freeWhenDone:NO];
-			if (!imageData) {
-				return SVG_STATUS_NO_MEMORY;
-			}
-			UIImage *temprep = [[UIImage alloc] initWithData:imageData];
-			imageData = nil;
-			if (!temprep) {
-				return SVG_STATUS_NO_MEMORY;
-			}
-			CGContextDrawImage(CGCtx, CGRectMake(cx, cy, cw, ch), [temprep CGImage]);
-		}
-	}
-	
-	return SVG_STATUS_SUCCESS;
-}

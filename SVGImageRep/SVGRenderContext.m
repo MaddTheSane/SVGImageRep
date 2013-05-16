@@ -494,10 +494,12 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 			svg_element_t *tempElement = tempFill.p.pattern_element;
 			SVGRenderContext *patternRender = [[SVGRenderContext alloc] init];
 			svg_pattern_t *pattern = svg_element_pattern(tempElement);
-			[patternRender prepareRenderFromRenderContext:self];
-			[patternRender setViewportDimensionWidth:&pattern->width height:&pattern->height];
-			svg_element_render(tempElement, &cocoa_svg_engine, BRIDGE(void*,patternRender));
-			[patternRender finishRender];
+			@autoreleasepool {
+				[patternRender prepareRenderFromRenderContext:self];
+				[patternRender setViewportDimensionWidth:&pattern->width height:&pattern->height];
+				svg_element_render(tempElement, &cocoa_svg_engine, BRIDGE(void*,patternRender));
+				[patternRender finishRender];
+			}
 			CGFloat w, h, x, y;
 			w = [self lengthToPoints:&pattern->width];
 			h = [self lengthToPoints:&pattern->height];
@@ -747,10 +749,12 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 			svg_element_t *tempElement = tempFill.p.pattern_element;
 			SVGRenderContext *patternRender = [[SVGRenderContext alloc] init];
 			svg_pattern_t *pattern = svg_element_pattern(tempElement);
-			[patternRender prepareRenderFromRenderContext:self];
-			[patternRender setViewportDimensionWidth:&pattern->width height:&pattern->height];
-			svg_element_render(tempElement, &cocoa_svg_engine, BRIDGE(void*, patternRender));
-			[patternRender finishRender];
+			@autoreleasepool {
+				[patternRender prepareRenderFromRenderContext:self];
+				[patternRender setViewportDimensionWidth:&pattern->width height:&pattern->height];
+				svg_element_render(tempElement, &cocoa_svg_engine, BRIDGE(void*,patternRender));
+				[patternRender finishRender];
+			}
 			CGFloat w, h, x, y;
 			w = [self lengthToPoints:&pattern->width];
 			h = [self lengthToPoints:&pattern->height];
@@ -1235,7 +1239,7 @@ static svg_status_t r_render_text(void *closure, svg_length_t *x, svg_length_t *
 
 static svg_status_t r_render_image(void *closure, unsigned char *data, unsigned int data_width, unsigned int data_height, svg_length_t *x, svg_length_t *y, svg_length_t *width, svg_length_t *height)
 {
-	SVGRenderContext *self = (SVGRenderContext *)closure;
+	SVGRenderContext *self = BRIDGE(SVGRenderContext *,closure);
 	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	{
 		CGFloat cx, cy, cw, ch;
@@ -1247,8 +1251,10 @@ static svg_status_t r_render_image(void *closure, unsigned char *data, unsigned 
 		if (!tmpData) {
 			return SVG_STATUS_NO_MEMORY;
 		}
-		CGDataProviderRef theData = CGDataProviderCreateWithCFData((CFDataRef)tmpData);
-		[tmpData release];
+		CFDataRef tmpDataType = CFBridgingRetain(tmpData);
+		tmpData = nil;
+		CGDataProviderRef theData = CGDataProviderCreateWithCFData(tmpDataType);
+		CFRelease(tmpDataType);
 		if (!theData) {
 			return SVG_STATUS_NO_MEMORY;
 		}
