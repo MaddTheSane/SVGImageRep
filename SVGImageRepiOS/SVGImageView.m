@@ -62,34 +62,40 @@
 
 - (void)setData:(NSData *)data
 {
-	if (svgPrivate) {
-		svg_destroy(svgPrivate);
-		svgPrivate = NULL;
-	}
-	svg_create((svg_t **)&svgPrivate);
-	svg_status_t status = svg_parse_buffer(svgPrivate, [data bytes], [data length]);
+	svg_t *tmpSVG = NULL;
+	
+	svg_create(&tmpSVG);
+	svg_status_t status = svg_parse_buffer(tmpSVG, [data bytes], [data length]);
 	if (status != SVG_STATUS_SUCCESS) {
-		svg_destroy(svgPrivate);
-		svgPrivate = NULL;
+		svg_destroy(tmpSVG);
 		return;
+	} else {
+		if (svgPrivate) {
+			svg_destroy(svgPrivate);
+			svgPrivate = NULL;
+		}
+		svgPrivate = tmpSVG;
+		[self setNeedsDisplay];
 	}
-	[self setNeedsDisplay];
 }
 
 - (void)setSVGFilePath:(NSString *)path
 {
-	if (svgPrivate) {
-		svg_destroy(svgPrivate);
-		svgPrivate = NULL;
-	}
-	svg_create((svg_t **)&svgPrivate);
-	svg_status_t status = svg_parse(svgPrivate, [path fileSystemRepresentation]);
+	svg_t *tmpSVG = NULL;
+	
+	svg_create(&tmpSVG);
+	svg_status_t status = svg_parse(tmpSVG, [path fileSystemRepresentation]);
 	if (status != SVG_STATUS_SUCCESS) {
-		svg_destroy(svgPrivate);
-		svgPrivate = NULL;
+		svg_destroy(tmpSVG);
 		return;
+	}else {
+		if (svgPrivate) {
+			svg_destroy(svgPrivate);
+			svgPrivate = NULL;
+		}
+		svgPrivate = tmpSVG;
+		[self setNeedsDisplay];
 	}
-	[self setNeedsDisplay];
 }
 
 - (void)setSVGFileURL:(NSURL *)url
