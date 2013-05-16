@@ -26,7 +26,7 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 	//int w = ceil(current.fontWeight / 80.0);
 	NSInteger i;
 
-	svg_paint_t tempFill = current.fillPaint, tempStroke = current.strokePaint;
+	svg_paint_t tempFill = self.current.fillPaint, tempStroke = self.current.strokePaint;
 
 	if (utf8 == NULL)
 	return SVG_STATUS_SUCCESS;
@@ -37,7 +37,7 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 		NSArray *families;
 		NSString *family;
 		
-		families = [[current fontFamily] componentsSeparatedByString: @","];
+		families = [[self.current fontFamily] componentsSeparatedByString: @","];
 		
 		for (i = 0; i < [families count]; i++)
 		{
@@ -60,7 +60,7 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 		}
 		
 		if (!f)
-			f = CTFontCreateWithName(CFSTR("Helvetica"), current.fontSize, NULL);
+			f = CTFontCreateWithName(CFSTR("Helvetica"), self.current.fontSize, NULL);
 	}
 
 	{
@@ -68,10 +68,10 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 		CFMutableDictionaryRef desAttribs = CFDictionaryCreateMutable(kCFAllocatorDefault, 3, &kCFCopyStringDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
 
 		int fontTrait = 0;
-		if (current.fontStyle > SVG_FONT_STYLE_NORMAL) {
+		if (self.current.fontStyle > SVG_FONT_STYLE_NORMAL) {
 			fontTrait |= kCTFontItalicTrait;
 		}
-		if (current.fontWeight >= 700) {
+		if (self.current.fontWeight >= 700) {
 			fontTrait |= kCTFontBoldTrait;
 		}
 		CFNumberRef symTrait = CFNumberCreate(kCFAllocatorDefault, kCFNumberIntType, &fontTrait); 
@@ -86,7 +86,7 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 		CFRelease(tempDesDict);
 
 		CTFontDescriptorRef theDescriptor = CTFontDescriptorCreateWithAttributes(desAttribs);
-		tmpfont = CTFontCreateWithFontDescriptor(theDescriptor, current.fontSize, NULL);
+		tmpfont = CTFontCreateWithFontDescriptor(theDescriptor, self.current.fontSize, NULL);
 		CFRelease(fontTraits);
 		CFRelease(theDescriptor);
 		CFRelease(desAttribs);
@@ -106,7 +106,7 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 		CFStringGetCString(psFontName, psFontChar, 511, kCFStringEncodingUTF8);
 		CFRelease(tempDesDict);
 	}
-	CGContextSelectFont(tempCtx, psFontChar, current.fontSize, kCGEncodingFontSpecific);
+	CGContextSelectFont(tempCtx, psFontChar, self.current.fontSize, kCGEncodingFontSpecific);
 	NSUInteger str8len = [utfString length];
 	unichar *chars = malloc(sizeof(unichar) * str8len);
 	CGGlyph *glyphChars = malloc(sizeof(CGGlyph) * str8len);
@@ -158,7 +158,7 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 			break;
 			
 		case SVG_PAINT_TYPE_COLOR:
-			[self setFillColor:&tempFill.p.color alpha:current.fillOpacity];
+			[self setFillColor:&tempFill.p.color alpha:self.current.fillOpacity];
 			CGContextSetTextDrawingMode(tempCtx, kCGTextFill);
 			CGContextShowGlyphs(tempCtx, glyphChars, str8len);
 			break;
@@ -210,7 +210,7 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 			break;
 			
 		case SVG_PAINT_TYPE_COLOR:
-			[self setStrokeColor:&tempStroke.p.color alpha:current.strokeOpacity];
+			[self setStrokeColor:&tempStroke.p.color alpha:self.current.strokeOpacity];
 			CGContextSetTextDrawingMode(tempCtx, kCGTextStroke);
 			CGContextShowGlyphs(tempCtx, glyphChars, str8len);
 			break;
