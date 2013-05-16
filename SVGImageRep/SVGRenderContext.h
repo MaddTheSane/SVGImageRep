@@ -34,16 +34,18 @@ extern const svg_render_engine_t cocoa_svg_engine;
 	
 	double scale;
 	
-	SVGRenderState *current;
 	NSMutableArray *states;
 	int theIndent;
 }
 
-@property (readwrite, nonatomic, assign) SVGRenderState *current;
+@property (readonly, nonatomic) SVGRenderState *current;
 @property (readonly, nonatomic) NSMutableArray *states;
 @property (readonly, nonatomic) NSSize size;
 @property (readonly, nonatomic) double scale;
 @property (readonly, nonatomic) CGLayerRef renderLayer;
+
+- (void)pushRenderState;
+- (void)popRenderState;
 
 - (void)prepareRender:(double)a_scale;
 - (void)prepareRenderFromRenderContext:(SVGRenderContext *)prevContext;
