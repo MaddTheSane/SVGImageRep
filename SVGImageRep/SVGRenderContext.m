@@ -38,7 +38,7 @@
 
 @implementation SVGRenderContext
 
-@synthesize size, states, current, scale, renderLayer;
+@synthesize size, states, scale, renderLayer;
 @synthesize indent = theIndent;
 
 static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient);
@@ -69,7 +69,6 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 - (void)prepareRenderWithScale:(double)a_scale renderContext:(CGContextRef)theContext
 {
 	states = [[NSMutableArray alloc] init];
-	current = nil;
 	hasSize = NO;
 	scale = a_scale;
 	if (NSEqualSizes(size, NSZeroSize)) {
@@ -415,7 +414,7 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 	
 	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
 	
-	svg_paint_t tempFill = current.fillPaint, tempStroke = current.strokePaint;
+	svg_paint_t tempFill = self.current.fillPaint, tempStroke = self.current.strokePaint;
 	
 	switch (tempFill.type)
 	{
@@ -525,7 +524,7 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 			break;
 			
 		case SVG_PAINT_TYPE_COLOR:
-			[self setFillColor:&tempFill.p.color alpha:current.fillOpacity];
+			[self setFillColor:&tempFill.p.color alpha:self.current.fillOpacity];
 			if (rx > 0 || ry > 0)
 			{
 				CGContextMoveToPoint(tempCtx, cx + crx, cy);
@@ -565,7 +564,7 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 			break;
 			
 		case SVG_PAINT_TYPE_COLOR:
-			[self setStrokeColor:&tempStroke.p.color alpha:current.strokeOpacity];
+			[self setStrokeColor:&tempStroke.p.color alpha:self.current.strokeOpacity];
 			CGContextStrokeRect(tempCtx, CGRectMake(cx, cy, cw, ch));
 			break;
 
@@ -602,6 +601,35 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
  End of methods based on libxsvg code.
  */
 
+
+- (SVGRenderState*)current
+{
+	if (![states count]) {
+		return nil;
+	}
+	return [states objectAtIndex:[states count] - 1];
+}
+
+- (void)pushRenderState
+{
+	if ([states count]) {
+		SVGRenderState *tmp = [self.current copy];
+		[states addObject:tmp];
+		[tmp release];
+	} else {
+		SVGRenderState *tmp = [[SVGRenderState alloc] init];
+		[states addObject:tmp];
+		[tmp release];
+	}
+}
+
+- (void)popRenderState
+{
+	//Don't try popping an array with zero objects
+	if ([states count]) {
+		[states removeObjectAtIndex:[states count] - 1];
+	}
+}
 
 - (svg_status_t)beginGroup:(double)opacity
 {
@@ -649,11 +677,7 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 	
 	CGContextRestoreGState(tempCtx);
 	
-	[states removeObjectAtIndex:[states count] - 1];
-	if ([states count])
-		current = [states objectAtIndex:[states count] - 1];
-	else
-		current = nil;
+	[self popRenderState];
 	
 	return SVG_STATUS_SUCCESS;
 }
@@ -700,13 +724,13 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 - (svg_status_t)renderPath
 {
 	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
-	svg_paint_t tempFill = current.fillPaint, tempStroke = current.strokePaint;
+	svg_paint_t tempFill = self.current.fillPaint, tempStroke = self.current.strokePaint;
 	switch (tempFill.type)
 	{
 		case SVG_PAINT_TYPE_GRADIENT:
 		{
 			CGContextSaveGState(tempCtx);
-			if (current.fillRule)
+			if (self.current.fillRule)
 				CGContextEOClip(tempCtx);
 			else
 				CGContextClip(tempCtx);
@@ -780,10 +804,10 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 			break;
 			
 		case SVG_PAINT_TYPE_COLOR:
-			[self setFillColor:&tempFill.p.color alpha:current.fillOpacity];
+			[self setFillColor:&tempFill.p.color alpha:self.current.fillOpacity];
 			if (tempStroke.type != SVG_PAINT_TYPE_NONE)
 				CGContextSaveGState(tempCtx);
-			if (current.fillRule)
+			if (self.current.fillRule)
 				CGContextEOFillPath(tempCtx);
 			else
 				CGContextFillPath(tempCtx);
@@ -812,7 +836,7 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 			break;
 			
 		case SVG_PAINT_TYPE_COLOR:
-			[self setStrokeColor:&tempStroke.p.color alpha:current.strokeOpacity];
+			[self setStrokeColor:&tempStroke.p.color alpha:self.current.strokeOpacity];
 			CGContextStrokePath(tempCtx);
 			break;
 
@@ -825,7 +849,7 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 
 - (NSString *)description
 {
-	return [NSString stringWithFormat:@"Size: (%fx%f) is set: %@ scale: %f States: %li Current: %@", size.width, size.height, hasSize ? @"Yes" : @"No", scale, (long)[states count], [current description]];
+	return [NSString stringWithFormat:@"Size: (%fx%f) is set: %@ scale: %f States: %li Current: %@", size.width, size.height, hasSize ? @"Yes" : @"No", scale, (long)[states count], [self.current description]];
 }
 
 @end
@@ -860,11 +884,7 @@ static svg_status_t r_end_element(void *closure)
 	self.indent -= 3;
 	
 	CGContextRestoreGState(CGCtx);
-	[self.states removeObjectAtIndex:[self.states count] - 1];
-	if ([self.states count])
-		self.current = [self.states objectAtIndex:[self.states count] - 1];
-	else
-		self.current = nil;
+	[self popRenderState];
 	
 	return SVG_STATUS_SUCCESS;
 }

@@ -47,6 +47,9 @@ extern const svg_render_engine_t cocoa_svg_engine;
 @property (readonly, nonatomic) double scale;
 @property (readonly, nonatomic) CGLayerRef renderLayer;
 
+- (void)pushRenderState;
+- (void)popRenderState;
+
 - (void)prepareRender:(double)a_scale;
 - (void)prepareRenderFromRenderContext:(SVGRenderContext *)prevContext;
 - (void)finishRender;
