@@ -9,12 +9,6 @@
 #import "SVGImageRepiOS.h"
 #import "SVGRenderContext.h"
 
-static void DataProviderReleasseCallback(void *info, const void *data,
- size_t size)
-{
-	free(data);
-}
-
 extern CGSize GetSVGImageSizeFromData(NSData *data)
 {
 	svg_t *svg_test;
