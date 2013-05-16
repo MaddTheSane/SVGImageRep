@@ -89,7 +89,7 @@
 		55371457151BD40500F8848A /* pngdebug.h in Headers */ = {isa = PBXBuildFile; fileRef = 553713C2151BD40500F8848A /* pngdebug.h */; };
 		55371458151BD40500F8848A /* pngerror.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713C3151BD40500F8848A /* pngerror.c */; };
 		55371459151BD40500F8848A /* pngget.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713C4151BD40500F8848A /* pngget.c */; };
-		5537145A151BD40500F8848A /* pnginfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 553713C5151BD40500F8848A /* pnginfo.h */; };
+		5537145A151BD40500F8848A /* pnginfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 553713C5151BD40500F8848A /* pnginfo.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5537145B151BD40500F8848A /* pngmem.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713C6151BD40500F8848A /* pngmem.c */; };
 		5537145C151BD40500F8848A /* pngpread.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713C8151BD40500F8848A /* pngpread.c */; };
 		5537145D151BD40500F8848A /* pngpriv.h in Headers */ = {isa = PBXBuildFile; fileRef = 553713C9151BD40500F8848A /* pngpriv.h */; };
@@ -98,7 +98,7 @@
 		55371460151BD40500F8848A /* pngrtran.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713CC151BD40500F8848A /* pngrtran.c */; };
 		55371461151BD40500F8848A /* pngrutil.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713CD151BD40500F8848A /* pngrutil.c */; };
 		55371462151BD40500F8848A /* pngset.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713CE151BD40500F8848A /* pngset.c */; };
-		55371463151BD40500F8848A /* pngstruct.h in Headers */ = {isa = PBXBuildFile; fileRef = 553713CF151BD40500F8848A /* pngstruct.h */; };
+		55371463151BD40500F8848A /* pngstruct.h in Headers */ = {isa = PBXBuildFile; fileRef = 553713CF151BD40500F8848A /* pngstruct.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		55371465151BD40500F8848A /* pngtrans.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713D2151BD40500F8848A /* pngtrans.c */; };
 		55371466151BD40500F8848A /* pngwio.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713D3151BD40500F8848A /* pngwio.c */; };
 		55371467151BD40500F8848A /* pngwrite.c in Sources */ = {isa = PBXBuildFile; fileRef = 553713D4151BD40500F8848A /* pngwrite.c */; };
@@ -329,14 +329,28 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		5537131D151BD18000F8848A /* PBXContainerItemProxy */ = {
+		55AFA52B151AACE200B5351D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 55AFA487151AA3BC00B5351D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 55AFA4CC151AA7E900B5351D;
+			remoteInfo = svg;
+		};
+		55C87404152A2EDB00710A01 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 55AFA487151AA3BC00B5351D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 55AFA4CC151AA7E900B5351D;
+			remoteInfo = svg;
+		};
+		55C87406152A2F2C00710A01 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 55AFA487151AA3BC00B5351D /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 553711AF151BCF9100F8848A;
 			remoteInfo = jpeg;
 		};
-		5537131F151BD18000F8848A /* PBXContainerItemProxy */ = {
+		55C87408152A2F2C00710A01 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 55AFA487151AA3BC00B5351D /* Project object */;
 			proxyType = 1;
@@ -375,8 +389,15 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 55AFA487151AA3BC00B5351D /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 55AFA4CC151AA7E900B5351D;
-			remoteInfo = svg;
+			remoteGlobalIDString = 553711AF151BCF9100F8848A;
+			remoteInfo = jpeg;
+		};
+		55C8740C152A2F3300710A01 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 55AFA487151AA3BC00B5351D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 553711BE151BCF9A00F8848A;
+			remoteInfo = png;
 		};
 		55C87413152A343C00710A01 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -1178,7 +1199,6 @@
 				553712FB151BD0CD00F8848A /* jinclude.h in Headers */,
 				55371303151BD0CD00F8848A /* jmemsys.h in Headers */,
 				55371304151BD0CD00F8848A /* jmorecfg.h in Headers */,
-				55371305151BD0CD00F8848A /* jpegint.h in Headers */,
 				55371306151BD0CD00F8848A /* jpeglib.h in Headers */,
 				5537130B151BD0CD00F8848A /* jversion.h in Headers */,
 				553712C8151BD0CD00F8848A /* cderror.h in Headers */,
@@ -1196,9 +1216,7 @@
 				55371456151BD40500F8848A /* pngconf.h in Headers */,
 				55371437151BD40500F8848A /* config.h in Headers */,
 				55371457151BD40500F8848A /* pngdebug.h in Headers */,
-				5537145A151BD40500F8848A /* pnginfo.h in Headers */,
 				5537145D151BD40500F8848A /* pngpriv.h in Headers */,
-				55371463151BD40500F8848A /* pngstruct.h in Headers */,
 				5537146E151BD54A00F8848A /* pnglibconf.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1409,6 +1427,8 @@
 			buildRules = (
 			);
 			dependencies = (
+				55C87407152A2F2C00710A01 /* PBXTargetDependency */,
+				55C87409152A2F2C00710A01 /* PBXTargetDependency */,
 				55AFA52C151AACE200B5351D /* PBXTargetDependency */,
 			);
 			name = SVGImageRep;
@@ -1445,8 +1465,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				5537131E151BD18000F8848A /* PBXTargetDependency */,
-				55371320151BD18000F8848A /* PBXTargetDependency */,
 			);
 			name = svg;
 			productName = svg;
@@ -1887,15 +1905,25 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		5537131E151BD18000F8848A /* PBXTargetDependency */ = {
+		55AFA52C151AACE200B5351D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 55AFA4CC151AA7E900B5351D /* svg */;
+			targetProxy = 55AFA52B151AACE200B5351D /* PBXContainerItemProxy */;
+		};
+		55C87405152A2EDB00710A01 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 55AFA4CC151AA7E900B5351D /* svg */;
+			targetProxy = 55C87404152A2EDB00710A01 /* PBXContainerItemProxy */;
+		};
+		55C87407152A2F2C00710A01 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 553711AF151BCF9100F8848A /* jpeg */;
-			targetProxy = 5537131D151BD18000F8848A /* PBXContainerItemProxy */;
+			targetProxy = 55C87406152A2F2C00710A01 /* PBXContainerItemProxy */;
 		};
-		55371320151BD18000F8848A /* PBXTargetDependency */ = {
+		55C87409152A2F2C00710A01 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 553711BE151BCF9A00F8848A /* png */;
-			targetProxy = 5537131F151BD18000F8848A /* PBXContainerItemProxy */;
+			targetProxy = 55C87408152A2F2C00710A01 /* PBXContainerItemProxy */;
 		};
 		5560E70F152B6F72008FF127 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1919,8 +1947,13 @@
 		};
 		55AFA52C151AACE200B5351D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 55AFA4CC151AA7E900B5351D /* svg */;
-			targetProxy = 55AFA52B151AACE200B5351D /* PBXContainerItemProxy */;
+			target = 553711AF151BCF9100F8848A /* jpeg */;
+			targetProxy = 55C8740A152A2F3300710A01 /* PBXContainerItemProxy */;
+		};
+		55C8740D152A2F3300710A01 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 553711BE151BCF9A00F8848A /* png */;
+			targetProxy = 55C8740C152A2F3300710A01 /* PBXContainerItemProxy */;
 		};
 		55C87414152A343C00710A01 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
