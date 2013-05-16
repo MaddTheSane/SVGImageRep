@@ -8,9 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface SVGImageView : UIView {
-	void *svgPrivate;
-}
+@interface SVGImageView : UIView
 
 - (void)setData:(NSData *)data;
 - (void)setSVGFilePath:(NSString *)path;
