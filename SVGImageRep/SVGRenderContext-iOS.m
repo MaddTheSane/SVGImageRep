@@ -54,7 +54,7 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 			else if ([family isEqual: @"monospace"])
 				family = @"Courier";
 			
-			f = CTFontCreateWithName((__bridge CFStringRef)family, current.fontSize, NULL);
+			f = CTFontCreateWithName((__bridge CFStringRef)family, self.current.fontSize, NULL);
 			if (f)
 				break;
 		}
