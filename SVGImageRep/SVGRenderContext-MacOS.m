@@ -104,7 +104,7 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 	CFRange fitRange;
 	CTFrameRef tempFrame;
 	{
-		CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString((CFAttributedStringRef)textWFont);
+		CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString(BRIDGE(CFAttributedStringRef, textWFont));
 		CGSize frameSize = CTFramesetterSuggestFrameSizeWithConstraints(framesetter, CFRangeMake(0, [textWFont length]), NULL, CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX), &fitRange);
 		CGMutablePathRef pathRef;
 		pathRef = CGPathCreateMutable();
@@ -119,7 +119,7 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 	}
 	CTFrameDraw(tempFrame, tempCtx);
 	CFRelease(tempFrame);
-	[textWFont release];
+	RELEASEOBJ(textWFont);
 
 #else
 
