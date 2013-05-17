@@ -10,7 +10,13 @@
 #import "SVGRenderContext.h"
 #include "svg.h"
 
+@interface SVGImageView ()
+@property (readonly, nonatomic) svg_t *svgPrivate;
+@end
+
 @implementation SVGImageView
+
+@synthesize svgPrivate;
 
 - (id)initWithFrame:(CGRect)frame
 {
