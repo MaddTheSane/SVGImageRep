@@ -87,12 +87,10 @@
 		yScale = rect.size.height / renderSize.height;
 		
 		svg_status_t rendered;
-		{
-			NSAutoreleasePool *pool = [NSAutoreleasePool new];
+		@autoreleasepool{
 			[svg_render_context prepareRender:MIN(xScale, yScale)];
 			rendered = svg_render(svgPrivate, &cocoa_svg_engine, svg_render_context);
 			[svg_render_context finishRender];
-			[pool drain];
 		}
 		
 		if (rendered == SVG_STATUS_SUCCESS) {
