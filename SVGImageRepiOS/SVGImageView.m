@@ -60,6 +60,7 @@
 	CGContextDrawLayerInRect(tmpCtx, CGRectMake(0, 0, imageSize.width, imageSize.height), ctxt.renderLayer);
 	[ctxt release];
 	CGImageRef tmpImage = CGBitmapContextCreateImage(tmpCtx);
+	CGContextRelease(tmpCtx);
 	UIImage *tmpUIImage = [UIImage imageWithCGImage:tmpImage];
 	CGImageRelease(tmpImage);
 	return tmpUIImage;
