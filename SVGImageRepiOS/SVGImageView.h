@@ -13,5 +13,7 @@
 - (void)setData:(NSData *)data;
 - (void)setSVGFilePath:(NSString *)path;
 - (void)setSVGFileURL:(NSURL *)url;
+- (UIImage *)UIImage;
+- (UIImage *)UIImageWithSize:(CGSize)imageSize;
 
 @end

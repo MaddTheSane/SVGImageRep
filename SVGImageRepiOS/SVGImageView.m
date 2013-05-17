@@ -28,19 +28,21 @@
 }
 
 
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect
+- (UIImage *)UIImage
 {
-	SVGRenderContext *svg_render_context;
-	CGContextRef CGCtx = UIGraphicsGetCurrentContext();
-	svg_render_context = [[SVGRenderContext alloc] init];
+	if (!svgPrivate) {
+		return nil;
+	}
+	svg_length_t w, h;
+	svg_get_size(svgPrivate, &w, &h);
 
-	CGSize renderSize;
-	{
-		svg_length_t w, h;
-		svg_get_size(svgPrivate, &w, &h);
-		renderSize = CGSizeMake([SVGRenderContext lengthToPoints:&w], [SVGRenderContext lengthToPoints:&h]);
+	return [self UIImageWithSize:CGSizeMake([SVGRenderContext lengthToPoints:&w], [SVGRenderContext lengthToPoints:&h])];
+}
+
+- (UIImage *)UIImageWithSize:(CGSize)imageSize
+{
+	if (!svgPrivate) {
+		return nil;
 	}
 	
 	CGFloat xScale, yScale;
@@ -54,8 +56,14 @@
 		[svg_render_context finishRender];
 	}
 	
-	if (rendered == SVG_STATUS_SUCCESS) {
-		CGContextDrawLayerInRect(CGCtx, rect, svg_render_context.renderLayer);
+	CGFloat scale = MIN(imageSize.height / fillSize.height, imageSize.width / fillSize.width);
+	
+	svg_status_t retStatus;
+	SVGRenderContext *ctxt = [[SVGRenderContext alloc] init];
+	@autoreleasepool {
+		[ctxt prepareRender:scale];
+		retStatus = svg_render(svgPrivate, &cocoa_svg_engine, ctxt);
+		[ctxt finishRender];
 	}
 }
 
