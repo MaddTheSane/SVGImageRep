@@ -22,39 +22,87 @@
 }
 
 
+- (UIImage *)UIImage
+{
+	if (!svgPrivate) {
+		return nil;
+	}
+	svg_length_t w, h;
+	svg_get_size(svgPrivate, &w, &h);
+
+	return [self UIImageWithSize:CGSizeMake([SVGRenderContext lengthToPoints:&w], [SVGRenderContext lengthToPoints:&h])];
+}
+
+- (UIImage *)UIImageWithSize:(CGSize)imageSize
+{
+	if (!svgPrivate) {
+		return nil;
+	}
+	CGSize fillSize;
+	{
+	svg_length_t w, h;
+	svg_get_size(svgPrivate, &w, &h);
+		fillSize = CGSizeMake([SVGRenderContext lengthToPoints:&w], [SVGRenderContext lengthToPoints:&h]);
+	}
+	
+	CGFloat scale = MIN(imageSize.height / fillSize.height, imageSize.width / fillSize.width);
+	
+	svg_status_t retStatus;
+	SVGRenderContext *ctxt = [[SVGRenderContext alloc] init];
+	@autoreleasepool {
+		[ctxt prepareRender:scale];
+		retStatus = svg_render(svgPrivate, &cocoa_svg_engine, ctxt);
+		[ctxt finishRender];
+	}
+	CGColorSpaceRef defaultSpace = CGColorSpaceCreateDeviceRGB();
+	CGContextRef tmpCtx = CGBitmapContextCreateWithData(NULL, imageSize.width, imageSize.height, 8, imageSize.width * 4, defaultSpace, kCGImageAlphaPremultipliedLast, NULL, NULL);
+	CGColorSpaceRelease(defaultSpace);
+	CGContextDrawLayerInRect(tmpCtx, CGRectMake(0, 0, imageSize.width, imageSize.height), ctxt.renderLayer);
+	[ctxt release];
+	CGImageRef tmpImage = CGBitmapContextCreateImage(tmpCtx);
+	UIImage *tmpUIImage = [UIImage imageWithCGImage:tmpImage];
+	CGImageRelease(tmpImage);
+	return tmpUIImage;
+}
+
+
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.
 - (void)drawRect:(CGRect)rect
 {
-	SVGRenderContext *svg_render_context;
-	CGContextRef CGCtx = UIGraphicsGetCurrentContext();
-	svg_render_context = [[SVGRenderContext alloc] init];
-
-	CGSize renderSize;
-	{
-		svg_length_t w, h;
-		svg_get_size(svgPrivate, &w, &h);
-		renderSize = CGSizeMake([SVGRenderContext lengthToPoints:&w], [SVGRenderContext lengthToPoints:&h]);
+	if (svgPrivate) {
+		SVGRenderContext *svg_render_context;
+		CGContextRef CGCtx = UIGraphicsGetCurrentContext();
+		svg_render_context = [[SVGRenderContext alloc] init];
+		
+		CGSize renderSize;
+		{
+			svg_length_t w, h;
+			svg_get_size(svgPrivate, &w, &h);
+			renderSize = CGSizeMake([SVGRenderContext lengthToPoints:&w], [SVGRenderContext lengthToPoints:&h]);
+		}
+		
+		CGFloat xScale, yScale;
+		xScale = rect.size.width / renderSize.width;
+		yScale = rect.size.height / renderSize.height;
+		
+		svg_status_t rendered;
+		{
+			NSAutoreleasePool *pool = [NSAutoreleasePool new];
+			[svg_render_context prepareRender:MIN(xScale, yScale)];
+			rendered = svg_render(svgPrivate, &cocoa_svg_engine, svg_render_context);
+			[svg_render_context finishRender];
+			[pool drain];
+		}
+		
+		if (rendered == SVG_STATUS_SUCCESS) {
+			CGContextDrawLayerInRect(CGCtx, rect, svg_render_context.renderLayer);
+		}
+		[svg_render_context release];
+	} else {
+		[[UIColor clearColor] set];
+		CGContextFillRect(UIGraphicsGetCurrentContext(), rect);
 	}
-	
-	CGFloat xScale, yScale;
-	xScale = rect.size.width / renderSize.width;
-	yScale = rect.size.height / renderSize.height;
-	
-	svg_status_t rendered;
-	{
-		NSAutoreleasePool *pool = [NSAutoreleasePool new];
-		[svg_render_context prepareRender:MIN(xScale, yScale)];
-		rendered = svg_render(svgPrivate, &cocoa_svg_engine, svg_render_context);
-		[svg_render_context finishRender];
-		[pool drain];
-	}
-	
-	if (rendered == SVG_STATUS_SUCCESS) {
-		CGContextDrawLayerInRect(CGCtx, rect, svg_render_context.renderLayer);
-	}
-	[svg_render_context release];
-
 }
 
 - (void)dealloc
