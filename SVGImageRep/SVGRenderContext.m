@@ -622,13 +622,9 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 	}
 #else
 	if ([states count]) {
-		SVGRenderState *tmp = [self.current copy];
-		[states addObject:tmp];
-		[tmp release];
+		tmp = [self.current copy];
 	} else {
-		SVGRenderState *tmp = [[SVGRenderState alloc] init];
-		[states addObject:tmp];
-		[tmp release];
+		tmp = [[SVGRenderState alloc] init];
 	}
 #endif
 }
@@ -925,18 +921,7 @@ static svg_status_t r_quadratic_curve_to(void *closure, double x1, double y1, do
 	SVGRenderContext *self = BRIDGE(SVGRenderContext *, closure);
 	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
-#ifndef DONTUSECGQUADCURVE
 	CGContextAddQuadCurveToPoint(CGCtx, x1, y1, x2, y2);
-#else
-	CGPoint currPoint = CGContextGetPathCurrentPoint(CGCtx);
-	CGContextAddCurveToPoint(CGCtx,
-			   currPoint.x + 2.0/3.0 * (x1 - currPoint.x),
-			   currPoint.y + 2.0/3.0 * (y1 - currPoint.y),
-			   x2 + 2.0/3.0 * (x1 - x2),
-			   y2 + 2.0/3.0 * (y1 - y2),
-			   x2,y2);
-
-#endif
 	return SVG_STATUS_SUCCESS;
 }
 
@@ -1274,7 +1259,7 @@ static svg_status_t r_render_image(void *closure, unsigned char *data, unsigned 
 		if (!theData) {
 			return SVG_STATUS_NO_MEMORY;
 		}
-		CGImageRef theImage = CGImageCreate(data_width, data_height, 8, 32, data_width * 4, GetGenericRGBColorSpace(), kCGImageAlphaFirst, theData, NULL, FALSE, kCGRenderingIntentDefault);
+		CGImageRef theImage = CGImageCreate(data_width, data_height, 8, 32, data_width * 4, GetGenericRGBColorSpace(), kCGImageAlphaPremultipliedFirst, theData, NULL, FALSE, kCGRenderingIntentDefault);
 		CGDataProviderRelease(theData);
 		if (!theImage) {
 			return SVG_STATUS_NO_MEMORY;
