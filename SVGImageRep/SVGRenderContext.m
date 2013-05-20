@@ -915,18 +915,7 @@ static svg_status_t r_quadratic_curve_to(void *closure, double x1, double y1, do
 	SVGRenderContext *self = (SVGRenderContext *)closure;
 	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
-#ifndef DONTUSECGQUADCURVE
 	CGContextAddQuadCurveToPoint(CGCtx, x1, y1, x2, y2);
-#else
-	CGPoint currPoint = CGContextGetPathCurrentPoint(CGCtx);
-	CGContextAddCurveToPoint(CGCtx,
-			   currPoint.x + 2.0/3.0 * (x1 - currPoint.x),
-			   currPoint.y + 2.0/3.0 * (y1 - currPoint.y),
-			   x2 + 2.0/3.0 * (x1 - x2),
-			   y2 + 2.0/3.0 * (y1 - y2),
-			   x2,y2);
-
-#endif
 	return SVG_STATUS_SUCCESS;
 }
 
