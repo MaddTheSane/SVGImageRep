@@ -1265,7 +1265,7 @@ static svg_status_t r_render_image(void *closure, unsigned char *data, unsigned 
 		if (!theData) {
 			return SVG_STATUS_NO_MEMORY;
 		}
-		CGImageRef theImage = CGImageCreate(data_width, data_height, 8, 32, data_width * 4, GetGenericRGBColorSpace(), kCGImageAlphaFirst, theData, NULL, FALSE, kCGRenderingIntentDefault);
+		CGImageRef theImage = CGImageCreate(data_width, data_height, 8, 32, data_width * 4, GetGenericRGBColorSpace(), kCGImageAlphaPremultipliedFirst, theData, NULL, FALSE, kCGRenderingIntentDefault);
 		CGDataProviderRelease(theData);
 		if (!theImage) {
 			return SVG_STATUS_NO_MEMORY;
