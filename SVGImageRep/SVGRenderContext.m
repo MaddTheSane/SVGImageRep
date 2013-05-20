@@ -610,15 +610,14 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 
 - (void)pushRenderState
 {
+	SVGRenderState *tmp = nil;
 	if ([states count]) {
-		SVGRenderState *tmp = [self.current copy];
-		[states addObject:tmp];
-		[tmp release];
+		tmp = [self.current copy];
 	} else {
-		SVGRenderState *tmp = [[SVGRenderState alloc] init];
-		[states addObject:tmp];
-		[tmp release];
+		tmp = [[SVGRenderState alloc] init];
 	}
+	[states addObject:tmp];
+	[tmp release];
 }
 
 - (void)popRenderState
