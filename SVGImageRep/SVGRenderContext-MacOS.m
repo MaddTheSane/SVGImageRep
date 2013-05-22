@@ -30,7 +30,7 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 	if (utf8 == NULL)
 	return SVG_STATUS_SUCCESS;
 
-	NSString *utfString = [NSString stringWithUTF8String:utf8];
+	NSString *utfString = @(utf8);
 
 	{
 		NSFontTraitMask fontTrait = 0;
