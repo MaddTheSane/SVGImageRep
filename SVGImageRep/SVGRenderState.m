@@ -54,17 +54,15 @@
 	[fontFamily release];
 	
 	[super dealloc];
-#endif
 }
 
-#if !__has_feature(objc_arc)
 - (void)finalize
 {
 	if (dash)
 		free(dash);
 	
 	[super finalize];
-}
 #endif
+}
 
 @end
