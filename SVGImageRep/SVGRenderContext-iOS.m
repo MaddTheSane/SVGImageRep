@@ -31,13 +31,13 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 	if (utf8 == NULL)
 	return SVG_STATUS_SUCCESS;
 
-	NSString *utfString = [NSString stringWithUTF8String:utf8];
+	NSString *utfString = @(utf8);
 
 	{
 		NSArray *families;
 		NSString *family;
 		
-		families = [[self.current fontFamily] componentsSeparatedByString: @","];
+		families = [self.current.fontFamily componentsSeparatedByString: @","];
 		
 		for (i = 0; i < [families count]; i++)
 		{
@@ -67,14 +67,14 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 		CFMutableDictionaryRef fontTraits = CFDictionaryCreateMutable(kCFAllocatorDefault, 1, &kCFCopyStringDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
 		CFMutableDictionaryRef desAttribs = CFDictionaryCreateMutable(kCFAllocatorDefault, 3, &kCFCopyStringDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
 
-		int fontTrait = 0;
+		uint32_t fontTrait = 0;
 		if (self.current.fontStyle > SVG_FONT_STYLE_NORMAL) {
 			fontTrait |= kCTFontItalicTrait;
 		}
 		if (self.current.fontWeight >= 700) {
 			fontTrait |= kCTFontBoldTrait;
 		}
-		CFNumberRef symTrait = CFNumberCreate(kCFAllocatorDefault, kCFNumberIntType, &fontTrait); 
+		CFNumberRef symTrait = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &fontTrait); 
 		CFDictionaryAddValue(fontTraits, kCTFontSymbolicTrait, symTrait);
 		CFRelease(symTrait);
 		CFDictionaryAddValue(desAttribs, kCTFontTraitsAttribute, fontTraits);
