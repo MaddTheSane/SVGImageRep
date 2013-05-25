@@ -173,6 +173,32 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 			
 		case SVG_PAINT_TYPE_PATTERN:
 #warning SVG_PAINT_TYPE_PATTERN not handled yet!
+			CGContextSaveGState(tempCtx);
+			CGContextSetTextDrawingMode(tempCtx, kCGTextFillClip);
+			CGContextShowGlyphs(tempCtx, glyphChars, str8len);
+		{
+			if (self.current.fillRule)
+				CGContextEOClip(tempCtx);
+			else
+				CGContextClip(tempCtx);
+			svg_element_t *tempElement = tempFill.p.pattern_element;
+			SVGRenderContext *patternRender = [[SVGRenderContext alloc] init];
+			svg_pattern_t *pattern = svg_element_pattern(tempElement);
+			{
+				NSAutoreleasePool *pool = [NSAutoreleasePool new];
+				[patternRender prepareRenderFromRenderContext:self];
+				[patternRender setViewportDimensionWidth:&pattern->width height:&pattern->height];
+				svg_element_render(tempElement, &cocoa_svg_engine, patternRender);
+				[patternRender finishRender];
+				[pool drain];
+			}
+			CGColorRef patColor = CreatePatternColorFromRenderContext(patternRender);
+			CGContextSetFillColorWithColor(tempCtx, patColor);
+			CGContextFillPath(tempCtx);
+			CGColorRelease(patColor);
+			[patternRender release];
+		}
+			CGContextRestoreGState(tempCtx);
 			break;
 			
 		case SVG_PAINT_TYPE_COLOR:
