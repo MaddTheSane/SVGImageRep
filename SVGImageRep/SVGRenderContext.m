@@ -42,6 +42,7 @@
 @synthesize indent = theIndent;
 
 static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient);
+static CGColorRef CreatePatternColorFromRenderContext(SVGRenderContext *theCont);
 
 #if !(TARGET_OS_EMBEDDED || TARGET_OS_IPHONE)
 #import "SVGRenderContext-MacOS.m"
@@ -765,7 +766,10 @@ static CGColorRef CreatePatternColorFromRenderContext(SVGRenderContext *theCont)
 #warning SVG_PAINT_TYPE_PATTERN not handled yet!
 			CGContextSaveGState(tempCtx);
 		{
-			CGContextClip(tempCtx);
+			if (self.current.fillRule)
+				CGContextEOClip(tempCtx);
+			else
+				CGContextClip(tempCtx);
 			svg_element_t *tempElement = tempFill.p.pattern_element;
 			SVGRenderContext *patternRender = [[SVGRenderContext alloc] init];
 			svg_pattern_t *pattern = svg_element_pattern(tempElement);
