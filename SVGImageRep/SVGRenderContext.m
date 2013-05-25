@@ -216,6 +216,31 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 	CGColorRelease(tempColor);
 }
 
+//Code taken from TBColor from https://github.com/zrxq/TBColor
+static void ImagePatternCallback (void *imagePtr, CGContextRef ctx) {
+	SVGRenderContext *svgCtx = (SVGRenderContext*)imagePtr;
+	CGContextDrawLayerInRect(ctx, CGRectMake(0, 0, svgCtx.size.width, svgCtx.size.height), svgCtx.renderLayer);
+}
+
+static void ImageReleaseCallback(void *imagePtr) {
+    [(SVGRenderContext*)imagePtr release];
+}
+
+
+static CGColorRef CreatePatternColorFromRenderContext(SVGRenderContext *theCont)
+{
+	static const CGPatternCallbacks callback = {0, ImagePatternCallback, ImageReleaseCallback};
+	[theCont retain];
+    CGPatternRef pattern = CGPatternCreate(theCont, CGRectMake(0, 0, theCont.size.width, theCont.size.height), CGAffineTransformIdentity, theCont.size.height, theCont.size.width, kCGPatternTilingConstantSpacing, true, &callback);
+    CGColorSpaceRef coloredPatternColorSpace = CGColorSpaceCreatePattern(NULL);
+    CGFloat dummy = 1.0f;
+    CGColorRef color = CGColorCreateWithPattern(coloredPatternColorSpace, pattern, &dummy);
+    CGColorSpaceRelease(coloredPatternColorSpace);
+    CGPatternRelease(pattern);
+    return color;
+}
+//end of taken code
+
 /*
  A few methods based on code in libxsvg:
  */
@@ -497,25 +522,10 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 				[patternRender finishRender];
 				[pool drain];
 			}
-			CGFloat w, h, x, y;
-			w = [self lengthToPoints:&pattern->width];
-			h = [self lengthToPoints:&pattern->height];
-			x = [self lengthToPoints:&pattern->x];
-			y = [self lengthToPoints:&pattern->y];
-			int xIter = 0, yIter = 0;
-			CGFloat imgSizeX = size.width / scale, imgSizeY = size.height / scale;
-			
-			//TODO: handle transform
-			//FIXME: there has to be a better way of drawing this.
-			do {
-				yIter++;
-				xIter = 0;
-				do {
-					xIter++;
-					CGContextDrawLayerInRect(tempCtx, CGRectMake((x * xIter), (y * yIter), w, h), patternRender.renderLayer);
-				} while (imgSizeX > (x + xIter * w));
-			} while (imgSizeY > (y + yIter * h));
-			//CGContextDrawLayerInRect(tempCtx, CGRectMake(x, y, w, h), patternRender.renderLayer);
+			CGColorRef patColor = CreatePatternColorFromRenderContext(patternRender);
+			CGContextSetFillColorWithColor(tempCtx, patColor);
+			CGContextFillPath(tempCtx);
+			CGColorRelease(patColor);
 			[patternRender release];
 		}
 			CGContextRestoreGState(tempCtx);
@@ -767,25 +777,10 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 				[patternRender finishRender];
 				[pool drain];
 			}
-			CGFloat w, h, x, y;
-			w = [self lengthToPoints:&pattern->width];
-			h = [self lengthToPoints:&pattern->height];
-			x = [self lengthToPoints:&pattern->x];
-			y = [self lengthToPoints:&pattern->y];
-			int xIter = 0, yIter = 0;
-			CGFloat imgSizeX = size.width / scale, imgSizeY = size.height / scale;
-
-			//TODO: handle transform
-			//FIXME: there has to be a better way of drawing this.
-			do {
-				yIter++;
-				xIter = 0;
-				do {
-					xIter++;
-					CGContextDrawLayerInRect(tempCtx, CGRectMake((x * xIter), (y * yIter), w, h), patternRender.renderLayer);
-				} while (imgSizeX > (x + xIter * w));
-			} while (imgSizeY > (y + yIter * h));
-			//CGContextDrawLayerInRect(tempCtx, CGRectMake(x, y, w, h), patternRender.renderLayer);
+			CGColorRef patColor = CreatePatternColorFromRenderContext(patternRender);
+			CGContextSetFillColorWithColor(tempCtx, patColor);
+			CGContextFillPath(tempCtx);
+			CGColorRelease(patColor);
 			[patternRender release];
 		}
 			CGContextRestoreGState(tempCtx);
