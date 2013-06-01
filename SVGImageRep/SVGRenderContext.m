@@ -227,7 +227,6 @@ static void ImageReleaseCallback(void *imagePtr) {
     [(SVGRenderContext*)imagePtr release];
 }
 
-
 static CGColorRef CreatePatternColorFromRenderContext(SVGRenderContext *theCont)
 {
 	static const CGPatternCallbacks callback = {0, ImagePatternCallback, ImageReleaseCallback};
