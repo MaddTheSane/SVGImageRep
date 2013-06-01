@@ -616,7 +616,7 @@ static CGColorRef CreatePatternColorFromRenderContext(SVGRenderContext *theCont)
 	if (![states count]) {
 		return nil;
 	}
-	return [states objectAtIndex:[states count] - 1];
+	return [states lastObject];
 }
 
 - (void)pushRenderState
@@ -635,7 +635,7 @@ static CGColorRef CreatePatternColorFromRenderContext(SVGRenderContext *theCont)
 {
 	//Don't try popping an array with zero objects
 	if ([states count]) {
-		[states removeObjectAtIndex:[states count] - 1];
+		[states removeLastObject];
 	}
 }
 
