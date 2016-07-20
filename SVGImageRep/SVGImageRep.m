@@ -4,6 +4,7 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 
 #include <math.h>
 
+#include <svg.h>
 #import "SVGImageRep.h"
 
 #import <Foundation/NSArray.h>
@@ -16,6 +17,9 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 #import "SVGRenderContext.h"
 
 @implementation SVGImageRep
+{
+	svg_t *svg;
+}
 
 + (NSArray *)imageUnfilteredFileTypes
 {
@@ -53,7 +57,7 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 
 + (NSImageRep *)imageRepWithData:(NSData *)d
 {
-	return [[[self alloc] initWithData:d] autorelease];
+	return [[self alloc] initWithData:d];
 }
 
 - (id)initWithData:(NSData *)d
@@ -67,7 +71,6 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 	status = svg_parse_buffer(svg, [d bytes], [d length]);
 	if (status != SVG_STATUS_SUCCESS)
 	{
-		[self autorelease];
 		return nil;
 	}
 
@@ -96,15 +99,6 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 - (void)dealloc
 {
 	svg_destroy(svg);
-	
-	[super dealloc];
-}
-
-- (void)finalize
-{
-	svg_destroy(svg);
-	
-	[super finalize];
 }
 
 - (BOOL)draw
@@ -116,12 +110,10 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 	CGAffineTransform scaleTrans = CGContextGetCTM(CGCtx);
 
 	svg_status_t rendered;
-	{
-		NSAutoreleasePool *pool = [NSAutoreleasePool new];
+	@autoreleasepool {
 		[svg_render_context prepareRender:MIN(scaleTrans.a, scaleTrans.d)];
-		rendered = svg_render(svg, &cocoa_svg_engine, svg_render_context);
+		rendered = svg_render(svg, &cocoa_svg_engine, (__bridge void *)(svg_render_context));
 		[svg_render_context finishRender];
-		[pool drain];
 	}
 
 	if (rendered == SVG_STATUS_SUCCESS) {
@@ -129,7 +121,6 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 		CGContextDrawLayerInRect(CGCtx, CGRectMake(0, 0, renderSize.width, renderSize.height), svg_render_context.renderLayer);
 		didRender = YES;
 	}
-	[svg_render_context release];
 	return didRender;
 }
 

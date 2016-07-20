@@ -9,15 +9,11 @@
 #ifndef SVGImageRep_SVGImageRep_h
 #define SVGImageRep_SVGImageRep_h
 
-#include <svg.h>
 #import <AppKit/NSImageRep.h>
 
 @class NSData;
 
 @interface SVGImageRep : NSImageRep
-{
-	svg_t *svg;
-}
 
 - (id)initWithData:(NSData *)d;
 @end
