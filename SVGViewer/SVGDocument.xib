@@ -17,30 +17,30 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="196" y="240" width="558" height="351"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <view key="contentView" id="2">
                 <rect key="frame" x="0.0" y="0.0" width="558" height="351"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <scrollView horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" allowsMagnification="YES" usesPredominantAxisScrolling="NO" id="4">
-                        <rect key="frame" x="19" y="16" width="521" height="318"/>
+                    <scrollView borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" allowsMagnification="YES" usesPredominantAxisScrolling="NO" id="4">
+                        <rect key="frame" x="0.0" y="0.0" width="558" height="351"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <clipView key="contentView" id="Zse-Xk-X5U">
-                            <rect key="frame" x="1" y="1" width="519" height="316"/>
+                            <rect key="frame" x="0.0" y="0.0" width="558" height="351"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <view id="5" customClass="SVGView">
-                                    <rect key="frame" x="0.0" y="0.0" width="519" height="316"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="558" height="351"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 </view>
                             </subviews>
                         </clipView>
                         <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="6">
-                            <rect key="frame" x="1" y="301" width="519" height="16"/>
+                            <rect key="frame" x="0.0" y="335" width="558" height="16"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="7">
-                            <rect key="frame" x="505" y="1" width="15" height="316"/>
+                            <rect key="frame" x="542" y="0.0" width="16" height="351"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                     </scrollView>

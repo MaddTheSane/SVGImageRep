@@ -116,7 +116,6 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 		}
 		
 		NSArray<NSString*> *families = [self.current.fontFamily componentsSeparatedByString: @","];
-		
 		for (__strong NSString *family in families) {
 			family = [family stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceCharacterSet]];
 			if ([family hasPrefix: @"'"])
@@ -324,10 +323,7 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 		return SVG_STATUS_SUCCESS;
 	
 	{
-		NSArray<NSString*> *families;
-		
-		families = [self.current.fontFamily componentsSeparatedByString: @","];
-		
+		NSArray<NSString*> *families = [self.current.fontFamily componentsSeparatedByString: @","];
 		for (__strong NSString *family in families)
 		{
 			family = [family stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceCharacterSet]];
@@ -445,7 +441,12 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 		{
 			svg_color_t *tempsvgcolor = &tempFill.p.color;
 			[self setFillColor:tempsvgcolor alpha:self.current.fillOpacity];
-			UIColor *foreColor = [UIColor colorWithRed:svg_color_get_red(tempsvgcolor)/255.0 green:svg_color_get_green(tempsvgcolor)/255.0 blue:svg_color_get_blue(tempsvgcolor)/255.0 alpha:self.current.fillOpacity];
+			CGColorRef foreCGColor = CreateColorRefFromSVGColor(tempsvgcolor, self.current.fillOpacity);
+			UIColor *foreColor = [UIColor colorWithCGColor:foreCGColor];
+			CFRelease(foreCGColor);
+			if (!foreColor) {
+				foreColor = [UIColor colorWithRed:svg_color_get_red(tempsvgcolor)/255.0 green:svg_color_get_green(tempsvgcolor)/255.0 blue:svg_color_get_blue(tempsvgcolor)/255.0 alpha:self.current.fillOpacity];
+			}
 			[textWFont addAttribute:NSForegroundColorAttributeName value:foreColor range:NSMakeRange(0, textWFont.length)];
 			
 			CGContextSetTextDrawingMode(tempCtx, kCGTextFill);
@@ -508,7 +509,12 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 		{
 			svg_color_t *tempsvgcolor = &tempStroke.p.color;
 			[self setStrokeColor:tempsvgcolor alpha:self.current.strokeOpacity];
-			UIColor *backColor = [UIColor colorWithRed:svg_color_get_red(tempsvgcolor)/255.0 green:svg_color_get_green(tempsvgcolor)/255.0 blue:svg_color_get_blue(tempsvgcolor)/255.0 alpha:self.current.strokeOpacity];
+			CGColorRef foreCGColor = CreateColorRefFromSVGColor(tempsvgcolor, self.current.strokeOpacity);
+			UIColor *backColor = [UIColor colorWithCGColor:foreCGColor];
+			CFRelease(foreCGColor);
+			if (!backColor) {
+				backColor = [UIColor colorWithRed:svg_color_get_red(tempsvgcolor)/255.0 green:svg_color_get_green(tempsvgcolor)/255.0 blue:svg_color_get_blue(tempsvgcolor)/255.0 alpha:self.current.strokeOpacity];
+			}
 			//NSDictionary *addlAttrs = @{NSBackgroundColorAttributeName: backColor,
 			//							NSForegroundColorAttributeName: [NSColor clearColor],
 			//							NSStrokeWidthAttributeName: @(w)};
