@@ -2,3 +2,5 @@ build
 SVGImageRep.bundle
 SVGViewer.app
 obj
+xcuserdata/
+project.xcworkspace/
