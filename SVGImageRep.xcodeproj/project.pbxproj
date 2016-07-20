@@ -309,9 +309,9 @@
 		55F0FA92151FBB80006426B8 /* SVGViewer.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55F0FA91151FBB80006426B8 /* SVGViewer.xib */; };
 		55F0FA94151FBE4A006426B8 /* SVGDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55F0FA93151FBE4A006426B8 /* SVGDocument.xib */; };
 		55F0FAC81520E925006426B8 /* SVGRenderState.m in Sources */ = {isa = PBXBuildFile; fileRef = 55F0FAC71520E925006426B8 /* SVGRenderState.m */; };
-		55F0FAC91520E925006426B8 /* SVGRenderState.m in Sources */ = {isa = PBXBuildFile; fileRef = 55F0FAC71520E925006426B8 /* SVGRenderState.m */; };
+		55F0FAC91520E925006426B8 /* SVGRenderState.m in Sources */ = {isa = PBXBuildFile; fileRef = 55F0FAC71520E925006426B8 /* SVGRenderState.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		55F0FACC1520E9F8006426B8 /* SVGRenderContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 55F0FACB1520E9F8006426B8 /* SVGRenderContext.m */; };
-		55F0FACD1520E9F8006426B8 /* SVGRenderContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 55F0FACB1520E9F8006426B8 /* SVGRenderContext.m */; };
+		55F0FACD1520E9F8006426B8 /* SVGRenderContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 55F0FACB1520E9F8006426B8 /* SVGRenderContext.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -2247,6 +2247,7 @@
 		55AFA4C2151AA3FB00B5351D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -2256,6 +2257,7 @@
 					"\"${SRCROOT}\"/svg/src",
 				);
 				INFOPLIST_FILE = "SVGViewer/SVGViewer-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.github.maddthesane.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
@@ -2265,6 +2267,7 @@
 		55AFA4C3151AA3FB00B5351D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEAD_CODE_STRIPPING = YES;
@@ -2275,6 +2278,7 @@
 					"\"${SRCROOT}\"/svg/src",
 				);
 				INFOPLIST_FILE = "SVGViewer/SVGViewer-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.github.maddthesane.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;

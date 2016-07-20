@@ -133,7 +133,7 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 	CGContextScaleCTM(tempCtx, 1, -1);
 	CGContextSetTextMatrix(tempCtx, CGAffineTransformIdentity);
 	
-#if 0
+#if 1
 	
 	NSAttributedString *textWFont = nil;
 	{
@@ -143,8 +143,8 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 		NSColor *foreColor;
 		if (tempFill.type == SVG_PAINT_TYPE_COLOR) {
 			svg_color_t *tempsvgcolor = &tempFill.p.color;
-			[self setFillColor:tempsvgcolor alpha:current.fillOpacity];
-			foreColor = [NSColor colorWithDeviceRed:svg_color_get_red(tempsvgcolor)/255.0 green:svg_color_get_green(tempsvgcolor)/255.0 blue:svg_color_get_blue(tempsvgcolor)/255.0 alpha:current.fillOpacity];
+			[self setFillColor:tempsvgcolor alpha:self.current.fillOpacity];
+			foreColor = [NSColor colorWithSRGBRed:svg_color_get_red(tempsvgcolor)/255.0 green:svg_color_get_green(tempsvgcolor)/255.0 blue:svg_color_get_blue(tempsvgcolor)/255.0 alpha:self.current.fillOpacity];
 		} else {
 			foreColor = [NSColor clearColor];
 		}
@@ -152,9 +152,9 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 		
 		if (tempStroke.type == SVG_PAINT_TYPE_COLOR) {
 			svg_color_t *tempsvgcolor = &tempStroke.p.color;
-			[self setStrokeColor:tempsvgcolor alpha:current.strokeOpacity];
-			[fontAttribs setValue:[NSColor colorWithDeviceRed:svg_color_get_red(tempsvgcolor)/255.0 green:svg_color_get_green(tempsvgcolor)/255.0 blue:svg_color_get_blue(tempsvgcolor)/255.0 alpha:current.strokeOpacity] forKey:NSStrokeColorAttributeName];
-			[fontAttribs setValue:[NSNumber numberWithInteger:w] forKey:NSStrokeWidthAttributeName];
+			[self setStrokeColor:tempsvgcolor alpha:self.current.fillOpacity];
+			[fontAttribs setValue:[NSColor colorWithSRGBRed:svg_color_get_red(tempsvgcolor)/255.0 green:svg_color_get_green(tempsvgcolor)/255.0 blue:svg_color_get_blue(tempsvgcolor)/255.0 alpha:self.current.fillOpacity] forKey:NSStrokeColorAttributeName];
+			[fontAttribs setValue:@(w) forKey:NSStrokeWidthAttributeName];
 		}
 		
 		textWFont = [[NSAttributedString alloc] initWithString:utfString attributes:fontAttribs];
@@ -169,8 +169,8 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 		pathRef = CGPathCreateMutable();
 		CGPathMoveToPoint(pathRef, NULL, xPos, yPos);
 		CGPathAddLineToPoint(pathRef, NULL, xPos + frameSize.width, yPos);
-		CGPathAddLineToPoint(pathRef, NULL, xPos + frameSize.width, yPos - frameSize.height);
-		CGPathAddLineToPoint(pathRef, NULL, xPos, yPos - frameSize.height);
+		CGPathAddLineToPoint(pathRef, NULL, xPos + frameSize.width, yPos + frameSize.height);
+		CGPathAddLineToPoint(pathRef, NULL, xPos, yPos + frameSize.height);
 		CGPathCloseSubpath(pathRef);
 		tempFrame = CTFramesetterCreateFrame(framesetter, CFRangeMake(0, [textWFont length]), pathRef, NULL);
 		CGPathRelease(pathRef);
@@ -178,7 +178,6 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 	}
 	CTFrameDraw(tempFrame, tempCtx);
 	CFRelease(tempFrame);
-	[textWFont release];
 	
 #else
 	
@@ -602,6 +601,9 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 	[self prepareRenderWithScale:prevContext.scale renderContext:CGLayerGetContext(prevContext.renderLayer)];
 	
 	SVGRenderState *tmpRenderState = [prevContext.current copy];
+	if (!tmpRenderState) {
+		tmpRenderState = [SVGRenderState new];
+	}
 	[states addObject:tmpRenderState];
 	hasSize = NO;
 }
@@ -1108,7 +1110,7 @@ static CGColorRef CreatePatternColorFromRenderContext(SVGRenderContext *theCont)
 
 - (SVGRenderState*)current
 {
-	if (![states count]) {
+	if ([states count] == 0) {
 		return nil;
 	}
 	return [states lastObject];
@@ -1117,7 +1119,7 @@ static CGColorRef CreatePatternColorFromRenderContext(SVGRenderContext *theCont)
 - (void)pushRenderState
 {
 	SVGRenderState *tmp = nil;
-	if ([states count]) {
+	if ([states count] != 0) {
 		tmp = [self.current copy];
 	} else {
 		tmp = [[SVGRenderState alloc] init];

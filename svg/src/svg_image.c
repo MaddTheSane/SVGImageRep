@@ -251,7 +251,7 @@ _svg_image_read_png (const char		*filename,
     }
 
     png_init_io (png, file);
-    png_set_sig_bytes (png, sig_bytes);
+    png_set_sig_bytes (png, (int)sig_bytes);
 
     png_read_info (png, info);
 

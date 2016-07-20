@@ -6,6 +6,7 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
+#include <CoreGraphics/CGBase.h>
 #import <Foundation/NSObject.h>
 #if !(TARGET_OS_EMBEDDED || TARGET_OS_IPHONE)
 #import <Foundation/NSGeometry.h>
@@ -15,28 +16,6 @@
 @class NSString;
 
 @interface SVGRenderState : NSObject <NSCopying>
-{
-@private
-	svg_paint_t fillPaint, strokePaint;
-	double fillOpacity, strokeOpacity;
-	
-	svg_color_t color;
-	double opacity;
-	
-	double strokeWidth;
-	
-	int fillRule;
-	
-	NSString *fontFamily;
-	svg_font_style_t fontStyle;
-	double fontSize;
-	double fontWeight;
-	svg_text_anchor_t textAnchor;
-	
-	CGFloat *dash;
-	size_t dashLength;
-	CGFloat dashOffset;
-}
 @property (readwrite, nonatomic) svg_paint_t fillPaint;
 @property (readwrite, nonatomic) svg_paint_t strokePaint;
 @property (readwrite, nonatomic) double fillOpacity;

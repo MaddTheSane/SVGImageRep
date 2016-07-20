@@ -141,7 +141,7 @@ _svg_parser_parse_chunk (svg_parser_t *parser, const char *buf, size_t count)
     if (parser->ctxt == NULL)
 		return SVG_STATUS_INVALID_CALL;
 
-    xmlParseChunk (parser->ctxt, buf, count, 0);
+    xmlParseChunk (parser->ctxt, buf, (int)count, 0);
 
     return parser->status;
 }
