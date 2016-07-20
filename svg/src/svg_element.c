@@ -245,7 +245,7 @@ _svg_element_destroy (svg_element_t *element)
 
 svg_status_t
 svg_element_render (svg_element_t		*element,
-					svg_render_engine_t		*engine,
+					const svg_render_engine_t		*engine,
 					void			*closure)
 {
     svg_status_t status, return_status = SVG_STATUS_SUCCESS;

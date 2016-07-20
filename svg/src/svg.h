@@ -334,7 +334,7 @@ svg_parse_chunk_end   (svg_t *svg);
 
 svg_status_t
 svg_render (svg_t		*svg,
-	    svg_render_engine_t	*engine,
+	    const svg_render_engine_t	*engine,
 	    void		*closure);
 
 void
@@ -357,7 +357,7 @@ svg_color_get_blue (const svg_color_t *color);
 
 svg_status_t
 svg_element_render (svg_element_t		*element,
-		    svg_render_engine_t	*engine,
+		    const svg_render_engine_t	*engine,
 		    void			*closure);
 
 svg_pattern_t *

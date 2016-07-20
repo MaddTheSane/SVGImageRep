@@ -555,8 +555,6 @@
 		5560E715152B73D7008FF127 /* admon-note.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "admon-note.svg"; sourceTree = "<group>"; };
 		5560E716152B73D7008FF127 /* admon-tip.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "admon-tip.svg"; sourceTree = "<group>"; };
 		5560E717152B73D7008FF127 /* admon-warning.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "admon-warning.svg"; sourceTree = "<group>"; };
-		55863C87154736B600A73C76 /* SVGRenderContext-MacOS.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "SVGRenderContext-MacOS.m"; sourceTree = "<group>"; };
-		55863C891547370000A73C76 /* SVGRenderContext-iOS.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "SVGRenderContext-iOS.m"; sourceTree = "<group>"; };
 		55863C8E154738DD00A73C76 /* libSVGImageRepiOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSVGImageRepiOS.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		55863C8F154738DD00A73C76 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		55863C93154738DE00A73C76 /* SVGImageRepiOS-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SVGImageRepiOS-Prefix.pch"; sourceTree = "<group>"; };
@@ -1040,8 +1038,6 @@
 				55AFA529151AABB700B5351D /* SVGImageRep.m */,
 				553711A8151BCDB900F8848A /* SVGImageRep.h */,
 				55F0FACB1520E9F8006426B8 /* SVGRenderContext.m */,
-				55863C87154736B600A73C76 /* SVGRenderContext-MacOS.m */,
-				55863C891547370000A73C76 /* SVGRenderContext-iOS.m */,
 				55F0FACA1520E9F8006426B8 /* SVGRenderContext.h */,
 				55F0FAC71520E925006426B8 /* SVGRenderState.m */,
 				55F0FAC61520E925006426B8 /* SVGRenderState.h */,

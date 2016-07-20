@@ -48,17 +48,11 @@
 {
 	if (dash)
 		free(dash);
-	[fontFamily release];
-	
-	[super dealloc];
 }
 
-- (void)finalize
+- (NSString *)description
 {
-	if (dash)
-		free(dash);
-	
-	[super finalize];
+	return [NSString stringWithFormat:@"font family: \"%@\", size: %f; dash size: %zu, offset: %f; stroke opacity: %f", fontFamily, fontSize, dashLength, dashOffset, strokeOpacity];
 }
 
 @end

@@ -202,7 +202,7 @@ svg_parse_chunk_end (svg_t *svg)
 
 svg_status_t
 svg_render (svg_t		*svg,
-			svg_render_engine_t	*engine,
+			const svg_render_engine_t	*engine,
 			void		*closure)
 {
     svg_status_t status;
