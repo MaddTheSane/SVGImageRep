@@ -1,6 +1,6 @@
 /* svg_style.c: Data structure for holding SVG style properties
  
-   Copyright © 2002 USC/Information Sciences Institute
+   Copyright Â© 2002 USC/Information Sciences Institute
   
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -732,9 +732,9 @@ _svg_style_parse_nv_pair (svg_style_t	*style,
 
 /* This next function is:
 
-   Copyright © 2000 Eazel, Inc.
-   Copyright © 2002 Dom Lachowicz <cinamod@hotmail.com>
-   Copyright © 2002 USC/Information Sciences Institute
+   Copyright Â© 2000 Eazel, Inc.
+   Copyright Â© 2002 Dom Lachowicz <cinamod@hotmail.com>
+   Copyright Â© 2002 USC/Information Sciences Institute
   
    Author: Raph Levien <raph@artofcode.com>
 */

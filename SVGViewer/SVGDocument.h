@@ -8,11 +8,12 @@ copyright 2003 Alexander Malmberg <alexander@malmberg.org>
 #import <AppKit/NSDocument.h>
 #import <AppKit/NSView.h>
 
-@class NSString,NSScrollView;
+@class NSString, NSData;
 @class SVGRenderContext;
 
 @interface SVGView : NSView
 {
+@private
 	SVGRenderContext *svg;
 }
 
@@ -22,6 +23,7 @@ copyright 2003 Alexander Malmberg <alexander@malmberg.org>
 
 @interface SVGDocument : NSDocument
 {
+@private
 	NSData *documentData;
 
 	IBOutlet SVGView *svg_view;

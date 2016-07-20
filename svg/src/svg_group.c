@@ -1,6 +1,6 @@
 /* svg_group.c: Data structures for SVG group elements
  
-   Copyright © 2002 USC/Information Sciences Institute
+   Copyright Â© 2002 USC/Information Sciences Institute
   
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -45,7 +45,7 @@ _svg_group_init (svg_group_t *group)
 
 svg_status_t
 _svg_group_init_copy (svg_group_t *group,
-		      svg_group_t *other)
+					  svg_group_t *other)
 {
     svg_status_t status;
     svg_element_t *clone;
@@ -56,12 +56,12 @@ _svg_group_init_copy (svg_group_t *group,
 
     /* clone children */
     for (i=0; i < other->num_elements; i++) {
-	status = _svg_element_clone (&clone, other->element[i]);
-	if (status)
-	    return status;
-	status = _svg_group_add_element (group, clone);
-	if (status)
-	    return status;
+		status = _svg_element_clone (&clone, other->element[i]);
+		if (status)
+			return status;
+		status = _svg_group_add_element (group, clone);
+		if (status)
+			return status;
     }
 
     group->width  = other->width;
@@ -81,7 +81,7 @@ _svg_group_deinit (svg_group_t *group)
     int i;
 
     for (i = 0; i < group->num_elements; i++)
-	_svg_element_destroy (group->element[i]);
+		_svg_element_destroy (group->element[i]);
 
     free (group->element);
     group->element = NULL;
@@ -97,10 +97,10 @@ _svg_group_add_element (svg_group_t *group, svg_element_t *element)
     svg_status_t status;
 
     if (group->num_elements >= group->element_size) {
-	int additional = group->element_size ? group->element_size : 4;
-	status = _svg_group_grow_element_by(group, additional);
-	if (status)
-	    return status;
+		int additional = group->element_size ? group->element_size : 4;
+		status = _svg_group_grow_element_by(group, additional);
+		if (status)
+			return status;
     }
 
     group->element[group->num_elements] = element;
@@ -111,8 +111,8 @@ _svg_group_add_element (svg_group_t *group, svg_element_t *element)
 
 svg_status_t
 _svg_group_render (svg_group_t		*group,
-		   svg_render_engine_t	*engine,
-		   void			*closure)
+				   svg_render_engine_t	*engine,
+				   void			*closure)
 {
     int i;
     svg_status_t status, return_status = SVG_STATUS_SUCCESS;
@@ -123,10 +123,10 @@ _svg_group_render (svg_group_t		*group,
        doesn't include images with null data in the tree for
        example. */
     for (i=0; i < group->num_elements; i++) {
-	status = svg_element_render (group->element[i],
-				     engine, closure);
-	if (status && !return_status)
-	    return_status = status;
+		status = svg_element_render (group->element[i],
+									 engine, closure);
+		if (status && !return_status)
+			return_status = status;
     }
 
     return return_status;
@@ -134,8 +134,8 @@ _svg_group_render (svg_group_t		*group,
 
 svg_status_t
 _svg_symbol_render (svg_element_t	*group,
-		    svg_render_engine_t	*engine,
-		    void		*closure)
+					svg_render_engine_t	*engine,
+					void		*closure)
 {
     /* Never render a symbol directly. Only way to show a symbol is through <use>. */
     return SVG_STATUS_SUCCESS;
@@ -144,7 +144,7 @@ _svg_symbol_render (svg_element_t	*group,
 /* Apply attributes unique to `svg' elements */
 svg_status_t
 _svg_group_apply_svg_attributes (svg_group_t	*group,
-				 const char	**attributes)
+								 const char	**attributes)
 {
     const char *view_box_str, *aspect_ratio_str;
     svgint_status_t status;
@@ -160,16 +160,16 @@ _svg_group_apply_svg_attributes (svg_group_t	*group,
 
     if (view_box_str)
     {
-	status = _svg_element_parse_view_box (view_box_str,
-		    			      &group->view_box.box.x,
-		    			      &group->view_box.box.y,
-		    			      &group->view_box.box.width,
-		    			      &group->view_box.box.height);
+		status = _svg_element_parse_view_box (view_box_str,
+											  &group->view_box.box.x,
+											  &group->view_box.box.y,
+											  &group->view_box.box.width,
+											  &group->view_box.box.height);
 
-	group->view_box.aspect_ratio = SVG_PRESERVE_ASPECT_RATIO_NONE;
-	_svg_attribute_get_string (attributes, "preserveAspectRatio", &aspect_ratio_str, NULL);
-	if (aspect_ratio_str)
-	    status = _svg_element_parse_aspect_ratio (aspect_ratio_str, &group->view_box);
+		group->view_box.aspect_ratio = SVG_PRESERVE_ASPECT_RATIO_NONE;
+		_svg_attribute_get_string (attributes, "preserveAspectRatio", &aspect_ratio_str, NULL);
+		if (aspect_ratio_str)
+			status = _svg_element_parse_aspect_ratio (aspect_ratio_str, &group->view_box);
     }
 
     return SVG_STATUS_SUCCESS;
@@ -178,7 +178,7 @@ _svg_group_apply_svg_attributes (svg_group_t	*group,
 /* Apply attributes common to `svg' and `g' elements */
 svg_status_t
 _svg_group_apply_group_attributes (svg_group_t		*group,
-				   const char		**attributes)
+								   const char		**attributes)
 {
     /* XXX: NYI */
 
@@ -187,7 +187,7 @@ _svg_group_apply_group_attributes (svg_group_t		*group,
 
 svg_status_t
 _svg_group_apply_use_attributes (svg_element_t		*group,
-				 const char		**attributes)
+								 const char		**attributes)
 {
     const char *href;
     svg_element_t *ref;
@@ -197,12 +197,12 @@ _svg_group_apply_use_attributes (svg_element_t		*group,
     _svg_attribute_get_string (attributes, "xlink:href", &href, "");
     _svg_fetch_element_by_id (group->doc, href + 1, &ref);
     if (!ref) {
-	/* XXX: Should we report an error here? */
-	return SVG_STATUS_SUCCESS;
+		/* XXX: Should we report an error here? */
+		return SVG_STATUS_SUCCESS;
     }
 
     /*printf ("_svg_group_apply_use_attributes : %s\n", href + 1); 
-    printf ("_svg_group_apply_use_attributes : %d\n", ref); */
+	 printf ("_svg_group_apply_use_attributes : %d\n", ref); */
 
     _svg_attribute_get_length (attributes, "width", &group->e.group.width, "100%");
     _svg_attribute_get_length (attributes, "height", &group->e.group.height, "100%");
@@ -210,24 +210,24 @@ _svg_group_apply_use_attributes (svg_element_t		*group,
     /* TODO : remove cloned tree (requires ref counting?). */
     status = _svg_element_clone (&clone, ref);
     if (status)
-	return status;
+		return status;
     if (clone)
     {
-	if (clone->type == SVG_ELEMENT_TYPE_SYMBOL)
-	{
-	    clone->e.group.width = group->e.group.width;
-	    clone->e.group.height = group->e.group.height;
-	}
-	/* perform extra view_box transform for symbol */
-	if (clone->type == SVG_ELEMENT_TYPE_SYMBOL &&
-	    clone->e.group.view_box.aspect_ratio != SVG_PRESERVE_ASPECT_RATIO_UNKNOWN)
+		if (clone->type == SVG_ELEMENT_TYPE_SYMBOL)
+		{
+			clone->e.group.width = group->e.group.width;
+			clone->e.group.height = group->e.group.height;
+		}
+		/* perform extra view_box transform for symbol */
+		if (clone->type == SVG_ELEMENT_TYPE_SYMBOL &&
+			clone->e.group.view_box.aspect_ratio != SVG_PRESERVE_ASPECT_RATIO_UNKNOWN)
         {
-	    /*status = _svg_transform_apply_viewbox (&clone->transform, &clone->e.group.view_box,
-						   clone->e.group.width, clone->e.group.height);*/
-
-	    clone->type = SVG_ELEMENT_TYPE_GROUP;
+			/*status = _svg_transform_apply_viewbox (&clone->transform, &clone->e.group.view_box,
+			 clone->e.group.width, clone->e.group.height);*/
+			
+			clone->type = SVG_ELEMENT_TYPE_GROUP;
     	}
-	_svg_group_add_element (&group->e.group, clone);
+		_svg_group_add_element (&group->e.group, clone);
     }
 
     _svg_attribute_get_length (attributes, "x", &group->e.group.x, "0");
@@ -246,16 +246,16 @@ _svg_group_grow_element_by (svg_group_t *group, int additional)
     int new_size = group->num_elements + additional;
 
     if (new_size <= group->element_size) {
-	return SVG_STATUS_SUCCESS;
+		return SVG_STATUS_SUCCESS;
     }
 
     group->element_size = new_size;
     new_element = realloc (group->element,
-			   group->element_size * sizeof(svg_element_t *));
+						   group->element_size * sizeof(svg_element_t *));
 
     if (new_element == NULL) {
-	group->element_size = old_size;
-	return SVG_STATUS_NO_MEMORY;
+		group->element_size = old_size;
+		return SVG_STATUS_NO_MEMORY;
     }
 
     group->element = new_element;

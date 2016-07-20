@@ -1,6 +1,6 @@
 /* svg_pattern.c: Data structures for SVG pattern elements
  
-   Copyright © 2002 USC/Information Sciences Institute
+   Copyright Â© 2002 USC/Information Sciences Institute
   
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -42,7 +42,7 @@ _svg_pattern_init (svg_pattern_t *pattern, svg_element_t *parent, svg_t *doc)
 				  SVG_ELEMENT_TYPE_GROUP,
 				  parent, doc);
     if (status)
-	return status;
+		return status;
     
     return SVG_STATUS_SUCCESS;
 }
@@ -55,7 +55,7 @@ _svg_pattern_init_copy (svg_pattern_t *pattern,
 
     status = _svg_element_clone (&pattern->group_element, other->group_element);
     if (status)
-	return status;
+		return status;
 
     pattern->units = other->units;
     pattern->content_units = other->content_units;
@@ -86,21 +86,21 @@ _svg_pattern_apply_attributes (svg_pattern_t	*pattern,
     
     _svg_attribute_get_string (attributes, "patternUnits", &str, "objectBoundingBox");
     if (strcmp (str, "userSpaceOnUse") == 0) {
-	pattern->units = SVG_PATTERN_UNITS_USER;
+		pattern->units = SVG_PATTERN_UNITS_USER;
     } else if (strcmp (str, "objectBoundingBox") == 0) {
-	pattern->units = SVG_PATTERN_UNITS_BBOX;
+		pattern->units = SVG_PATTERN_UNITS_BBOX;
     } else {
-	return SVG_STATUS_INVALID_VALUE;
+		return SVG_STATUS_INVALID_VALUE;
     }
     
     _svg_attribute_get_string (attributes, "patternContentUnits", &str, "userSpaceOnUse");
 
     if (strcmp (str, "userSpaceOnUse") == 0) {
-	pattern->content_units = SVG_PATTERN_UNITS_USER;
+		pattern->content_units = SVG_PATTERN_UNITS_USER;
     } else if (strcmp (str, "objectBoundingBox") == 0) {
-	pattern->content_units = SVG_PATTERN_UNITS_BBOX;
+		pattern->content_units = SVG_PATTERN_UNITS_BBOX;
     } else {
-	return SVG_STATUS_INVALID_VALUE;
+		return SVG_STATUS_INVALID_VALUE;
     }
     
     _svg_attribute_get_length (attributes, "x", &pattern->x, "0");
@@ -111,11 +111,11 @@ _svg_pattern_apply_attributes (svg_pattern_t	*pattern,
     _svg_attribute_get_string (attributes, "patternTransform", &str, 0);
 
     if (str) {
-	_svg_transform_parse_str (&transform, str);
+		_svg_transform_parse_str (&transform, str);
     }
 
     for (i = 0 ; i < 6 ; i++) {
-	pattern->transform [i] = transform.m[i/2][i%2];
+		pattern->transform [i] = transform.m[i/2][i%2];
     }
     
     return SVG_STATUS_SUCCESS;

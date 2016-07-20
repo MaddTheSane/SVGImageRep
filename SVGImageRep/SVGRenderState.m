@@ -8,38 +8,37 @@
 
 #import "SVGRenderState.h"
 #import <Foundation/NSString.h>
-#import <AppKit/NSWindow.h>
 
 @implementation SVGRenderState
 
-@synthesize stroke_opacity, dash, color, opacity, num_dash, fill_rule;
-@synthesize font_size, fill_paint, font_style, dash_offset, font_family, font_weight;
-@synthesize text_anchor, fill_opacity, stroke_paint, stroke_width;
+@synthesize strokeOpacity, dash, color, opacity, dashLength, fillRule;
+@synthesize fontSize, fillPaint, fontStyle, dashOffset, fontFamily, fontWeight;
+@synthesize textAnchor, fillOpacity, strokePaint, strokeWidth;
 
 - (id)copyWithZone:(NSZone *)zone
 {
 	SVGRenderState *new = [[SVGRenderState allocWithZone:zone] init];
 	
-	new.num_dash = num_dash;
-	new.stroke_opacity = stroke_opacity;
+	new.dashLength = dashLength;
+	new.strokeOpacity = strokeOpacity;
 	new.color = color;
 	new.opacity = opacity;
-	new.fill_rule = fill_rule;
-	new.font_size = font_size;
-	new.fill_paint = fill_paint;
-	new.font_style = font_style;
-	new.dash_offset = dash_offset;
-	new.font_weight = font_weight;
-	new.text_anchor = text_anchor;
-	new.fill_opacity = fill_opacity;
-	new.stroke_paint = stroke_paint;
-	new.stroke_width = stroke_width;
-	new.font_family = [font_family copyWithZone:zone];
+	new.fillRule = fillRule;
+	new.fontSize = fontSize;
+	new.fillPaint = fillPaint;
+	new.fontStyle = fontStyle;
+	new.dashOffset = dashOffset;
+	new.fontWeight = fontWeight;
+	new.textAnchor = textAnchor;
+	new.fillOpacity = fillOpacity;
+	new.strokePaint = strokePaint;
+	new.strokeWidth = strokeWidth;
+	new.fontFamily = fontFamily; //Declared property has copy in it, so it doesn't retain it.
 	
 	if (dash)
 	{
-		new.dash = malloc(sizeof(CGFloat) * new.num_dash);
-		memcpy(new.dash, dash, sizeof(CGFloat) * new.num_dash);
+		new.dash = malloc(sizeof(CGFloat) * dashLength);
+		memcpy(new.dash, dash, sizeof(CGFloat) * dashLength);
 	}
 	
 	return new;
@@ -49,7 +48,17 @@
 {
 	if (dash)
 		free(dash);
+	[fontFamily release];
+	
+	[super dealloc];
 }
 
+- (void)finalize
+{
+	if (dash)
+		free(dash);
+	
+	[super finalize];
+}
 
 @end

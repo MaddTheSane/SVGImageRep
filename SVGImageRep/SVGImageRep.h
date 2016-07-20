@@ -12,12 +12,14 @@
 #include <svg.h>
 #import <AppKit/NSImageRep.h>
 
+@class NSData;
+
 @interface SVGImageRep : NSImageRep
 {
 	svg_t *svg;
 }
 
-- initWithData: (NSData *)d;
+- (id)initWithData:(NSData *)d;
 @end
 
 #endif

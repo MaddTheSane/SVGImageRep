@@ -4,33 +4,35 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 
 #include <math.h>
 
-#import <Foundation/NSArray.h>
-#import <Foundation/NSCharacterSet.h>
-#import <Foundation/NSData.h>
-#import <Foundation/NSValue.h>
-#import <AppKit/NSAffineTransform.h>
-#import <AppKit/NSBezierPath.h>
-#import <AppKit/NSFontManager.h>
-#import <AppKit/NSImageRep.h>
-#import <AppKit/NSGraphics.h>
-#import <AppKit/NSWindow.h>
-#include <ApplicationServices/ApplicationServices.h>
-
 #import "SVGImageRep.h"
-#import "SVGRenderContext.h"
 
-#include <svg.h>
+#import <Foundation/NSArray.h>
+#import <Foundation/NSData.h>
+#import <Foundation/NSGeometry.h>
+#import <AppKit/NSGraphics.h>
+#import <AppKit/NSGraphicsContext.h>
+#include <CoreGraphics/CoreGraphics.h>
+
+#import "SVGRenderContext.h"
 
 @implementation SVGImageRep
 
 + (NSArray *)imageUnfilteredFileTypes
 {
-	return [NSArray arrayWithObject:@"svg"];
+	static NSArray *types = nil;
+	if (types == nil) {
+		types = [[NSArray alloc] initWithObjects:@"svg", nil];
+	}
+	return types;
 }
 
 + (NSArray *)imageUnfilteredTypes
 {
-	return [NSArray arrayWithObject:@"public.svg-image"];
+	static NSArray *UTItypes = nil;
+	if (UTItypes == nil) {
+		UTItypes = [[NSArray alloc] initWithObjects:@"public.svg-image", nil];
+	}
+	return UTItypes;
 }
 
 + (NSArray *)imageUnfilteredPasteboardTypes
@@ -49,41 +51,43 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 	return status == SVG_STATUS_SUCCESS;
 }
 
-
 + (NSImageRep *)imageRepWithData:(NSData *)d
 {
-	return [[self alloc] initWithData: d];
+	return [[[self alloc] initWithData:d] autorelease];
 }
-
 
 - (id)initWithData:(NSData *)d
 {
 	svg_status_t status;
 
-	if (!(self=[super init]))
+	if (!(self = [super init]))
 		return nil;
 
 	svg_create(&svg);
 	status = svg_parse_buffer(svg, [d bytes], [d length]);
 	if (status != SVG_STATUS_SUCCESS)
 	{
+		[self autorelease];
 		return nil;
 	}
 
-	[self setColorSpaceName: NSCalibratedRGBColorSpace];
-	[self setAlpha: YES];
-	[self setBitsPerSample: 0];
-	[self setOpaque: NO];
+	[self setColorSpaceName:NSCalibratedRGBColorSpace];
+	[self setAlpha:YES];
+	[self setBitsPerSample:0];
+	[self setOpaque:NO];
 
-	/* TODO: figure out the size without actually rendering everything */
 	{
-		SVGRenderContext *svg_render_context = [[SVGRenderContext alloc] init];
-		[svg_render_context prepareRender: 1.0];
-		svg_render(svg, &cocoa_svg_engine,  (__bridge void*)svg_render_context);
-		[svg_render_context finishRender];
-		NSSize renderSize = [svg_render_context size];
-		[self setPixelsHigh:renderSize.height];
-		[self setPixelsWide:renderSize.width];
+		svg_length_t w, h;
+		svg_get_size(svg, &w, &h);
+		NSSize renderSize = NSMakeSize([SVGRenderContext lengthToPoints:&w], [SVGRenderContext lengthToPoints:&h]);
+		[self setSize:renderSize];
+#if CGFLOAT_IS_DOUBLE
+		[self setPixelsHigh:ceil(renderSize.height)];
+		[self setPixelsWide:ceil(renderSize.width)];
+#else
+		[self setPixelsHigh:ceilf(renderSize.height)];
+		[self setPixelsWide:ceilf(renderSize.width)];
+#endif
 	}
 
 	return self;
@@ -92,25 +96,41 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 - (void)dealloc
 {
 	svg_destroy(svg);
+	
+	[super dealloc];
+}
+
+- (void)finalize
+{
+	svg_destroy(svg);
+	
+	[super finalize];
 }
 
 - (BOOL)draw
 {
 	SVGRenderContext *svg_render_context;
 	CGContextRef CGCtx = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
-
-	CGAffineTransform ctm = CGContextGetCTM(CGCtx);
-	
+	BOOL didRender = NO;
 	svg_render_context = [[SVGRenderContext alloc] init];
+	CGAffineTransform scaleTrans = CGContextGetCTM(CGCtx);
 
-	[svg_render_context prepareRender:
-		sqrt(ctm.a * ctm.b + ctm.c * ctm.d)];
-	svg_render(svg, &cocoa_svg_engine,  (__bridge void*)svg_render_context);
-	[svg_render_context finishRender];
+	svg_status_t rendered;
+	{
+		NSAutoreleasePool *pool = [NSAutoreleasePool new];
+		[svg_render_context prepareRender:MIN(scaleTrans.a, scaleTrans.d)];
+		rendered = svg_render(svg, &cocoa_svg_engine, svg_render_context);
+		[svg_render_context finishRender];
+		[pool drain];
+	}
 
-	NSSize renderSize = [svg_render_context size];
-	CGContextDrawLayerInRect(CGCtx, CGRectMake(0, 0, renderSize.width, renderSize.height), svg_render_context.renderLayer);
-	return YES;
+	if (rendered == SVG_STATUS_SUCCESS) {
+		NSSize renderSize = [self size];
+		CGContextDrawLayerInRect(CGCtx, CGRectMake(0, 0, renderSize.width, renderSize.height), svg_render_context.renderLayer);
+		didRender = YES;
+	}
+	[svg_render_context release];
+	return didRender;
 }
 
 + (void)load
@@ -119,8 +139,3 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 }
 
 @end
-
-extern void InitSVGImageRep()
-{
-	[NSImageRep registerImageRepClass:[SVGImageRep class]];
-}

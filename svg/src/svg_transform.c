@@ -1,7 +1,7 @@
 /* 
    svg_transform.c: Data structure for SVG transformation matrix.
  
-   Copyright © 2002 USC/Information Sciences Institute
+   Copyright Â© 2002 USC/Information Sciences Institute
   
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -217,16 +217,16 @@ _svg_transform_multiply (svg_transform_t	*result,
     double  t;
 
     for (row = 0; row < 3; row++) {
-	for (col = 0; col < 2; col++) {
-	    if (row == 2)
-		t = t2->m[2][col];
-	    else
-		t = 0;
-	    for (n = 0; n < 2; n++) {
-		t += t1->m[row][n] * t2->m[n][col];
-	    }
-	    result->m[row][col] = t;
-	}
+		for (col = 0; col < 2; col++) {
+			if (row == 2)
+				t = t2->m[2][col];
+			else
+				t = 0;
+			for (n = 0; n < 2; n++) {
+				t += t1->m[row][n] * t2->m[n][col];
+			}
+			result->m[row][col] = t;
+		}
     }
 
     return SVG_STATUS_SUCCESS;
@@ -257,7 +257,7 @@ _svg_transform_render (svg_transform_t		*transform,
 extern svg_status_t
 _svg_transform_parse_str (svg_transform_t *transform, const char *str)
 {
-    int idx;
+    intptr_t idx;
     svg_status_t status;
     char keyword[32];
     double args[6];
@@ -267,99 +267,99 @@ _svg_transform_parse_str (svg_transform_t *transform, const char *str)
 
     status = _svg_transform_init (transform);
     if (status)
-	return status;
+		return status;
 
     idx = 0;
     while (str[idx]) {
-	/* skip initial whitespace */
-	while (_svg_ascii_isspace (str[idx]) || str[idx] == ',')
-	    idx++;
+		/* skip initial whitespace */
+		while (_svg_ascii_isspace (str[idx]) || str[idx] == ',')
+			idx++;
 
-	/* parse keyword */
-	for (key_len = 0; key_len < sizeof (keyword); key_len++) {
-	    char c;
+		/* parse keyword */
+		for (key_len = 0; key_len < sizeof (keyword); key_len++) {
+			char c;
 
-	    c = str[idx];
-	    if (_svg_ascii_isalpha (c) || c == '-')
-		keyword[key_len] = str[idx++];
-	    else
-		break;
-	}
-	/* XXX: This size limitation looks bogus */
-	if (key_len >= sizeof (keyword))
-	    return SVG_STATUS_PARSE_ERROR;
-	keyword[key_len] = '\0';
+			c = str[idx];
+			if (_svg_ascii_isalpha (c) || c == '-')
+				keyword[key_len] = str[idx++];
+			else
+				break;
+		}
+		/* XXX: This size limitation looks bogus */
+		if (key_len >= sizeof (keyword))
+			return SVG_STATUS_PARSE_ERROR;
+		keyword[key_len] = '\0';
 
-	/* skip whitespace */
-	while (_svg_ascii_isspace (str[idx]))
-	    idx++;
-
-	if (str[idx] != '(')
-	    return SVG_STATUS_PARSE_ERROR;
-	idx++;
-
-	for (n_args = 0; ; n_args++) {
-	    char c;
-	    const char *end_ptr;
-
-	    /* skip whitespace */
-	    while (_svg_ascii_isspace (str[idx]))
-		idx++;
-	    c = str[idx];
-	    if (_svg_ascii_isdigit (c) || c == '+' || c == '-' || c == '.') {
-		if (n_args == SVG_ARRAY_SIZE (args))
-		    return SVG_STATUS_PARSE_ERROR;
-		args[n_args] = _svg_ascii_strtod (str + idx, &end_ptr);
-		idx = end_ptr - str;
-		
+		/* skip whitespace */
 		while (_svg_ascii_isspace (str[idx]))
-		    idx++;
+			idx++;
 
-		/* skip optional comma */
-		if (str[idx] == ',')
-		    idx++;
-	    } else if (c == ')')
-		break;
-	    else
-		return SVG_STATUS_PARSE_ERROR;
-	}
-	idx++;
+		if (str[idx] != '(')
+			return SVG_STATUS_PARSE_ERROR;
+		idx++;
+		
+		for (n_args = 0; ; n_args++) {
+			char c;
+			const char *end_ptr;
 
-	/* ok, have parsed keyword and args, now modify the transform */
-	if (strcmp (keyword, "matrix") == 0) {
-	    if (n_args != 6)
-		return SVG_STATUS_PARSE_ERROR;
-	    _svg_transform_init_matrix (&tmp_transform,
-					args[0], args[1],
-					args[2], args[3],
-					args[4], args[5]);
-	    _svg_transform_multiply_into_right (&tmp_transform, transform);
-	} else if (strcmp (keyword, "translate") == 0) {
-	    if (n_args == 1)
-		args[1] = 0;
-	    else if (n_args != 2)
-		return SVG_STATUS_PARSE_ERROR;
-	    _svg_transform_add_translate (transform, args[0], args[1]);
-	} else if (strcmp (keyword, "scale") == 0) {
-	    if (n_args == 1)
-		args[1] = args[0];
-	    else if (n_args != 2)
-		return SVG_STATUS_PARSE_ERROR;
-	    _svg_transform_add_scale (transform, args[0], args[1]);
-	} else if (strcmp (keyword, "rotate") == 0) {
-	    if (n_args != 1)
-		return SVG_STATUS_PARSE_ERROR;
-	    _svg_transform_add_rotate (transform, args[0]);
-	} else if (strcmp (keyword, "skewX") == 0) {
-	    if (n_args != 1)
-		return SVG_STATUS_PARSE_ERROR;
-	    _svg_transform_add_skew_x (transform, args[0]);
-	} else if (strcmp (keyword, "skewY") == 0) {
-	    if (n_args != 1)
-		return SVG_STATUS_PARSE_ERROR;
-	    _svg_transform_add_skew_y (transform, args[0]);
-	} else
-	    return SVG_STATUS_PARSE_ERROR;
+			/* skip whitespace */
+			while (_svg_ascii_isspace (str[idx]))
+				idx++;
+			c = str[idx];
+			if (_svg_ascii_isdigit (c) || c == '+' || c == '-' || c == '.') {
+				if (n_args == SVG_ARRAY_SIZE (args))
+					return SVG_STATUS_PARSE_ERROR;
+				args[n_args] = _svg_ascii_strtod (str + idx, &end_ptr);
+				idx = end_ptr - str;
+
+				while (_svg_ascii_isspace (str[idx]))
+					idx++;
+
+				/* skip optional comma */
+				if (str[idx] == ',')
+					idx++;
+			} else if (c == ')')
+				break;
+			else
+				return SVG_STATUS_PARSE_ERROR;
+		}
+		idx++;
+
+		/* ok, have parsed keyword and args, now modify the transform */
+		if (strcmp (keyword, "matrix") == 0) {
+			if (n_args != 6)
+				return SVG_STATUS_PARSE_ERROR;
+			_svg_transform_init_matrix (&tmp_transform,
+										args[0], args[1],
+										args[2], args[3],
+										args[4], args[5]);
+			_svg_transform_multiply_into_right (&tmp_transform, transform);
+		} else if (strcmp (keyword, "translate") == 0) {
+			if (n_args == 1)
+				args[1] = 0;
+			else if (n_args != 2)
+				return SVG_STATUS_PARSE_ERROR;
+			_svg_transform_add_translate (transform, args[0], args[1]);
+		} else if (strcmp (keyword, "scale") == 0) {
+			if (n_args == 1)
+				args[1] = args[0];
+			else if (n_args != 2)
+				return SVG_STATUS_PARSE_ERROR;
+			_svg_transform_add_scale (transform, args[0], args[1]);
+		} else if (strcmp (keyword, "rotate") == 0) {
+			if (n_args != 1)
+				return SVG_STATUS_PARSE_ERROR;
+			_svg_transform_add_rotate (transform, args[0]);
+		} else if (strcmp (keyword, "skewX") == 0) {
+			if (n_args != 1)
+				return SVG_STATUS_PARSE_ERROR;
+			_svg_transform_add_skew_x (transform, args[0]);
+		} else if (strcmp (keyword, "skewY") == 0) {
+			if (n_args != 1)
+				return SVG_STATUS_PARSE_ERROR;
+			_svg_transform_add_skew_y (transform, args[0]);
+		} else
+			return SVG_STATUS_PARSE_ERROR;
     }
 
     return SVG_STATUS_SUCCESS;
@@ -374,7 +374,7 @@ _svg_transform_apply_attributes (svg_transform_t	*transform,
     _svg_attribute_get_string (attributes, "transform", &transform_str, NULL);
 
     if (transform_str)
-	return _svg_transform_parse_str (transform, transform_str);
+		return _svg_transform_parse_str (transform, transform_str);
 
     return SVG_STATUS_SUCCESS;
 }

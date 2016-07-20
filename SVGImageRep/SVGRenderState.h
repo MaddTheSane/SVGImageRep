@@ -7,48 +7,51 @@
 //
 
 #import <Foundation/NSObject.h>
-#include <ApplicationServices/ApplicationServices.h>
+#if !(TARGET_OS_EMBEDDED || TARGET_OS_IPHONE)
+#import <Foundation/NSGeometry.h>
+#endif
 #include <svg.h>
+
 @class NSString;
 
 @interface SVGRenderState : NSObject <NSCopying>
 {
-@public
-	svg_paint_t fill_paint,stroke_paint;
-	double fill_opacity,stroke_opacity;
+@private
+	svg_paint_t fillPaint, strokePaint;
+	double fillOpacity, strokeOpacity;
 	
 	svg_color_t color;
 	double opacity;
 	
-	double stroke_width;
+	double strokeWidth;
 	
-	int fill_rule;
+	int fillRule;
 	
-	NSString *font_family;
-	svg_font_style_t font_style;
-	double font_size;
-	double font_weight;
-	svg_text_anchor_t text_anchor;
+	NSString *fontFamily;
+	svg_font_style_t fontStyle;
+	double fontSize;
+	double fontWeight;
+	svg_text_anchor_t textAnchor;
 	
 	CGFloat *dash;
-	size_t num_dash;
-	CGFloat dash_offset;
+	size_t dashLength;
+	CGFloat dashOffset;
 }
-@property (readwrite) svg_paint_t fill_paint;
-@property (readwrite) svg_paint_t stroke_paint;
-@property (readwrite) double fill_opacity;
-@property (readwrite) double stroke_opacity;
-@property (readwrite) svg_color_t color;
-@property (readwrite) double opacity;
-@property (readwrite) double stroke_width;
-@property (readwrite) int fill_rule;
-@property (readwrite, copy) NSString *font_family;
-@property (readwrite) svg_font_style_t font_style;
-@property (readwrite) double font_size;
-@property (readwrite) double font_weight;
-@property (readwrite) svg_text_anchor_t text_anchor;
-@property (readwrite) CGFloat *dash;
-@property (readwrite) size_t num_dash;
-@property (readwrite) CGFloat dash_offset;
+@property (readwrite, nonatomic) svg_paint_t fillPaint;
+@property (readwrite, nonatomic) svg_paint_t strokePaint;
+@property (readwrite, nonatomic) double fillOpacity;
+@property (readwrite, nonatomic) double strokeOpacity;
+@property (readwrite, nonatomic) svg_color_t color;
+@property (readwrite, nonatomic) double opacity;
+@property (readwrite, nonatomic) double strokeWidth;
+@property (readwrite, nonatomic) int fillRule;
+@property (readwrite, nonatomic, copy) NSString *fontFamily;
+@property (readwrite, nonatomic) svg_font_style_t fontStyle;
+@property (readwrite, nonatomic) double fontSize;
+@property (readwrite, nonatomic) double fontWeight;
+@property (readwrite, nonatomic) svg_text_anchor_t textAnchor;
+@property (readwrite, nonatomic) CGFloat *dash;
+@property (readwrite, nonatomic) size_t dashLength;
+@property (readwrite, nonatomic) CGFloat dashOffset;
 
 @end

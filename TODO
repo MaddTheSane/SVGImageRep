@@ -1,2 +1,4 @@
-* Convert from Display PostScript to either Cocoa or CoreGraphics.
+* Add pattern support.
+* Get gradients rendering correctly.
 * QuickLook importer.
+* Memory checking, I.E. make sure a function doesn't return NULL.

@@ -198,9 +198,9 @@ static const svg_color_map_t SVG_COLOR_MAP[] = {
 
 svg_status_t
 _svg_color_init_rgb (svg_color_t *color,
-		     unsigned int r,
-		     unsigned int g,
-		     unsigned int b)
+					 unsigned int r,
+					 unsigned int g,
+					 unsigned int b)
 {
     color->rgb = (((r) << 16) | ((g) << 8) | (b));
 
@@ -221,13 +221,13 @@ static unsigned int
 _svg_color_get_hex_digit (const char *str)
 {
     if (*str >= '0' && *str <= '9')
-	return *str - '0';
+		return *str - '0';
     else if (*str >= 'A' && *str <= 'F')
-	return *str - 'A' + 10;
+		return *str - 'A' + 10;
     else if (*str >= 'a' && *str <= 'f')
-	return *str - 'a' + 10;
+		return *str - 'a' + 10;
     else
-	return 0;
+		return 0;
 }
 
 static unsigned int
@@ -238,9 +238,9 @@ _svg_color_get_two_hex_digits (const char *str)
 
     ret = 0;
     for (i = 0; i < 2 && str[i]; i++) {
-	ret <<= 4;
-	hex = _svg_color_get_hex_digit (str+i);
-	ret += hex;
+		ret <<= 4;
+		hex = _svg_color_get_hex_digit (str+i);
+		ret += hex;
     }
 
     return ret;
@@ -256,22 +256,22 @@ _svg_color_parse_component (const char **str, unsigned int *component)
 
     c = _svg_ascii_strtod (s, &end);
     if (end == s)
-	return SVG_STATUS_PARSE_ERROR;
+		return SVG_STATUS_PARSE_ERROR;
     s = end;
 
     _svg_str_skip_space (&s);
 
     if (*s == '%') {
-	c *= 2.55;
-	s++;
+		c *= 2.55;
+		s++;
     }
 
     _svg_str_skip_space (&s);
 
     if (c > 255)
-	c = 255;
+		c = 255;
     else if (c < 0)
-	c = 0;
+		c = 0;
 
     *component = (unsigned int) c;
     *str = s;
@@ -288,68 +288,68 @@ _svg_color_init_from_str (svg_color_t *color, const char *str)
 
     /* XXX: Need to check SVG spec. for this error case */
     if (str == NULL || str[0] == '\0')
-	return _svg_color_init_rgb (color, 0, 0, 0);
+		return _svg_color_init_rgb (color, 0, 0, 0);
 
     if (strcmp (str, "currentColor") == 0) {
-	_svg_color_init_rgb (color, 0, 0, 0);
-	color->is_current_color = 1;
-	return SVG_STATUS_SUCCESS;
+		_svg_color_init_rgb (color, 0, 0, 0);
+		color->is_current_color = 1;
+		return SVG_STATUS_SUCCESS;
     }
 
     color->is_current_color = 0;
 
     if (str[0] == '#') {
-	str++;
-	if (strlen(str) >= 6) {
-	    r = _svg_color_get_two_hex_digits (str);
-	    str += 2;
-	    g = _svg_color_get_two_hex_digits (str);
-	    str += 2;
-	    b = _svg_color_get_two_hex_digits (str);
-	} else if (strlen(str) >= 3) {
-	    r = _svg_color_get_hex_digit (str);
-	    r += (r << 4);
-	    str++;
-	    g = _svg_color_get_hex_digit (str);
-	    g += (g << 4);
-	    str++;
-	    b = _svg_color_get_hex_digit (str);
-	    b += (b << 4);
-	}
-
-	return _svg_color_init_rgb (color, r, g, b);
+		str++;
+		if (strlen(str) >= 6) {
+			r = _svg_color_get_two_hex_digits (str);
+			str += 2;
+			g = _svg_color_get_two_hex_digits (str);
+			str += 2;
+			b = _svg_color_get_two_hex_digits (str);
+		} else if (strlen(str) >= 3) {
+			r = _svg_color_get_hex_digit (str);
+			r += (r << 4);
+			str++;
+			g = _svg_color_get_hex_digit (str);
+			g += (g << 4);
+			str++;
+			b = _svg_color_get_hex_digit (str);
+			b += (b << 4);
+		}
+		
+		return _svg_color_init_rgb (color, r, g, b);
     }
 
     _svg_str_skip_space (&str);
     if (strncmp (str, "rgb", 3) == 0) {
-	str += 3;
-
-	_svg_str_skip_space (&str);
-	_svg_str_skip_char (&str, '(');
-	status = _svg_color_parse_component (&str, &r);
-	if (status)
-	    return status;
-	_svg_str_skip_char (&str, ',');
-	status = _svg_color_parse_component (&str, &g);
-	if (status)
-	    return status;
-	_svg_str_skip_char (&str, ',');
-	status = _svg_color_parse_component (&str, &b);
-	if (status)
-	    return status;
-	_svg_str_skip_char (&str, ')');
-
-	return _svg_color_init_rgb (color, r, g, b);
+		str += 3;
+		
+		_svg_str_skip_space (&str);
+		_svg_str_skip_char (&str, '(');
+		status = _svg_color_parse_component (&str, &r);
+		if (status)
+			return status;
+		_svg_str_skip_char (&str, ',');
+		status = _svg_color_parse_component (&str, &g);
+		if (status)
+			return status;
+		_svg_str_skip_char (&str, ',');
+		status = _svg_color_parse_component (&str, &b);
+		if (status)
+			return status;
+		_svg_str_skip_char (&str, ')');
+		
+		return _svg_color_init_rgb (color, r, g, b);
     }
 
     map = bsearch (str, SVG_COLOR_MAP,
-		   SVG_ARRAY_SIZE(SVG_COLOR_MAP),
-		   sizeof (svg_color_map_t),
-		   _svg_color_cmp);
+				   SVG_ARRAY_SIZE(SVG_COLOR_MAP),
+				   sizeof (svg_color_map_t),
+				   _svg_color_cmp);
     
     /* default to black on failed lookup */
     if (map == NULL)
-	return _svg_color_init_rgb (color, 0, 0, 0);
+		return _svg_color_init_rgb (color, 0, 0, 0);
 
     *color = map->color;
 

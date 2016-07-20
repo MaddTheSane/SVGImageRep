@@ -1,6 +1,6 @@
 /* svg_length.c: Data structures for SVG lengths
  
-   Copyright © 2002 USC/Information Sciences Institute
+   Copyright Â© 2002 USC/Information Sciences Institute
   
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -53,32 +53,32 @@ _svg_length_init_from_str (svg_length_t *length, const char *str)
     value = _svg_ascii_strtod (str, &unit_str);
 
     if (unit_str == str)
-	return SVG_STATUS_PARSE_ERROR;
+		return SVG_STATUS_PARSE_ERROR;
 
     if (unit_str) {
-	if (strcmp (unit_str, "px") == 0)
-	    unit = SVG_LENGTH_UNIT_PX;
-	else if (strcmp (unit_str, "pt") == 0)
-	    unit = SVG_LENGTH_UNIT_PT;
-	else if (strcmp (unit_str, "in") == 0)
-	    unit = SVG_LENGTH_UNIT_IN;
-	else if (strcmp (unit_str, "cm") == 0)
-	    unit = SVG_LENGTH_UNIT_CM;
-	else if (strcmp (unit_str, "mm") == 0)
-	    unit = SVG_LENGTH_UNIT_MM;
-	else if (strcmp (unit_str, "pc") == 0)
-	    unit = SVG_LENGTH_UNIT_PC;
-	else if (strcmp (unit_str, "em") == 0)
-	    unit = SVG_LENGTH_UNIT_EM;
-	else if (strcmp (unit_str, "ex") == 0)
-	    unit = SVG_LENGTH_UNIT_EX;
-	else if (strcmp (unit_str, "%") == 0)
-	    unit = SVG_LENGTH_UNIT_PCT;
-	else {
-	    unit = SVG_LENGTH_UNIT_PX;
-	}
+		if (strcmp (unit_str, "px") == 0)
+			unit = SVG_LENGTH_UNIT_PX;
+		else if (strcmp (unit_str, "pt") == 0)
+			unit = SVG_LENGTH_UNIT_PT;
+		else if (strcmp (unit_str, "in") == 0)
+			unit = SVG_LENGTH_UNIT_IN;
+		else if (strcmp (unit_str, "cm") == 0)
+			unit = SVG_LENGTH_UNIT_CM;
+		else if (strcmp (unit_str, "mm") == 0)
+			unit = SVG_LENGTH_UNIT_MM;
+		else if (strcmp (unit_str, "pc") == 0)
+			unit = SVG_LENGTH_UNIT_PC;
+		else if (strcmp (unit_str, "em") == 0)
+			unit = SVG_LENGTH_UNIT_EM;
+		else if (strcmp (unit_str, "ex") == 0)
+			unit = SVG_LENGTH_UNIT_EX;
+		else if (strcmp (unit_str, "%") == 0)
+			unit = SVG_LENGTH_UNIT_PCT;
+		else {
+			unit = SVG_LENGTH_UNIT_PX;
+		}
     } else {
-	unit = SVG_LENGTH_UNIT_PX;
+		unit = SVG_LENGTH_UNIT_PX;
     }
 
     return _svg_length_init_unit (length, value, unit, length->orientation);

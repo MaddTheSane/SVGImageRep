@@ -4,3 +4,9 @@ Alexander Malmberg's code for GNUstep.
 
 Included is libsvg, libpng, and libjpeg. These are needed by the bundle to load
 SVGs.
+
+The makefile is used to build a GNUstep bundle and application. Note that you
+will need libsvg installed on the system to make use of it (many modern Linux 
+Distributions don't have it even listed in their package managment software, 
+you will have to find it online). Since this code relies on CoreGraphics, you 
+will also need opal installed.
