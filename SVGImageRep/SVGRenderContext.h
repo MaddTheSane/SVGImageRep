@@ -34,12 +34,12 @@ extern const svg_render_engine_t cocoa_svg_engine;
 	
 	double scale;
 	
-	NSMutableArray *states;
+	NSMutableArray<SVGRenderState*> *states;
 	int theIndent;
 }
 
 @property (readonly, nonatomic) SVGRenderState *current;
-@property (readonly, nonatomic) NSMutableArray *states;
+@property (readonly, nonatomic) NSMutableArray<SVGRenderState*> *states;
 @property (readonly, nonatomic) NSSize size;
 @property (readonly, nonatomic) double scale;
 @property (readonly, nonatomic) CGLayerRef renderLayer;
@@ -57,11 +57,11 @@ extern const svg_render_engine_t cocoa_svg_engine;
 - (double)lengthToPoints:(svg_length_t *)l;
 + (double)lengthToPoints:(svg_length_t *)l;
 
-- (void)arcTo: (double)rx : (double) ry
-			 : (double)x_axis_rotation
-			 : (int)large_arc_flag
-			 : (int)sweep_flag
-			 : (double)x : (double)y;
+- (void)arcToRx:(double)rx ry:(double) ry
+	   rotation:(double)x_axis_rotation
+   largeArcFlag:(int)large_arc_flag
+	  sweepFlag:(int)sweep_flag
+			  x:(double)x y:(double)y;
 
 - (svg_status_t)beginGroup: (double)opacity;
 - (svg_status_t)endGroup: (double)opacity;

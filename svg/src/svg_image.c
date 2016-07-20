@@ -127,7 +127,7 @@ _svg_image_apply_attributes (svg_image_t	*image,
 
 svg_status_t
 _svg_image_render (svg_image_t		*image,
-				   svg_render_engine_t	*engine,
+				   const svg_render_engine_t	*engine,
 				   void			*closure)
 {
     svg_status_t status;
@@ -228,7 +228,7 @@ _svg_image_read_png (const char		*filename,
 		return SVG_STATUS_FILE_NOT_FOUND;
 
     sig_bytes = fread (png_sig, 1, PNG_SIG_SIZE, file);
-    if (png_check_sig (png_sig, sig_bytes) == 0) {
+    if ((png_check_sig (png_sig, sig_bytes)) == 0) {
 		fclose (file);
 		return SVGINT_STATUS_IMAGE_NOT_PNG;
     }

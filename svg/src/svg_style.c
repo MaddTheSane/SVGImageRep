@@ -811,7 +811,7 @@ _svg_style_apply_attributes (svg_style_t	*style,
 
 svg_status_t
 _svg_style_render (svg_style_t		*style,
-		   svg_render_engine_t	*engine,
+		   const svg_render_engine_t	*engine,
 		   void			*closure)
 {
     svg_status_t status;

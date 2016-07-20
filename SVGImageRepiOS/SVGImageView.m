@@ -57,14 +57,13 @@
 	SVGRenderContext *ctxt = [[SVGRenderContext alloc] init];
 	@autoreleasepool {
 		[ctxt prepareRender:scale];
-		retStatus = svg_render(svgPrivate, &cocoa_svg_engine, ctxt);
+		retStatus = svg_render(svgPrivate, &cocoa_svg_engine, (__bridge void *)(ctxt));
 		[ctxt finishRender];
 	}
 	CGColorSpaceRef defaultSpace = CGColorSpaceCreateDeviceRGB();
 	CGContextRef tmpCtx = CGBitmapContextCreateWithData(NULL, imageSize.width, imageSize.height, 8, imageSize.width * 4, defaultSpace, kCGImageAlphaPremultipliedLast, NULL, NULL);
 	CGColorSpaceRelease(defaultSpace);
 	CGContextDrawLayerInRect(tmpCtx, CGRectMake(0, 0, imageSize.width, imageSize.height), ctxt.renderLayer);
-	[ctxt release];
 	CGImageRef tmpImage = CGBitmapContextCreateImage(tmpCtx);
 	CGContextRelease(tmpCtx);
 	UIImage *tmpUIImage = [UIImage imageWithCGImage:tmpImage];
@@ -96,14 +95,13 @@
 		svg_status_t rendered;
 		@autoreleasepool{
 			[svg_render_context prepareRender:MIN(xScale, yScale)];
-			rendered = svg_render(svgPrivate, &cocoa_svg_engine, svg_render_context);
+			rendered = svg_render(svgPrivate, &cocoa_svg_engine, (__bridge void *)(svg_render_context));
 			[svg_render_context finishRender];
 		}
 		
 		if (rendered == SVG_STATUS_SUCCESS) {
 			CGContextDrawLayerInRect(CGCtx, rect, svg_render_context.renderLayer);
 		}
-		[svg_render_context release];
 	} else {
 		[[UIColor clearColor] set];
 		CGContextFillRect(UIGraphicsGetCurrentContext(), rect);
@@ -115,17 +113,6 @@
 	if (svgPrivate) {
 		svg_destroy(svgPrivate);
 	}
-	
-	[super dealloc];
-}
-
-- (void)finalize
-{
-	if (svgPrivate) {
-		svg_destroy(svgPrivate);
-	}
-	
-	[super finalize];
 }
 
 - (void)setData:(NSData *)data

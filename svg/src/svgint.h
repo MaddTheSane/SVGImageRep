@@ -516,12 +516,12 @@ _svg_group_add_element (svg_group_t *group, svg_element_t *element);
 
 svg_status_t
 _svg_group_render (svg_group_t		*group,
-		   svg_render_engine_t	*engine,
+		   const svg_render_engine_t	*engine,
 		   void			*closure);
 
 svg_status_t
 _svg_symbol_render (svg_element_t	*group,
-		    svg_render_engine_t	*engine,
+		    const svg_render_engine_t	*engine,
 		    void		*closure);
 
 svg_status_t
@@ -557,7 +557,7 @@ _svg_image_apply_attributes (svg_image_t	*image,
 
 svg_status_t
 _svg_image_render (svg_image_t		*image,
-		   svg_render_engine_t	*engine,
+		   const svg_render_engine_t	*engine,
 		   void			*closure);
 
 /* svg_length.c */
@@ -655,27 +655,27 @@ _svg_path_destroy (svg_path_t *path);
 
 svg_status_t
 _svg_path_render (svg_path_t		*path,
-		  svg_render_engine_t	*engine,
+		  const svg_render_engine_t	*engine,
 		  void			*closure);
 
 svg_status_t
 _svg_circle_render (svg_ellipse_t	*circle,
-		    svg_render_engine_t	*engine,
+		    const svg_render_engine_t	*engine,
 		    void		*closure);
 
 svg_status_t
 _svg_ellipse_render (svg_ellipse_t	*ellipse,
-		     svg_render_engine_t	*engine,
+		     const svg_render_engine_t	*engine,
 		     void			*closure);
 
 svg_status_t
 _svg_line_render (svg_line_t	*line,
-		  svg_render_engine_t	*engine,
+		  const svg_render_engine_t	*engine,
 		  void			*closure);
 
 svg_status_t
 _svg_rect_render (svg_rect_element_t	*rect,
-		  svg_render_engine_t	*engine,
+		  const svg_render_engine_t	*engine,
 		  void			*closure);
 
 svg_status_t
@@ -792,7 +792,7 @@ _svg_pattern_apply_attributes (svg_pattern_t	*pattern,
 
 svg_status_t
 _svg_pattern_render (svg_element_t		*pattern,
-		     svg_render_engine_t	*engine,
+		     const svg_render_engine_t	*engine,
 		     void			*closure);
 
 /* svg_str.c */
@@ -828,7 +828,7 @@ _svg_style_deinit (svg_style_t *style);
 
 svg_status_t
 _svg_style_render (svg_style_t		*style,
-		   svg_render_engine_t	*engine,
+		   const svg_render_engine_t	*engine,
 		   void			*closure);
 
 svg_status_t
@@ -863,7 +863,7 @@ _svg_text_append_chars (svg_text_t	*text,
 
 svg_status_t
 _svg_text_render (svg_text_t		*text,
-		  svg_render_engine_t	*engine,
+		  const svg_render_engine_t	*engine,
 		  void			*closure);
 
 svg_status_t
@@ -941,7 +941,7 @@ _svg_transform_multiply_into_right (const svg_transform_t *t1, svg_transform_t *
 
 svg_status_t
 _svg_transform_render (svg_transform_t		*transform,
-		       svg_render_engine_t	*engine,
+		       const svg_render_engine_t	*engine,
 		       void			*closure);
 
 svg_status_t

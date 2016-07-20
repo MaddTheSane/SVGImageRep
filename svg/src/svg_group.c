@@ -111,7 +111,7 @@ _svg_group_add_element (svg_group_t *group, svg_element_t *element)
 
 svg_status_t
 _svg_group_render (svg_group_t		*group,
-				   svg_render_engine_t	*engine,
+				   const svg_render_engine_t	*engine,
 				   void			*closure)
 {
     int i;
@@ -134,7 +134,7 @@ _svg_group_render (svg_group_t		*group,
 
 svg_status_t
 _svg_symbol_render (svg_element_t	*group,
-					svg_render_engine_t	*engine,
+					const svg_render_engine_t	*engine,
 					void		*closure)
 {
     /* Never render a symbol directly. Only way to show a symbol is through <use>. */

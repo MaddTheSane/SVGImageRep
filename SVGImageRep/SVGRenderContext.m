@@ -18,7 +18,7 @@
 #import "SVGRenderState.h"
 #include <CoreText/CoreText.h>
 
-#if !(TARGET_OS_EMBEDDED || TARGET_OS_IPHONE)
+#if !(TARGET_OS_EMBEDDED || TARGET_OS_IPHONE || TARGET_OS_WATCH || TARGET_OS_TV)
 #import <AppKit/NSFontManager.h>
 #import <AppKit/NSGraphics.h>
 #import <AppKit/NSBitmapImageRep.h>
@@ -60,6 +60,11 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 {
 	static CGColorSpaceRef theSpace = NULL;
 	if (theSpace == NULL) {
+#if (TARGET_OS_EMBEDDED || TARGET_OS_IPHONE || TARGET_OS_WATCH || TARGET_OS_TV)
+		if (&kCGColorSpaceSRGB == NULL || &CGColorSpaceCreateWithName == NULL) {
+			theSpace = CGColorSpaceCreateDeviceRGB();
+		} else
+#endif
 		theSpace = CGColorSpaceCreateWithName(kCGColorSpaceSRGB);
 	}
 	return theSpace;
@@ -475,19 +480,16 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 			svg_element_t *tempElement = tempFill.p.pattern_element;
 			SVGRenderContext *patternRender = [[SVGRenderContext alloc] init];
 			svg_pattern_t *pattern = svg_element_pattern(tempElement);
-			{
-				NSAutoreleasePool *pool = [NSAutoreleasePool new];
+			@autoreleasepool {
 				[patternRender prepareRenderFromRenderContext:self];
 				[patternRender setViewportDimensionWidth:&pattern->width height:&pattern->height];
-				svg_element_render(tempElement, &cocoa_svg_engine, patternRender);
+				svg_element_render(tempElement, &cocoa_svg_engine, (__bridge void *)(patternRender));
 				[patternRender finishRender];
-				[pool drain];
 			}
 			CGColorRef patColor = CreatePatternColorFromRenderContext(patternRender);
 			CGContextSetFillColorWithColor(tempCtx, patColor);
 			CGContextFillPath(tempCtx);
 			CGColorRelease(patColor);
-			[patternRender release];
 		}
 			CGContextRestoreGState(tempCtx);
 			break;
@@ -567,10 +569,10 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 
 static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 {
-	int numStops = gradient->num_stops, i;
+	const int numStops = gradient->num_stops;
 	CFMutableArrayRef colorArray = CFArrayCreateMutable(kCFAllocatorDefault, numStops, &kCFTypeArrayCallBacks);
 	CGFloat *GradStops = malloc(sizeof(CGFloat) * numStops);
-	for (i = 0; i < numStops; i++) {
+	for (int i = 0; i < numStops; i++) {
 		CGColorRef tempColor = CreateColorRefFromSVGColor(&gradient->stops[i].color, gradient->stops[i].opacity);
 		CFArrayInsertValueAtIndex(colorArray, i, tempColor);
 		CGColorRelease(tempColor);
@@ -830,12 +832,12 @@ static CGColorRef CreatePatternColorFromRenderContext(SVGRenderContext *theCont)
  * y: New y coordinate.
  *
  **/
-- (void)arcTo:(double)rx : (double) ry
-			 : (double)x_axis_rotation
-			 : (int)large_arc_flag
-			 : (int)sweep_flag
-			 : (double)x
-			 : (double)y
+- (void)arcToRx:(double)rx ry:(double) ry
+	   rotation:(double)x_axis_rotation
+   largeArcFlag:(int)large_arc_flag
+	  sweepFlag:(int)sweep_flag
+			  x:(double)x
+			  y:(double)y
 {
     double sin_th, cos_th;
     double a00, a01, a10, a11;
@@ -941,27 +943,24 @@ static CGColorRef CreatePatternColorFromRenderContext(SVGRenderContext *theCont)
 	
 	svg_paint_t tempFill = self.current.fillPaint, tempStroke = self.current.strokePaint;
 	
-	switch (tempFill.type)
-	{
+	switch (tempFill.type) {
 		case SVG_PAINT_TYPE_GRADIENT:
 		{
 			CGContextSaveGState(tempCtx);
 			CGGradientRef gradient = CreateGradientRefFromSVGGradient(tempFill.p.gradient);
-			if (rx > 0 || ry > 0)
-			{
+			if (rx > 0 || ry > 0) {
 				CGContextMoveToPoint(tempCtx, cx + crx, cy);
 				CGContextAddLineToPoint(tempCtx, cx + cw - crx, cy);
-				[self arcTo: crx : cry : 0 : 0 : 1 : cx + cw : cy + cry];
+				[self arcToRx: crx ry: cry rotation: 0 largeArcFlag: 0 sweepFlag: 1 x: cx + cw y: cy + cry];
 				CGContextAddLineToPoint(tempCtx, cx + cw, cy + ch - cry);
-				[self arcTo: crx : cry : 0 : 0 : 1 : cx + cw - crx : cy + ch];
+				[self arcToRx: crx ry: cry rotation: 0 largeArcFlag: 0 sweepFlag: 1 x: cx + cw - crx y: cy + ch];
 				CGContextAddLineToPoint(tempCtx, cx + crx, cy + ch);
-				[self arcTo: crx : cry : 0 : 0 : 1 : cx : cy + ch - cry];
+				[self arcToRx: crx ry: cry rotation: 0 largeArcFlag: 0 sweepFlag: 1 x: cx y: cy + ch - cry];
 				CGContextAddLineToPoint(tempCtx, cx, cy + cry);
-				[self arcTo: crx : cry : 0 : 0 : 1 : cx + crx : cy];
+				[self arcToRx: crx ry: cry rotation: 0 largeArcFlag: 0 sweepFlag: 1 x: cx + crx y: cy];
 				CGContextClosePath(tempCtx);
 				CGContextClip(tempCtx);
-			}
-			else
+			} else
 				CGContextClipToRect(tempCtx, CGRectMake(cx, cy, cw, ch));
 			
 			switch (tempFill.p.gradient->type) {
@@ -998,21 +997,19 @@ static CGColorRef CreatePatternColorFromRenderContext(SVGRenderContext *theCont)
 			CGContextSaveGState(tempCtx);
 		{
 			
-			if (rx > 0 || ry > 0)
-			{
+			if (rx > 0 || ry > 0) {
 				CGContextMoveToPoint(tempCtx, cx + crx, cy);
 				CGContextAddLineToPoint(tempCtx, cx + cw - crx, cy);
-				[self arcTo: crx : cry : 0 : 0 : 1 : cx + cw : cy + cry];
+				[self arcToRx: crx ry: cry rotation: 0 largeArcFlag: 0 sweepFlag: 1 x: cx + cw y: cy + cry];
 				CGContextAddLineToPoint(tempCtx, cx + cw, cy + ch - cry);
-				[self arcTo: crx : cry : 0 : 0 : 1 : cx + cw - crx : cy + ch];
+				[self arcToRx: crx ry: cry rotation: 0 largeArcFlag: 0 sweepFlag: 1 x: cx + cw - crx y: cy + ch];
 				CGContextAddLineToPoint(tempCtx, cx + crx, cy + ch);
-				[self arcTo: crx : cry : 0 : 0 : 1 : cx : cy + ch - cry];
+				[self arcToRx: crx ry: cry rotation: 0 largeArcFlag: 0 sweepFlag: 1 x: cx y: cy + ch - cry];
 				CGContextAddLineToPoint(tempCtx, cx, cy + cry);
-				[self arcTo: crx : cry : 0 : 0 : 1 : cx + crx : cy];
+				[self arcToRx: crx ry: cry rotation: 0 largeArcFlag: 0 sweepFlag: 1 x: cx + crx y: cy];
 				CGContextClosePath(tempCtx);
 				CGContextClip(tempCtx);
-			}
-			else
+			} else
 				CGContextClipToRect(tempCtx, CGRectMake(cx, cy, cw, ch));
 
 			svg_element_t *tempElement = tempFill.p.pattern_element;
@@ -1034,21 +1031,19 @@ static CGColorRef CreatePatternColorFromRenderContext(SVGRenderContext *theCont)
 			
 		case SVG_PAINT_TYPE_COLOR:
 			[self setFillColor:&tempFill.p.color alpha:self.current.fillOpacity];
-			if (rx > 0 || ry > 0)
-			{
+			if (rx > 0 || ry > 0) {
 				CGContextMoveToPoint(tempCtx, cx + crx, cy);
 				CGContextAddLineToPoint(tempCtx, cx + cw - crx, cy);
-				[self arcTo: crx : cry : 0 : 0 : 1 : cx + cw : cy + cry];
+				[self arcToRx: crx ry: cry rotation: 0 largeArcFlag: 0 sweepFlag: 1 x: cx + cw y: cy + cry];
 				CGContextAddLineToPoint(tempCtx, cx + cw, cy + ch - cry);
-				[self arcTo: crx : cry : 0 : 0 : 1 : cx + cw - crx : cy + ch];
+				[self arcToRx: crx ry: cry rotation: 0 largeArcFlag: 0 sweepFlag: 1 x: cx + cw - crx y: cy + ch];
 				CGContextAddLineToPoint(tempCtx, cx + crx, cy + ch);
-				[self arcTo: crx : cry : 0 : 0 : 1 : cx : cy + ch - cry];
+				[self arcToRx: crx ry: cry rotation: 0 largeArcFlag: 0 sweepFlag: 1 x: cx y: cy + ch - cry];
 				CGContextAddLineToPoint(tempCtx, cx, cy + cry);
-				[self arcTo: crx : cry : 0 : 0 : 1 : cx + crx : cy];
+				[self arcToRx: crx ry: cry rotation: 0 largeArcFlag: 0 sweepFlag: 1 x: cx + crx y: cy];
 				CGContextClosePath(tempCtx);
 				CGContextFillPath(tempCtx);
-			}
-			else
+			} else
 				CGContextFillRect(tempCtx, CGRectMake(cx, cy, cw, ch));
 			break;
 
@@ -1332,7 +1327,7 @@ static CGColorRef CreatePatternColorFromRenderContext(SVGRenderContext *theCont)
 
 - (NSString *)description
 {
-	return [NSString stringWithFormat:@"Size: (%fx%f) is set: %@ scale: %f States: %li Current: %@", size.width, size.height, hasSize ? @"Yes" : @"No", scale, (long)[states count], [self.current description]];
+	return [NSString stringWithFormat:@"Size: (%fx%f), is set: %@; scale: %f; States: %li, Current: {%@}", size.width, size.height, hasSize ? @"Yes" : @"No", scale, (long)[states count], [self.current description]];
 }
 
 @end
@@ -1417,13 +1412,13 @@ static svg_status_t r_arc_to(void *closure, double rx, double ry, double x_axis_
 {
 	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
 	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
-	[self arcTo: rx
-			   : ry
-			   : x_axis_rotation
-			   : large_arc_flag
-			   : sweep_flag
-			   : x
-			   : y];
+	[self arcToRx: rx
+			   ry: ry
+			   rotation: x_axis_rotation
+			   largeArcFlag: large_arc_flag
+			   sweepFlag: sweep_flag
+			   x: x
+			   y: y];
 	return SVG_STATUS_SUCCESS;
 }
 

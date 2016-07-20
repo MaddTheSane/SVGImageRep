@@ -22,8 +22,6 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 {
 	if(s != svg)
 	{
-		[s retain];
-		[svg release];
 		svg = s;
 	}
 	[self setNeedsDisplay: YES];
@@ -46,13 +44,6 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 		CGContextFillRect(tempRef, CGRectMake(0, 0, SVGSize.width, SVGSize.height));
 		CGContextDrawLayerInRect(tempRef, CGRectMake(0, 0, SVGSize.width, SVGSize.height), svg.renderLayer);
 	}
-}
-
-- (void)dealloc
-{
-	[svg release];
-	
-	[super dealloc];
 }
 
 @end
@@ -85,22 +76,19 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 		}
 		SVGRenderContext *svg_render_context = [[SVGRenderContext alloc] init];
 
-		{
-			NSAutoreleasePool *pool = [NSAutoreleasePool new];
+		@autoreleasepool {
 			[svg_render_context prepareRender: scale];
-			status = svg_render(svg, &cocoa_svg_engine, svg_render_context);
+			status = svg_render(svg, &cocoa_svg_engine, (__bridge void *)(svg_render_context));
 			[svg_render_context finishRender];
-			[pool drain];
 		}
 
 		if (status != SVG_STATUS_SUCCESS) {
-			[svg_render_context release];
+			svg_render_context = nil;
 			svg_destroy(svg);
 			return;
 		}
 		[svg_view setFrame:scaledRect];
 		[svg_view setSVGRenderContext:svg_render_context];
-		[svg_render_context release];
 
 		svg_destroy(svg);
 	}
@@ -145,13 +133,6 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 	
 	svg_destroy(svg);
 	return YES;
-}
-
-- (void)dealloc
-{
-	[documentData release];
-	
-	[super dealloc];
 }
 
 #define SCALE(a,b) \

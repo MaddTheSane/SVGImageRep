@@ -54,7 +54,7 @@ extern CGImageRef CreateSVGImageFromDataWithScaleAutoScale(NSData *data, CGFloat
 	
 	@autoreleasepool {
 		[svg_render_context prepareRender:scale];
-		rendered = svg_render(svg_test, &cocoa_svg_engine,svg_render_context);
+		rendered = svg_render(svg_test, &cocoa_svg_engine,(__bridge void *)(svg_render_context));
 		[svg_render_context finishRender];
 	}
 	
@@ -70,8 +70,6 @@ extern CGImageRef CreateSVGImageFromDataWithScaleAutoScale(NSData *data, CGFloat
 		returntype = CGBitmapContextCreateImage(bitmapContext);
 		CGContextRelease(bitmapContext);
 	}
-		
-	[svg_render_context release];
 	
 	svg_destroy(svg_test);
 	

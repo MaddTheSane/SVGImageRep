@@ -3,6 +3,7 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 */
 
 #include <math.h>
+#include <tgmath.h>
 
 #include <svg.h>
 #import "SVGImageRep.h"
@@ -84,13 +85,8 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 		svg_get_size(svg, &w, &h);
 		NSSize renderSize = NSMakeSize([SVGRenderContext lengthToPoints:&w], [SVGRenderContext lengthToPoints:&h]);
 		[self setSize:renderSize];
-#if CGFLOAT_IS_DOUBLE
 		[self setPixelsHigh:ceil(renderSize.height)];
 		[self setPixelsWide:ceil(renderSize.width)];
-#else
-		[self setPixelsHigh:ceilf(renderSize.height)];
-		[self setPixelsWide:ceilf(renderSize.width)];
-#endif
 	}
 
 	return self;

@@ -283,7 +283,7 @@ _svg_path_destroy (svg_path_t *path)
 
 svg_status_t
 _svg_path_render (svg_path_t		*path,
-		  svg_render_engine_t	*engine,
+		  const svg_render_engine_t	*engine,
 		  void			*closure)
 {
     int i, j;
@@ -766,7 +766,7 @@ _svg_path_close_path (svg_path_t *path)
 
 svg_status_t
 _svg_line_render (svg_line_t	*line,
-		  svg_render_engine_t	*engine,
+		  const svg_render_engine_t	*engine,
 		  void			*closure)
 {
     return (engine->render_line) (closure,
@@ -776,7 +776,7 @@ _svg_line_render (svg_line_t	*line,
 
 svg_status_t
 _svg_rect_render (svg_rect_element_t	*rect,
-		  svg_render_engine_t	*engine,
+		  const svg_render_engine_t	*engine,
 		  void			*closure)
 {
     return (engine->render_rect) (closure,
@@ -787,7 +787,7 @@ _svg_rect_render (svg_rect_element_t	*rect,
 
 svg_status_t
 _svg_circle_render (svg_ellipse_t	*circle,
-		    svg_render_engine_t	*engine,
+		    const svg_render_engine_t	*engine,
 		    void		*closure)
 {
     if (circle->rx.value == 0)
@@ -800,7 +800,7 @@ _svg_circle_render (svg_ellipse_t	*circle,
 
 svg_status_t
 _svg_ellipse_render (svg_ellipse_t	*ellipse,
-		     svg_render_engine_t	*engine,
+		     const svg_render_engine_t	*engine,
 		     void			*closure)
 {
     if (ellipse->rx.value == 0 || ellipse->ry.value == 0)

@@ -110,7 +110,7 @@
 		5560E704152B6F5C008FF127 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 5560E702152B6F5C008FF127 /* Credits.rtf */; };
 		5560E707152B6F5C008FF127 /* SVGIRAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5560E706152B6F5C008FF127 /* SVGIRAppDelegate.m */; };
 		5560E70A152B6F5C008FF127 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5560E708152B6F5C008FF127 /* MainMenu.xib */; };
-		5560E711152B6F9C008FF127 /* SVGImageRep.bundle in CopyFiles */ = {isa = PBXBuildFile; fileRef = 55AFA490151AA3BC00B5351D /* SVGImageRep.bundle */; };
+		5560E711152B6F9C008FF127 /* SVGImageRep.bundle in CopyFiles */ = {isa = PBXBuildFile; fileRef = 55AFA490151AA3BC00B5351D /* SVGImageRep.bundle */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		5560E718152B73D7008FF127 /* admon-bug.svg in Resources */ = {isa = PBXBuildFile; fileRef = 5560E712152B73D7008FF127 /* admon-bug.svg */; };
 		5560E719152B73D7008FF127 /* admon-caution.svg in Resources */ = {isa = PBXBuildFile; fileRef = 5560E713152B73D7008FF127 /* admon-caution.svg */; };
 		5560E71A152B73D7008FF127 /* admon-important.svg in Resources */ = {isa = PBXBuildFile; fileRef = 5560E714152B73D7008FF127 /* admon-important.svg */; };
@@ -303,19 +303,6 @@
 		55CDE70E1549C95200EACD41 /* admon-caution.svg in Resources */ = {isa = PBXBuildFile; fileRef = 5560E713152B73D7008FF127 /* admon-caution.svg */; };
 		55CDE70F1549CB7D00EACD41 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 55AFA52E151AACFF00B5351D /* libxml2.dylib */; };
 		55CDE7101549CB7F00EACD41 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 55AFA534151AB48C00B5351D /* libz.dylib */; };
-		55DFC3BE1543387F004C6238 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5560E6FF152B6F5C008FF127 /* main.m */; };
-		55DFC3BF1543387F004C6238 /* SVGIRAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5560E706152B6F5C008FF127 /* SVGIRAppDelegate.m */; };
-		55DFC3C11543387F004C6238 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55AFA493151AA3BC00B5351D /* Cocoa.framework */; };
-		55DFC3C31543387F004C6238 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5560E6FC152B6F5C008FF127 /* InfoPlist.strings */; };
-		55DFC3C41543387F004C6238 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 5560E702152B6F5C008FF127 /* Credits.rtf */; };
-		55DFC3C51543387F004C6238 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5560E708152B6F5C008FF127 /* MainMenu.xib */; };
-		55DFC3C61543387F004C6238 /* admon-bug.svg in Resources */ = {isa = PBXBuildFile; fileRef = 5560E712152B73D7008FF127 /* admon-bug.svg */; };
-		55DFC3C71543387F004C6238 /* admon-caution.svg in Resources */ = {isa = PBXBuildFile; fileRef = 5560E713152B73D7008FF127 /* admon-caution.svg */; };
-		55DFC3C81543387F004C6238 /* admon-important.svg in Resources */ = {isa = PBXBuildFile; fileRef = 5560E714152B73D7008FF127 /* admon-important.svg */; };
-		55DFC3C91543387F004C6238 /* admon-note.svg in Resources */ = {isa = PBXBuildFile; fileRef = 5560E715152B73D7008FF127 /* admon-note.svg */; };
-		55DFC3CA1543387F004C6238 /* admon-tip.svg in Resources */ = {isa = PBXBuildFile; fileRef = 5560E716152B73D7008FF127 /* admon-tip.svg */; };
-		55DFC3CB1543387F004C6238 /* admon-warning.svg in Resources */ = {isa = PBXBuildFile; fileRef = 5560E717152B73D7008FF127 /* admon-warning.svg */; };
-		55DFC3CD1543387F004C6238 /* SVGImageRep.bundle in CopyFiles */ = {isa = PBXBuildFile; fileRef = 55AFA490151AA3BC00B5351D /* SVGImageRep.bundle */; };
 		55EC29BB156D973B00384A86 /* SVGImageView.h in Headers */ = {isa = PBXBuildFile; fileRef = 55EC29B9156D973B00384A86 /* SVGImageView.h */; };
 		55EC29BC156D973B00384A86 /* SVGImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 55EC29BA156D973B00384A86 /* SVGImageView.m */; };
 		55F0FA88151CDCB6006426B8 /* jmemname.c in Sources */ = {isa = PBXBuildFile; fileRef = 55371263151BD0CD00F8848A /* jmemname.c */; };
@@ -391,13 +378,6 @@
 			remoteGlobalIDString = 55863C8D154738DD00A73C76;
 			remoteInfo = SVGImageRepiOS;
 		};
-		55DFC3BC1543387F004C6238 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 55AFA487151AA3BC00B5351D /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 55AFA48F151AA3BC00B5351D;
-			remoteInfo = SVGImageRep;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -408,16 +388,6 @@
 			dstSubfolderSpec = 13;
 			files = (
 				5560E711152B6F9C008FF127 /* SVGImageRep.bundle in CopyFiles */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		55DFC3CC1543387F004C6238 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 13;
-			files = (
-				55DFC3CD1543387F004C6238 /* SVGImageRep.bundle in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -626,7 +596,6 @@
 		55CDE6FC1549C8EA00EACD41 /* SVGTViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SVGTViewController.m; sourceTree = "<group>"; };
 		55CDE6FF1549C8EA00EACD41 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/SVGTViewController_iPhone.xib; sourceTree = "<group>"; };
 		55CDE7021549C8EA00EACD41 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/SVGTViewController_iPad.xib; sourceTree = "<group>"; };
-		55DFC3D11543387F004C6238 /* SVGIRTester-GC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SVGIRTester-GC.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		55EC29B9156D973B00384A86 /* SVGImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVGImageView.h; sourceTree = "<group>"; };
 		55EC29BA156D973B00384A86 /* SVGImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVGImageView.m; sourceTree = "<group>"; };
 		55F0FA8D151FBAB6006426B8 /* SVGViewer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVGViewer.h; sourceTree = "<group>"; };
@@ -742,14 +711,6 @@
 				55CDE7081549C90E00EACD41 /* CoreGraphics.framework in Frameworks */,
 				55CDE7091549C90E00EACD41 /* CoreText.framework in Frameworks */,
 				55CDE70A1549C90E00EACD41 /* Foundation.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		55DFC3C01543387F004C6238 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				55DFC3C11543387F004C6238 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -999,7 +960,6 @@
 				553711B0151BCF9100F8848A /* libjpeg.a */,
 				553711BF151BCF9A00F8848A /* libpng.a */,
 				5560E6F6152B6F5C008FF127 /* SVGIRTester.app */,
-				55DFC3D11543387F004C6238 /* SVGIRTester-GC.app */,
 				55863C8E154738DD00A73C76 /* libSVGImageRepiOS.a */,
 				55863CBF1547396700A73C76 /* libsvgiOS.a */,
 				55863D0E1547399000A73C76 /* libjpegiOS.a */,
@@ -1463,32 +1423,13 @@
 			productReference = 55CDE6E71549C8EA00EACD41 /* SVGTester.app */;
 			productType = "com.apple.product-type.application";
 		};
-		55DFC3BA1543387F004C6238 /* SVGIRTester-GC */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 55DFC3CE1543387F004C6238 /* Build configuration list for PBXNativeTarget "SVGIRTester-GC" */;
-			buildPhases = (
-				55DFC3BD1543387F004C6238 /* Sources */,
-				55DFC3C01543387F004C6238 /* Frameworks */,
-				55DFC3C21543387F004C6238 /* Resources */,
-				55DFC3CC1543387F004C6238 /* CopyFiles */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				55DFC3BB1543387F004C6238 /* PBXTargetDependency */,
-			);
-			name = "SVGIRTester-GC";
-			productName = SVGIRTester;
-			productReference = 55DFC3D11543387F004C6238 /* SVGIRTester-GC.app */;
-			productType = "com.apple.product-type.application";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		55AFA487151AA3BC00B5351D /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0460;
+				LastUpgradeCheck = 0730;
 			};
 			buildConfigurationList = 55AFA48A151AA3BC00B5351D /* Build configuration list for PBXProject "SVGImageRep" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -1505,7 +1446,6 @@
 				55AFA48F151AA3BC00B5351D /* SVGImageRep */,
 				55AFA4A8151AA3FA00B5351D /* SVGViewer */,
 				5560E6F5152B6F5C008FF127 /* SVGIRTester */,
-				55DFC3BA1543387F004C6238 /* SVGIRTester-GC */,
 				55AFA4CC151AA7E900B5351D /* svg */,
 				553711AF151BCF9100F8848A /* jpeg */,
 				553711BE151BCF9A00F8848A /* png */,
@@ -1566,22 +1506,6 @@
 				55CDE7001549C8EA00EACD41 /* SVGTViewController_iPhone.xib in Resources */,
 				55CDE7031549C8EA00EACD41 /* SVGTViewController_iPad.xib in Resources */,
 				55CDE70E1549C95200EACD41 /* admon-caution.svg in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		55DFC3C21543387F004C6238 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				55DFC3C31543387F004C6238 /* InfoPlist.strings in Resources */,
-				55DFC3C41543387F004C6238 /* Credits.rtf in Resources */,
-				55DFC3C51543387F004C6238 /* MainMenu.xib in Resources */,
-				55DFC3C61543387F004C6238 /* admon-bug.svg in Resources */,
-				55DFC3C71543387F004C6238 /* admon-caution.svg in Resources */,
-				55DFC3C81543387F004C6238 /* admon-important.svg in Resources */,
-				55DFC3C91543387F004C6238 /* admon-note.svg in Resources */,
-				55DFC3CA1543387F004C6238 /* admon-tip.svg in Resources */,
-				55DFC3CB1543387F004C6238 /* admon-warning.svg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1867,15 +1791,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		55DFC3BD1543387F004C6238 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				55DFC3BE1543387F004C6238 /* main.m in Sources */,
-				55DFC3BF1543387F004C6238 /* SVGIRAppDelegate.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -1923,11 +1838,6 @@
 			isa = PBXTargetDependency;
 			target = 55863C8D154738DD00A73C76 /* SVGImageRepiOS */;
 			targetProxy = 55CDE70C1549C92100EACD41 /* PBXContainerItemProxy */;
-		};
-		55DFC3BB1543387F004C6238 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 55AFA48F151AA3BC00B5351D /* SVGImageRep */;
-			targetProxy = 55DFC3BC1543387F004C6238 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -2068,6 +1978,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SVGIRTester/SVGIRTester-Prefix.pch";
 				INFOPLIST_FILE = "SVGIRTester/SVGIRTester-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.github.maddthesane.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -2080,6 +1991,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SVGIRTester/SVGIRTester-Prefix.pch";
 				INFOPLIST_FILE = "SVGIRTester/SVGIRTester-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.github.maddthesane.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -2088,16 +2000,15 @@
 		55863C98154738DE00A73C76 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
 				DSTROOT = /tmp/SVGImageRepiOS.dst;
-				GCC_ENABLE_OBJC_GC = supported;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SVGImageRepiOS/SVGImageRepiOS-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
 					/usr/include/libxml2,
 					"\"${SRCROOT}\"/svg/src",
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2109,16 +2020,15 @@
 		55863C99154738DE00A73C76 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
 				DSTROOT = /tmp/SVGImageRepiOS.dst;
-				GCC_ENABLE_OBJC_GC = supported;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SVGImageRepiOS/SVGImageRepiOS-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
 					/usr/include/libxml2,
 					"\"${SRCROOT}\"/svg/src",
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2131,7 +2041,6 @@
 		55863CBD1547396700A73C76 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_WARN_ENUM_CONVERSION = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu89;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -2142,6 +2051,7 @@
 					"\"${SRCROOT}\"/jpeg/jpeg-8d",
 					"\"${SRCROOT}\"/png/libpng-1.5.9",
 				);
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 			};
@@ -2150,7 +2060,6 @@
 		55863CBE1547396700A73C76 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_WARN_ENUM_CONVERSION = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu89;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -2161,6 +2070,7 @@
 					"\"${SRCROOT}\"/jpeg/jpeg-8d",
 					"\"${SRCROOT}\"/png/libpng-1.5.9",
 				);
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 			};
@@ -2169,10 +2079,10 @@
 		55863D0C1547399000A73C76 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "jpeg/jpeg-Prefix.pch";
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				MACOSX_DEPLOYMENT_TARGET = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -2182,10 +2092,10 @@
 		55863D0D1547399000A73C76 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "jpeg/jpeg-Prefix.pch";
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				MACOSX_DEPLOYMENT_TARGET = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -2195,7 +2105,6 @@
 		55863D2B1547399300A73C76 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "png/png-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -2204,6 +2113,7 @@
 					PNG_CONFIGURE_LIBPNG,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				MACOSX_DEPLOYMENT_TARGET = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -2213,7 +2123,6 @@
 		55863D2C1547399300A73C76 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "png/png-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -2222,6 +2131,7 @@
 					PNG_CONFIGURE_LIBPNG,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				MACOSX_DEPLOYMENT_TARGET = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -2232,15 +2142,20 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD)";
+				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -2250,7 +2165,9 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = YES;
@@ -2262,19 +2179,25 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD)";
+				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				SDKROOT = macosx;
@@ -2295,6 +2218,7 @@
 				);
 				INFOPLIST_FILE = "SVGImageRep/SVGImageRep-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.github.maddthesane.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = bundle;
 			};
@@ -2314,6 +2238,7 @@
 				);
 				INFOPLIST_FILE = "SVGImageRep/SVGImageRep-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.github.maddthesane.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = bundle;
 			};
@@ -2331,6 +2256,7 @@
 					"\"${SRCROOT}\"/svg/src",
 				);
 				INFOPLIST_FILE = "SVGViewer/SVGViewer-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.github.maddthesane.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -2349,6 +2275,7 @@
 					"\"${SRCROOT}\"/svg/src",
 				);
 				INFOPLIST_FILE = "SVGViewer/SVGViewer-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.github.maddthesane.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -2393,7 +2320,6 @@
 		55CDE7051549C8EA00EACD41 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2402,9 +2328,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SVGTester/SVGTester-Prefix.pch";
 				INFOPLIST_FILE = "SVGTester/SVGTester-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.github.maddthesane.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -2415,7 +2342,6 @@
 		55CDE7061549C8EA00EACD41 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2424,40 +2350,15 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SVGTester/SVGTester-Prefix.pch";
 				INFOPLIST_FILE = "SVGTester/SVGTester-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.github.maddthesane.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
-				WRAPPER_EXTENSION = app;
-			};
-			name = Release;
-		};
-		55DFC3CF1543387F004C6238 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				GCC_ENABLE_OBJC_GC = required;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "SVGIRTester/SVGIRTester-Prefix.pch";
-				INFOPLIST_FILE = "SVGIRTester/SVGIRTester-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				WRAPPER_EXTENSION = app;
-			};
-			name = Debug;
-		};
-		55DFC3D01543387F004C6238 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				GCC_ENABLE_OBJC_GC = required;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "SVGIRTester/SVGIRTester-Prefix.pch";
-				INFOPLIST_FILE = "SVGIRTester/SVGIRTester-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -2569,15 +2470,6 @@
 			buildConfigurations = (
 				55CDE7051549C8EA00EACD41 /* Debug */,
 				55CDE7061549C8EA00EACD41 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		55DFC3CE1543387F004C6238 /* Build configuration list for PBXNativeTarget "SVGIRTester-GC" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				55DFC3CF1543387F004C6238 /* Debug */,
-				55DFC3D01543387F004C6238 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

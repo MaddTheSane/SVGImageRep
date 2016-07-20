@@ -90,7 +90,7 @@ _svg_text_append_chars (svg_text_t	*text,
 
 svg_status_t
 _svg_text_render (svg_text_t		*text,
-		  svg_render_engine_t	*engine,
+		  const svg_render_engine_t	*engine,
 		  void			*closure)
 {
     return (engine->render_text) (closure,

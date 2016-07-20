@@ -234,7 +234,7 @@ _svg_transform_multiply (svg_transform_t	*result,
 
 svg_status_t
 _svg_transform_render (svg_transform_t		*transform,
-		       svg_render_engine_t	*engine,
+		       const svg_render_engine_t	*engine,
 		       void			*closure)
 {
     return (engine->transform) (closure,
