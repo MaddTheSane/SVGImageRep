@@ -70,20 +70,18 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 
 - (void)drawAttributedString:(NSAttributedString*)textWFont atX:(CGFloat)xPos y:(CGFloat)yPos context:(CGContextRef)tempCtx
 {
+	CGRect ourRect;
+	ourRect.origin.x = xPos;
+	ourRect.origin.y = yPos;
 	CFRange fitRange;
 	CTFrameRef tempFrame;
 	{
 		CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString((CFAttributedStringRef)textWFont);
-		CGSize frameSize = CTFramesetterSuggestFrameSizeWithConstraints(framesetter, CFRangeMake(0, [textWFont length]), NULL, CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX), &fitRange);
-		CGMutablePathRef pathRef;
-		pathRef = CGPathCreateMutable();
-		CGPathMoveToPoint(pathRef, NULL, xPos, yPos);
-		CGPathAddLineToPoint(pathRef, NULL, xPos + frameSize.width, yPos);
-		CGPathAddLineToPoint(pathRef, NULL, xPos + frameSize.width, yPos + frameSize.height);
-		CGPathAddLineToPoint(pathRef, NULL, xPos, yPos + frameSize.height);
-		CGPathCloseSubpath(pathRef);
-		tempFrame = CTFramesetterCreateFrame(framesetter, CFRangeMake(0, [textWFont length]), pathRef, NULL);
-		CGPathRelease(pathRef);
+		ourRect.size = CTFramesetterSuggestFrameSizeWithConstraints(framesetter, CFRangeMake(0, [textWFont length]), NULL, CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX), &fitRange);
+		ourRect = CGRectStandardize(ourRect);
+		CGPathRef squareRef = CGPathCreateWithRect(ourRect, NULL);
+		tempFrame = CTFramesetterCreateFrame(framesetter, CFRangeMake(0, [textWFont length]), squareRef, NULL);
+		CGPathRelease(squareRef);
 		CFRelease(framesetter);
 	}
 	CTFrameDraw(tempFrame, tempCtx);
@@ -146,9 +144,7 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 			f = [fm fontWithFamily:@"Helvetica" traits:fontTrait weight:w size:self.current.fontSize];
 	}
 	
-	//Should we set the text CTM here?
-	CGContextScaleCTM(tempCtx, 1, -1);
-	CGContextSetTextMatrix(tempCtx, CGAffineTransformIdentity);
+	CGContextSetTextMatrix(tempCtx, CGAffineTransformMakeScale(1, -1));
 	
 	NSMutableAttributedString *textWFont = [[NSMutableAttributedString alloc] initWithString:@(utf8) attributes:@{NSFontAttributeName: f}];
 	switch (tempFill.type) {
@@ -237,7 +233,7 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 			break;
 	}
 	
-	textWFont = [[NSMutableAttributedString alloc] initWithString:@(utf8) attributes:@{NSFontAttributeName: f, NSForegroundColorAttributeName: [NSColor clearColor], NSStrokeWidthAttributeName: @(self.current.strokeWidth)}];
+	textWFont = [[NSMutableAttributedString alloc] initWithString:@(utf8) attributes:@{NSFontAttributeName: f, NSStrokeWidthAttributeName: @(self.current.strokeWidth)}];
 	
 	switch (tempStroke.type) {
 		case SVG_PAINT_TYPE_GRADIENT:
@@ -305,7 +301,7 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 	}
 		
 	//Again, set the text CTM?
-	CGContextScaleCTM(tempCtx, 1, -1);
+	//CGContextScaleCTM(tempCtx, 1, -1);
 	
 	return SVG_STATUS_SUCCESS;
 }
@@ -355,8 +351,8 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 	}
 	
 	{
-		CFMutableDictionaryRef fontTraits = CFDictionaryCreateMutable(kCFAllocatorDefault, 1, &kCFCopyStringDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
-		CFMutableDictionaryRef desAttribs = CFDictionaryCreateMutable(kCFAllocatorDefault, 3, &kCFCopyStringDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+		NSMutableDictionary *fontTraits = [[NSMutableDictionary alloc] initWithCapacity:1];
+		NSMutableDictionary *desAttribs = [[NSMutableDictionary alloc] initWithCapacity:3];
 		
 		CTFontSymbolicTraits fontTrait = 0;
 		if (self.current.fontStyle > SVG_FONT_STYLE_NORMAL) {
@@ -365,27 +361,19 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 		if (self.current.fontWeight >= 700) {
 			fontTrait |= kCTFontBoldTrait;
 		}
-		CFNumberRef symTrait = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &fontTrait);
-		CFDictionaryAddValue(fontTraits, kCTFontSymbolicTrait, symTrait);
-		CFRelease(symTrait);
-		CFDictionaryAddValue(desAttribs, kCTFontTraitsAttribute, fontTraits);
+		fontTraits[(NSString*)kCTFontSymbolicTrait] = @(fontTrait);
+		desAttribs[(NSString*)kCTFontTraitsAttribute] = fontTraits;
 		CTFontDescriptorRef tempDes = CTFontCopyFontDescriptor(f);
-		CFDictionaryRef tempDesDict = CTFontDescriptorCopyAttributes(tempDes);
+		NSString *fontFam = CFBridgingRelease(CTFontDescriptorCopyAttribute(tempDes, kCTFontFamilyNameAttribute));
 		CFRelease(tempDes);
-		CFStringRef fontFam = CFDictionaryGetValue(tempDesDict, kCTFontFamilyNameAttribute);
-		CFDictionaryAddValue(desAttribs, kCTFontFamilyNameAttribute, fontFam);
-		CFRelease(tempDesDict);
 		
-		CTFontDescriptorRef theDescriptor = CTFontDescriptorCreateWithAttributes(desAttribs);
+		desAttribs[(NSString*)kCTFontFamilyNameAttribute] = fontFam;
+		CTFontDescriptorRef theDescriptor = CTFontDescriptorCreateWithAttributes((CFDictionaryRef)desAttribs);
 		tmpfont = CTFontCreateWithFontDescriptor(theDescriptor, self.current.fontSize, NULL);
-		CFRelease(fontTraits);
 		CFRelease(theDescriptor);
-		CFRelease(desAttribs);
 	}
 	
-	//Should we set the text CTM here?
-	CGContextScaleCTM(tempCtx, 1, -1);
-	CGContextSetTextMatrix(tempCtx, CGAffineTransformIdentity);
+	CGContextSetTextMatrix(tempCtx, CGAffineTransformMakeScale(1, -1));
 	
 	NSMutableAttributedString *textWFont = [[NSMutableAttributedString alloc] initWithString:@(utf8) attributes:@{NSFontAttributeName: (__bridge id)f}];
 	switch (tempFill.type) {
@@ -473,7 +461,7 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 			break;
 	}
 	
-	textWFont = [[NSMutableAttributedString alloc] initWithString:@(utf8) attributes:@{NSFontAttributeName: (__bridge id)f, NSForegroundColorAttributeName: [UIColor clearColor], NSStrokeWidthAttributeName: @(self.current.strokeWidth)}];
+	textWFont = [[NSMutableAttributedString alloc] initWithString:@(utf8) attributes:@{NSFontAttributeName: (__bridge id)f, NSStrokeWidthAttributeName: @(self.current.strokeWidth)}];
 	
 	switch (tempStroke.type) {
 		case SVG_PAINT_TYPE_GRADIENT:
@@ -539,9 +527,6 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 	}
 	CFRelease(f);
 	CFRelease(tmpfont);
-	
-	//Again, set the text CTM?
-	CGContextScaleCTM(tempCtx, 1, -1);
 	
 	return SVG_STATUS_SUCCESS;
 }
