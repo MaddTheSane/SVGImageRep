@@ -63,28 +63,22 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 
 + (NSImageRep *)imageRepWithContentsOfURL:(NSURL *)url
 {
-	return [[self alloc] initWithURL:url];
+	return [[self alloc] initWithContentsOfURL:url];
 }
 
 + (NSImageRep *)imageRepWithContentsOfFile:(NSString *)filename
 {
-	return [[self alloc] initWithFile:filename];
+	return [[self alloc] initWithContentsOfFile:filename];
 }
 
-- (instancetype)initWithFile:(NSString*)file
-{
-	return [self initWithURL:[NSURL fileURLWithPath:file]];
-}
-
-- (instancetype)initWithURL:(NSURL *)d
+- (instancetype)initWithSVGStruct:(svg_t*)anSVG
 {
 	if (self = [super init]) {
-		svg_status_t status;
-		svg_create(&svg);
-		status = svg_parse(svg, d.fileSystemRepresentation);
-		if (status != SVG_STATUS_SUCCESS) {
+		if (anSVG == NULL) {
 			return nil;
 		}
+		svg = anSVG;
+		
 		[self setColorSpaceName:NSCalibratedRGBColorSpace];
 		[self setAlpha:YES];
 		[self setBitsPerSample:NSImageRepMatchesDevice];
@@ -100,39 +94,42 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 	return self;
 }
 
+- (instancetype)initWithContentsOfFile:(NSString*)file
+{
+	return [self initWithContentsOfURL:[NSURL fileURLWithPath:file]];
+}
+
+- (instancetype)initWithContentsOfURL:(NSURL *)d
+{
+	svg_t *tmpsvg;
+	svg_status_t status;
+	svg_create(&tmpsvg);
+	status = svg_parse(tmpsvg, d.fileSystemRepresentation);
+	if (status != SVG_STATUS_SUCCESS) {
+		svg_destroy(tmpsvg);
+		return [self initWithSVGStruct:NULL];
+	}
+	return [self initWithSVGStruct:tmpsvg];
+}
+
 - (instancetype)initWithData:(NSData *)d
 {
+	svg_t *tmpsvg;
 	svg_status_t status;
-
-	if (!(self = [super init]))
-		return nil;
-
-	svg_create(&svg);
-	status = svg_parse_buffer(svg, [d bytes], [d length]);
+	svg_create(&tmpsvg);
+	status = svg_parse_buffer(tmpsvg, [d bytes], [d length]);
 	if (status != SVG_STATUS_SUCCESS) {
-		return nil;
+		svg_destroy(tmpsvg);
+		return [self initWithSVGStruct:NULL];
 	}
-
-	[self setColorSpaceName:NSCalibratedRGBColorSpace];
-	[self setAlpha:YES];
-	[self setBitsPerSample:NSImageRepMatchesDevice];
-	[self setOpaque:NO];
-
-	{
-		svg_length_t w, h;
-		svg_get_size(svg, &w, &h);
-		NSSize renderSize = NSMakeSize([SVGRenderContext lengthToPoints:&w], [SVGRenderContext lengthToPoints:&h]);
-		[self setSize:renderSize];
-		[self setPixelsHigh:NSImageRepMatchesDevice];
-		[self setPixelsWide:NSImageRepMatchesDevice];
-	}
-
-	return self;
+	return [self initWithSVGStruct:tmpsvg];
 }
 
 - (void)dealloc
 {
-	svg_destroy(svg);
+	if (svg) {
+		svg_destroy(svg);
+	}
 }
 
 - (BOOL)draw
