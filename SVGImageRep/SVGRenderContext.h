@@ -51,11 +51,11 @@ extern const svg_render_engine_t cocoa_svg_engine;
 - (void)prepareRenderFromRenderContext:(SVGRenderContext *)prevContext;
 - (void)finishRender;
 
-- (void)setStrokeColor:(svg_color_t *)c alpha:(CGFloat)alph;
-- (void)setFillColor:(svg_color_t *)c alpha:(CGFloat)alph;
+- (void)setStrokeColor:(const svg_color_t *)c alpha:(CGFloat)alph;
+- (void)setFillColor:(const svg_color_t *)c alpha:(CGFloat)alph;
 
-- (double)lengthToPoints:(svg_length_t *)l;
-+ (double)lengthToPoints:(svg_length_t *)l;
+- (double)lengthToPoints:(const svg_length_t *)l;
++ (double)lengthToPoints:(const svg_length_t *)l;
 
 - (void)arcToRx:(double)rx ry:(double) ry
 	   rotation:(double)x_axis_rotation

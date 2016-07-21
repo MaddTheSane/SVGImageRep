@@ -43,12 +43,12 @@
 @synthesize size, states, scale, renderLayer;
 @synthesize indent = theIndent;
 
-static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient) CF_RETURNS_RETAINED;
+static CGGradientRef CreateGradientRefFromSVGGradient(const svg_gradient_t *gradient) CF_RETURNS_RETAINED;
 static CGColorRef CreatePatternColorFromRenderContext(SVGRenderContext *theCont) CF_RETURNS_RETAINED;
-static inline CGColorRef CreateColorRefFromSVGColor(svg_color_t *c, CGFloat alpha) CF_RETURNS_RETAINED;
+static inline CGColorRef CreateColorRefFromSVGColor(const svg_color_t *c, CGFloat alpha) CF_RETURNS_RETAINED;
 static CGColorSpaceRef GetGenericRGBColorSpace();
 
-static inline CGColorRef CreateColorRefFromSVGColor(svg_color_t *c, CGFloat alpha)
+static inline CGColorRef CreateColorRefFromSVGColor(const svg_color_t *c, CGFloat alpha)
 {
 	CGFloat srgbComps[] = {svg_color_get_red(c)/255.0, svg_color_get_green(c)/255.0, svg_color_get_blue(c)/255.0, alpha};
 	return CGColorCreate(GetGenericRGBColorSpace(), srgbComps);
@@ -391,7 +391,7 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 #undef NSColor
 }
 
-static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
+static CGGradientRef CreateGradientRefFromSVGGradient(const svg_gradient_t *gradient)
 {
 	const int numStops = gradient->num_stops;
 	CFMutableArrayRef colorArray = CFArrayCreateMutable(kCFAllocatorDefault, numStops, &kCFTypeArrayCallBacks);
@@ -446,7 +446,7 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 	CGLayerRelease(renderLayer);
 }
 
-+ (double)lengthToPoints:(svg_length_t *)l
++ (double)lengthToPoints:(const svg_length_t *)l
 {
 	double points;
 	switch (l->unit)
@@ -491,7 +491,7 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 	return points * 1.25;
 }
 
-- (double)lengthToPoints:(svg_length_t *)l
+- (double)lengthToPoints:(const svg_length_t *)l
 {
 	double points;
 	switch (l->unit)
@@ -535,7 +535,7 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 	return points * 1.25;
 }
 
-- (void)setStrokeColor:(svg_color_t *)c alpha:(CGFloat)alph
+- (void)setStrokeColor:(const svg_color_t *)c alpha:(CGFloat)alph
 {
 	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
 	CGColorRef tempColor = CreateColorRefFromSVGColor(c, alph);
@@ -543,7 +543,7 @@ static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 	CGColorRelease(tempColor);
 }
 
-- (void)setFillColor:(svg_color_t *)c alpha:(CGFloat)alph
+- (void)setFillColor:(const svg_color_t *)c alpha:(CGFloat)alph
 {
 	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
 	CGColorRef tempColor = CreateColorRefFromSVGColor(c, alph);
@@ -1396,8 +1396,7 @@ static svg_status_t r_set_stroke_line_cap(void *closure, svg_stroke_line_cap_t l
 	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	CGLineCap i;
 
-	switch (line_cap)
-	{
+	switch (line_cap) {
 		default:
 		case SVG_STROKE_LINE_CAP_BUTT:
 			i = kCGLineCapButt;

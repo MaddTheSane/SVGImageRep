@@ -37,8 +37,7 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 {
 	CGContextRef tempRef = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
 	
-	if (svg)
-	{
+	if (svg) {
 		NSSize SVGSize = [svg size];
 		CGContextSetGrayFillColor(tempRef, 1.0, 1.0);
 		CGContextFillRect(tempRef, CGRectMake(0, 0, SVGSize.width, SVGSize.height));
@@ -58,40 +57,38 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 
 - (IBAction)reload:(id)sender
 {
-	{
-		svg_t *svg;
-
-		svg_create(&svg);
-		
-		svg_status_t status = svg_parse_buffer(svg, [documentData bytes], [documentData length]);
-		if (status != SVG_STATUS_SUCCESS) {
-			svg_destroy(svg);
-			return;
-		}
-		NSRect scaledRect = NSZeroRect;
-		{
-			svg_length_t height, width;
-			svg_get_size(svg, &width, &height);
-			scaledRect.size = NSMakeSize([SVGRenderContext lengthToPoints:&width] * scale, [SVGRenderContext lengthToPoints:&height]*scale);
-		}
-		SVGRenderContext *svg_render_context = [[SVGRenderContext alloc] init];
-
-		@autoreleasepool {
-			[svg_render_context prepareRender: scale];
-			status = svg_render(svg, &cocoa_svg_engine, (__bridge void *)(svg_render_context));
-			[svg_render_context finishRender];
-		}
-
-		if (status != SVG_STATUS_SUCCESS) {
-			svg_render_context = nil;
-			svg_destroy(svg);
-			return;
-		}
-		[svg_view setFrame:scaledRect];
-		[svg_view setSVGRenderContext:svg_render_context];
-
+	svg_t *svg;
+	
+	svg_create(&svg);
+	
+	svg_status_t status = svg_parse_buffer(svg, [documentData bytes], [documentData length]);
+	if (status != SVG_STATUS_SUCCESS) {
 		svg_destroy(svg);
+		return;
 	}
+	NSRect scaledRect = NSZeroRect;
+	{
+		svg_length_t height, width;
+		svg_get_size(svg, &width, &height);
+		scaledRect.size = NSMakeSize([SVGRenderContext lengthToPoints:&width] * scale, [SVGRenderContext lengthToPoints:&height]*scale);
+	}
+	SVGRenderContext *svg_render_context = [[SVGRenderContext alloc] init];
+	
+	@autoreleasepool {
+		[svg_render_context prepareRender: scale];
+		status = svg_render(svg, &cocoa_svg_engine, (__bridge void *)(svg_render_context));
+		[svg_render_context finishRender];
+	}
+	
+	if (status != SVG_STATUS_SUCCESS) {
+		svg_render_context = nil;
+		svg_destroy(svg);
+		return;
+	}
+	[svg_view setFrame:scaledRect];
+	[svg_view setSVGRenderContext:svg_render_context];
+	
+	svg_destroy(svg);
 }
 
 - (id)init
@@ -140,8 +137,7 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 	{ \
 		scale=a##.##b; \
 		[self reload:sender]; \
-	} \
-
+	}
 
 SCALE(0,1)
 SCALE(0,25)

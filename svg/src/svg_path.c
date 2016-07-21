@@ -407,7 +407,7 @@ _svg_path_add_from_str (svg_path_t *path, const char *path_str)
 		while (1) {
 			status = _svg_str_parse_csv_doubles (s, arg, cmd_info->num_args, &end);
 			s = end;
-			if (status == SVGINT_STATUS_ARGS_EXHAUSTED)
+			if ((svgint_status_t)status == SVGINT_STATUS_ARGS_EXHAUSTED)
 				goto NEXT_CMD;
 			if (status)
 				return status;

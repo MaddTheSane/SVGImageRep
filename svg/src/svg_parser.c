@@ -212,7 +212,7 @@ _svg_parser_sax_start_element (void		*closure,
 
     parser->status = (cb->parse_element) (parser, attributes, &element);
     if (parser->status) {
-		if (parser->status == SVGINT_STATUS_UNKNOWN_ELEMENT)
+		if ((svgint_status_t)parser->status == SVGINT_STATUS_UNKNOWN_ELEMENT)
 			parser->status = SVG_STATUS_SUCCESS;
 		return;
     }
