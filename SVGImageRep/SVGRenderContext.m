@@ -78,7 +78,6 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 	{
 		CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString((CFAttributedStringRef)textWFont);
 		ourRect.size = CTFramesetterSuggestFrameSizeWithConstraints(framesetter, CFRangeMake(0, [textWFont length]), NULL, CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX), &fitRange);
-		ourRect = CGRectStandardize(ourRect);
 		CGPathRef squareRef = CGPathCreateWithRect(ourRect, NULL);
 		tempFrame = CTFramesetterCreateFrame(framesetter, CFRangeMake(0, [textWFont length]), squareRef, NULL);
 		CGPathRelease(squareRef);
@@ -89,59 +88,147 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 }
 
 #if !(TARGET_OS_EMBEDDED || TARGET_OS_IPHONE || TARGET_OS_WATCH || TARGET_OS_TV)
+- (id)getCurrentFont
+{
+	NSFont *f = nil;
+	NSFontManager *fm = [NSFontManager sharedFontManager];
+	NSInteger w = ceil(self.current.fontWeight / 80.0);
+	NSFontTraitMask fontTrait = 0;
+	if (self.current.fontStyle > SVG_FONT_STYLE_NORMAL) {
+		fontTrait |= NSItalicFontMask;
+	}
+	if (self.current.fontWeight >= 700) {
+		fontTrait |= NSBoldFontMask;
+	}
+	
+	NSArray<NSString*> *families = [self.current.fontFamily componentsSeparatedByString: @","];
+	for (__strong NSString *family in families) {
+		family = [family stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceCharacterSet]];
+		if ([family hasPrefix: @"'"])
+			family = [[family substringToIndex: [family length]-1] substringFromIndex: 1];
+		
+		if ([family caseInsensitiveCompare: @"serif"] == NSOrderedSame)
+			family = @"Times";
+		else if ([family caseInsensitiveCompare: @"sans-serif"] == NSOrderedSame || [family caseInsensitiveCompare: @"sans"] == NSOrderedSame)
+			family = @"Helvetica";
+		else if ([family caseInsensitiveCompare: @"monospace"] == NSOrderedSame)
+			family = @"Courier";
+		
+		f = [fm fontWithFamily:family traits:fontTrait weight:w size:self.current.fontSize];
+		if (!f) {
+			f = [NSFont fontWithName:family size:self.current.fontSize];
+			if (f) {
+				NSMutableDictionary *fontTraits = [[NSMutableDictionary alloc] initWithCapacity:1];
+				NSMutableDictionary *desAttribs = [[NSMutableDictionary alloc] initWithCapacity:3];
+				
+				CTFontSymbolicTraits fontTrait = 0;
+				if (self.current.fontStyle > SVG_FONT_STYLE_NORMAL) {
+					fontTrait |= kCTFontItalicTrait;
+				}
+				if (self.current.fontWeight >= 700) {
+					fontTrait |= kCTFontBoldTrait;
+				}
+				fontTraits[(NSString*)kCTFontSymbolicTrait] = @(fontTrait);
+				desAttribs[(NSString*)kCTFontTraitsAttribute] = fontTraits;
+				CTFontDescriptorRef tempDes = CTFontCopyFontDescriptor((CTFontRef)f);
+				NSString *fontFam = CFBridgingRelease(CTFontDescriptorCopyAttribute(tempDes, kCTFontFamilyNameAttribute));
+				CFRelease(tempDes);
+				
+				desAttribs[(NSString*)kCTFontFamilyNameAttribute] = fontFam;
+				CTFontDescriptorRef theDescriptor = CTFontDescriptorCreateWithAttributes((CFDictionaryRef)desAttribs);
+				f = CFBridgingRelease(CTFontCreateWithFontDescriptor(theDescriptor, self.current.fontSize, NULL));
+				CFRelease(theDescriptor);
+			}
+		}
+
+		if (f)
+			break;
+	}
+	
+	if (!f)
+		f = [fm fontWithFamily:@"Helvetica" traits:fontTrait weight:w size:self.current.fontSize];
+
+	return f;
+}
+
+#else
+
+-(id)getCurrentFont
+{
+	CTFontRef f = nil, tmpfont = nil;
+	{
+		NSArray<NSString*> *families = [self.current.fontFamily componentsSeparatedByString: @","];
+		for (__strong NSString *family in families)
+		{
+			family = [family stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceCharacterSet]];
+			if ([family hasPrefix: @"'"])
+				family = [[family substringToIndex: [family length]-1] substringFromIndex: 1];
+			
+			if ([family caseInsensitiveCompare: @"serif"] == NSOrderedSame)
+				family = @"Times";
+			else if ([family caseInsensitiveCompare: @"sans-serif"] == NSOrderedSame || [family caseInsensitiveCompare: @"sans"] == NSOrderedSame)
+				family = @"Helvetica";
+			else if ([family caseInsensitiveCompare: @"monospace"] == NSOrderedSame)
+				family = @"Courier";
+			
+			f = CTFontCreateWithName((CFStringRef)family, self.current.fontSize, NULL);
+			if (f)
+				break;
+		}
+		
+		if (!f)
+			f = CTFontCreateWithName(CFSTR("Helvetica"), self.current.fontSize, NULL);
+	}
+	
+	{
+		NSMutableDictionary *fontTraits = [[NSMutableDictionary alloc] initWithCapacity:1];
+		NSMutableDictionary *desAttribs = [[NSMutableDictionary alloc] initWithCapacity:3];
+		
+		CTFontSymbolicTraits fontTrait = 0;
+		if (self.current.fontStyle > SVG_FONT_STYLE_NORMAL) {
+			fontTrait |= kCTFontItalicTrait;
+		}
+		if (self.current.fontWeight >= 700) {
+			fontTrait |= kCTFontBoldTrait;
+		}
+		fontTraits[(NSString*)kCTFontSymbolicTrait] = @(fontTrait);
+		desAttribs[(NSString*)kCTFontTraitsAttribute] = fontTraits;
+		CTFontDescriptorRef tempDes = CTFontCopyFontDescriptor(f);
+		NSString *fontFam = CFBridgingRelease(CTFontDescriptorCopyAttribute(tempDes, kCTFontFamilyNameAttribute));
+		CFRelease(tempDes);
+		
+		desAttribs[(NSString*)kCTFontFamilyNameAttribute] = fontFam;
+		CTFontDescriptorRef theDescriptor = CTFontDescriptorCreateWithAttributes((CFDictionaryRef)desAttribs);
+		tmpfont = CTFontCreateWithFontDescriptor(theDescriptor, self.current.fontSize, NULL);
+		CFRelease(theDescriptor);
+	}
+	CFRelease(f);
+	return CFBridgingRelease(tmpfont);
+}
+#endif
+
 - (void)prepareRender:(double)a_scale
 {
+#if !(TARGET_OS_EMBEDDED || TARGET_OS_IPHONE || TARGET_OS_WATCH || TARGET_OS_TV)
 	[self prepareRenderWithScale:a_scale renderContext:(CGContextRef)[[NSGraphicsContext currentContext] graphicsPort]];
+#else
+	[self prepareRenderWithScale:a_scale renderContext:UIGraphicsGetCurrentContext()];
+#endif
 }
 
 - (svg_status_t)renderText:(const char *)utf8 atX:(CGFloat)xPos y:(CGFloat)yPos
 {
+#if (TARGET_OS_EMBEDDED || TARGET_OS_IPHONE || TARGET_OS_WATCH || TARGET_OS_TV)
+#define NSColor UIColor
+#endif
 	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
-	NSFont *f = nil;
-	NSFontManager *fm = [NSFontManager sharedFontManager];
-	NSInteger w = ceil(self.current.fontWeight / 80.0);
 	
 	svg_paint_t tempFill = self.current.fillPaint, tempStroke = self.current.strokePaint;
 	
 	if (utf8 == NULL)
 		return SVG_STATUS_SUCCESS;
 	
-	{
-		NSFontTraitMask fontTrait = 0;
-		if (self.current.fontStyle > SVG_FONT_STYLE_NORMAL) {
-			fontTrait |= NSItalicFontMask;
-		}
-		if (self.current.fontWeight >= 700) {
-			fontTrait |= NSBoldFontMask;
-		}
-		
-		NSArray<NSString*> *families = [self.current.fontFamily componentsSeparatedByString: @","];
-		for (__strong NSString *family in families) {
-			family = [family stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceCharacterSet]];
-			if ([family hasPrefix: @"'"])
-				family = [[family substringToIndex: [family length]-1] substringFromIndex: 1];
-			
-			if ([family isEqual: @"serif"])
-				family = @"Times";
-			else if ([family isEqual: @"sans-serif"])
-				family = @"Helvetica";
-			else if ([family isEqual: @"monospace"])
-				family = @"Courier";
-			
-			f = [fm fontWithFamily:family traits:fontTrait weight:w size:self.current.fontSize];
-			if (!f) {
-				NSFontDescriptor *des = [NSFontDescriptor fontDescriptorWithName:family size:self.current.fontSize];
-				des = [des fontDescriptorWithSymbolicTraits:fontTrait];
-				des = [des fontDescriptorByAddingAttributes:@{NSFontWeightTrait: @((self.current.fontWeight / 400.0) - 1)}];
-				f = [NSFont fontWithDescriptor:des size:self.current.fontSize];
-			}
-			if (f)
-				break;
-		}
-		
-		if (!f)
-			f = [fm fontWithFamily:@"Helvetica" traits:fontTrait weight:w size:self.current.fontSize];
-	}
+	id f = [self getCurrentFont];
 	
 	CGContextSetTextMatrix(tempCtx, CGAffineTransformMakeScale(1, -1));
 	
@@ -216,7 +303,9 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 		{
 			svg_color_t *tempsvgcolor = &tempFill.p.color;
 			[self setFillColor:tempsvgcolor alpha:self.current.fillOpacity];
-			NSColor *foreColor = [NSColor colorWithSRGBRed:svg_color_get_red(tempsvgcolor)/255.0 green:svg_color_get_green(tempsvgcolor)/255.0 blue:svg_color_get_blue(tempsvgcolor)/255.0 alpha:self.current.fillOpacity];
+			CGColorRef foreCGColor = CreateColorRefFromSVGColor(tempsvgcolor, self.current.fillOpacity);
+			NSColor *foreColor = [NSColor colorWithCGColor:foreCGColor];
+			CFRelease(foreCGColor);
 			[textWFont addAttribute:NSForegroundColorAttributeName value:foreColor range:NSMakeRange(0, textWFont.length)];
 			
 			CGContextSetTextDrawingMode(tempCtx, kCGTextFill);
@@ -280,247 +369,13 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 		{
 			svg_color_t *tempsvgcolor = &tempStroke.p.color;
 			[self setStrokeColor:tempsvgcolor alpha:self.current.strokeOpacity];
-			NSColor *backColor = [NSColor colorWithSRGBRed:svg_color_get_red(tempsvgcolor)/255.0 green:svg_color_get_green(tempsvgcolor)/255.0 blue:svg_color_get_blue(tempsvgcolor)/255.0 alpha:self.current.strokeOpacity];
-			//NSDictionary *addlAttrs = @{NSBackgroundColorAttributeName: backColor,
-			//							NSForegroundColorAttributeName: [NSColor clearColor],
-			//							NSStrokeWidthAttributeName: @(w)};
-			[textWFont addAttribute:NSStrokeColorAttributeName value:backColor range:NSMakeRange(0, textWFont.length)];
-			
-			CGContextSetTextDrawingMode(tempCtx, kCGTextStroke);
-			
-			[self drawAttributedString:textWFont atX:xPos y:yPos context:tempCtx];
-		}
-			break;
-			
-		case SVG_PAINT_TYPE_NONE:
-			break;
-			
-		default:
-			break;
-	}
-		
-	//Again, set the text CTM?
-	//CGContextScaleCTM(tempCtx, 1, -1);
-	
-	return SVG_STATUS_SUCCESS;
-}
-#else
-- (void)prepareRender:(double)a_scale
-{
-	[self prepareRenderWithScale:a_scale renderContext:UIGraphicsGetCurrentContext()];
-}
-
-- (svg_status_t)renderText:(const char *)utf8 atX:(CGFloat)xPos y:(CGFloat)yPos
-{
-	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
-	CTFontRef f = nil, tmpfont = nil;
-	//NSFontManager *fm = [NSFontManager sharedFontManager];
-	//int w = ceil(current.fontWeight / 80.0);
-	
-	svg_paint_t tempFill = self.current.fillPaint, tempStroke = self.current.strokePaint;
-	
-	if (utf8 == NULL)
-		return SVG_STATUS_SUCCESS;
-	
-	{
-		NSArray<NSString*> *families = [self.current.fontFamily componentsSeparatedByString: @","];
-		for (__strong NSString *family in families)
-		{
-			family = [family stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceCharacterSet]];
-			if ([family hasPrefix: @"'"])
-				family = [[family substringToIndex: [family length]-1] substringFromIndex: 1];
-			
-			if ([family caseInsensitiveCompare: @"serif"] == NSOrderedSame)
-				family = @"Times";
-			else if ([family isEqual: @"sans-serif"] || [family caseInsensitiveCompare: @"sans"] == NSOrderedSame)
-				family = @"Helvetica";
-			else if ([family caseInsensitiveCompare: @"monospace"] == NSOrderedSame)
-				family = @"Courier";
-			
-			f = CTFontCreateWithName((CFStringRef)family, self.current.fontSize, NULL);
-			if (f)
-				break;
-		}
-		
-		if (!f)
-			f = CTFontCreateWithName(CFSTR("Helvetica"), self.current.fontSize, NULL);
-	}
-	
-	{
-		NSMutableDictionary *fontTraits = [[NSMutableDictionary alloc] initWithCapacity:1];
-		NSMutableDictionary *desAttribs = [[NSMutableDictionary alloc] initWithCapacity:3];
-		
-		CTFontSymbolicTraits fontTrait = 0;
-		if (self.current.fontStyle > SVG_FONT_STYLE_NORMAL) {
-			fontTrait |= kCTFontItalicTrait;
-		}
-		if (self.current.fontWeight >= 700) {
-			fontTrait |= kCTFontBoldTrait;
-		}
-		fontTraits[(NSString*)kCTFontSymbolicTrait] = @(fontTrait);
-		desAttribs[(NSString*)kCTFontTraitsAttribute] = fontTraits;
-		CTFontDescriptorRef tempDes = CTFontCopyFontDescriptor(f);
-		NSString *fontFam = CFBridgingRelease(CTFontDescriptorCopyAttribute(tempDes, kCTFontFamilyNameAttribute));
-		CFRelease(tempDes);
-		
-		desAttribs[(NSString*)kCTFontFamilyNameAttribute] = fontFam;
-		CTFontDescriptorRef theDescriptor = CTFontDescriptorCreateWithAttributes((CFDictionaryRef)desAttribs);
-		tmpfont = CTFontCreateWithFontDescriptor(theDescriptor, self.current.fontSize, NULL);
-		CFRelease(theDescriptor);
-	}
-	
-	CGContextSetTextMatrix(tempCtx, CGAffineTransformMakeScale(1, -1));
-	
-	NSMutableAttributedString *textWFont = [[NSMutableAttributedString alloc] initWithString:@(utf8) attributes:@{NSFontAttributeName: (__bridge id)f}];
-	switch (tempFill.type) {
-		case SVG_PAINT_TYPE_GRADIENT:
-		{
-			CGContextSaveGState(tempCtx);
-			CGContextSetTextDrawingMode(tempCtx, kCGTextFillClip);
-			[self drawAttributedString:textWFont atX:xPos y:yPos context:tempCtx];
-			
-			CGGradientRef gradient = CreateGradientRefFromSVGGradient(tempFill.p.gradient);
-			
-			switch (tempFill.p.gradient->type) {
-				case SVG_GRADIENT_LINEAR:
-				{
-					CGFloat x1, y1, x2, y2;
-					x1 = [self lengthToPoints:&tempFill.p.gradient->u.linear.x1];
-					y1 = [self lengthToPoints:&tempFill.p.gradient->u.linear.y1];
-					x2 = [self lengthToPoints:&tempFill.p.gradient->u.linear.x2];
-					y2 = [self lengthToPoints:&tempFill.p.gradient->u.linear.y2];
-					CGContextDrawLinearGradient(tempCtx, gradient, CGPointMake(x1, y1), CGPointMake(x2, y2), kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
-				}
-					break;
-					
-				case SVG_GRADIENT_RADIAL:
-				{
-					CGFloat cx, cy, r, fx, fy;
-					cx = [self lengthToPoints:&tempFill.p.gradient->u.radial.cx];
-					cy = [self lengthToPoints:&tempFill.p.gradient->u.radial.cy];
-					r = [self lengthToPoints:&tempFill.p.gradient->u.radial.r];
-					fx = [self lengthToPoints:&tempFill.p.gradient->u.radial.fx];
-					fy = [self lengthToPoints:&tempFill.p.gradient->u.radial.fy];
-					CGContextDrawRadialGradient(tempCtx, gradient, CGPointMake(cx, cy), r, CGPointMake(fx, fy), r, kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
-				}
-					break;
-			}
-			CGGradientRelease(gradient);
-			CGContextRestoreGState(tempCtx);
-		}
-			break;
-			
-		case SVG_PAINT_TYPE_PATTERN:
-			CGContextSaveGState(tempCtx);
-			CGContextSetTextDrawingMode(tempCtx, kCGTextFillClip);
-			[self drawAttributedString:textWFont atX:xPos y:yPos context:tempCtx];
-		{
-			if (self.current.fillRule)
-				CGContextEOClip(tempCtx);
-			else
-				CGContextClip(tempCtx);
-			svg_element_t *tempElement = tempFill.p.pattern_element;
-			SVGRenderContext *patternRender = [[SVGRenderContext alloc] init];
-			svg_pattern_t *pattern = svg_element_pattern(tempElement);
-			@autoreleasepool {
-				[patternRender prepareRenderFromRenderContext:self];
-				[patternRender setViewportDimensionWidth:&pattern->width height:&pattern->height];
-				svg_element_render(tempElement, &cocoa_svg_engine, (__bridge void *)(patternRender));
-				[patternRender finishRender];
-			}
-			CGColorRef patColor = CreatePatternColorFromRenderContext(patternRender);
-			CGContextSetFillColorWithColor(tempCtx, patColor);
-			CGContextFillPath(tempCtx);
-			CGColorRelease(patColor);
-		}
-			CGContextRestoreGState(tempCtx);
-			break;
-			
-			
-		case SVG_PAINT_TYPE_COLOR:
-		{
-			svg_color_t *tempsvgcolor = &tempFill.p.color;
-			[self setFillColor:tempsvgcolor alpha:self.current.fillOpacity];
-			CGColorRef foreCGColor = CreateColorRefFromSVGColor(tempsvgcolor, self.current.fillOpacity);
-			UIColor *foreColor = [UIColor colorWithCGColor:foreCGColor];
-			CFRelease(foreCGColor);
-			if (!foreColor) {
-				foreColor = [UIColor colorWithRed:svg_color_get_red(tempsvgcolor)/255.0 green:svg_color_get_green(tempsvgcolor)/255.0 blue:svg_color_get_blue(tempsvgcolor)/255.0 alpha:self.current.fillOpacity];
-			}
-			[textWFont addAttribute:NSForegroundColorAttributeName value:foreColor range:NSMakeRange(0, textWFont.length)];
-			
-			CGContextSetTextDrawingMode(tempCtx, kCGTextFill);
-			
-			[self drawAttributedString:textWFont atX:xPos y:yPos context:tempCtx];
-		}
-			break;
-			
-		case SVG_PAINT_TYPE_NONE:
-			break;
-			
-		default:
-			break;
-	}
-	
-	textWFont = [[NSMutableAttributedString alloc] initWithString:@(utf8) attributes:@{NSFontAttributeName: (__bridge id)f, NSStrokeWidthAttributeName: @(self.current.strokeWidth)}];
-	
-	switch (tempStroke.type) {
-		case SVG_PAINT_TYPE_GRADIENT:
-		{
-			CGContextSaveGState(tempCtx);
-			CGContextSetTextDrawingMode(tempCtx, kCGTextStrokeClip);
-			[self drawAttributedString:textWFont atX:xPos y:yPos context:tempCtx];
-			
-			CGGradientRef gradient = CreateGradientRefFromSVGGradient(tempStroke.p.gradient);
-			switch (tempStroke.p.gradient->type) {
-				case SVG_GRADIENT_LINEAR:
-				{
-					CGFloat x1, y1, x2, y2;
-					x1 = [self lengthToPoints:&tempStroke.p.gradient->u.linear.x1];
-					y1 = [self lengthToPoints:&tempStroke.p.gradient->u.linear.y1];
-					x2 = [self lengthToPoints:&tempStroke.p.gradient->u.linear.x2];
-					y2 = [self lengthToPoints:&tempStroke.p.gradient->u.linear.y2];
-					CGContextDrawLinearGradient(tempCtx, gradient, CGPointMake(x1, y1), CGPointMake(x2, y2), kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
-				}
-					break;
-					
-				case SVG_GRADIENT_RADIAL:
-				{
-					CGFloat cx, cy, r, fx, fy;
-					cx = [self lengthToPoints:&tempStroke.p.gradient->u.radial.cx];
-					cy = [self lengthToPoints:&tempStroke.p.gradient->u.radial.cy];
-					r = [self lengthToPoints:&tempStroke.p.gradient->u.radial.r];
-					fx = [self lengthToPoints:&tempStroke.p.gradient->u.radial.fx];
-					fy = [self lengthToPoints:&tempStroke.p.gradient->u.radial.fy];
-					CGContextDrawRadialGradient(tempCtx, gradient, CGPointMake(cx, cy), r, CGPointMake(fx, fy), r, kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
-				}
-					break;
-			}
-			CGGradientRelease(gradient);
-			CGContextRestoreGState(tempCtx);
-		}
-			break;
-			
-		case SVG_PAINT_TYPE_PATTERN:
-#warning SVG_PAINT_TYPE_PATTERN not handled yet!
-			break;
-			
-		case SVG_PAINT_TYPE_COLOR:
-		{
-			svg_color_t *tempsvgcolor = &tempStroke.p.color;
-			[self setStrokeColor:tempsvgcolor alpha:self.current.strokeOpacity];
 			CGColorRef foreCGColor = CreateColorRefFromSVGColor(tempsvgcolor, self.current.strokeOpacity);
-			UIColor *backColor = [UIColor colorWithCGColor:foreCGColor];
+			NSColor *backColor = [NSColor colorWithCGColor:foreCGColor];
 			CFRelease(foreCGColor);
-			if (!backColor) {
-				backColor = [UIColor colorWithRed:svg_color_get_red(tempsvgcolor)/255.0 green:svg_color_get_green(tempsvgcolor)/255.0 blue:svg_color_get_blue(tempsvgcolor)/255.0 alpha:self.current.strokeOpacity];
-			}
-			//NSDictionary *addlAttrs = @{NSBackgroundColorAttributeName: backColor,
-			//							NSForegroundColorAttributeName: [NSColor clearColor],
-			//							NSStrokeWidthAttributeName: @(w)};
 			[textWFont addAttribute:NSStrokeColorAttributeName value:backColor range:NSMakeRange(0, textWFont.length)];
 			
 			CGContextSetTextDrawingMode(tempCtx, kCGTextStroke);
+			
 			[self drawAttributedString:textWFont atX:xPos y:yPos context:tempCtx];
 		}
 			break;
@@ -531,12 +386,10 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 		default:
 			break;
 	}
-	CFRelease(f);
-	CFRelease(tmpfont);
-	
+		
 	return SVG_STATUS_SUCCESS;
+#undef NSColor
 }
-#endif
 
 static CGGradientRef CreateGradientRefFromSVGGradient(svg_gradient_t *gradient)
 {
