@@ -20,8 +20,7 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 
 - (void)setSVGRenderContext:(SVGRenderContext *)s
 {
-	if(s != svg)
-	{
+	if (s != svg) {
 		svg = s;
 	}
 	[self setNeedsDisplay: YES];
@@ -52,7 +51,6 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 @end
 
 @implementation SVGDocument
-
 @synthesize documentData;
 
 - (IBAction)reload:(id)sender

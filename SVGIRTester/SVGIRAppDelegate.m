@@ -39,10 +39,10 @@
 	tempImage = [[NSImage alloc] initWithContentsOfFile:[resourcePath stringByAppendingPathComponent:@"admon-important.svg"]];
 	[svgImportant setImage:tempImage];
 	[tempImage release]; tempImage = nil;
-	tempImage = [[NSImage alloc] initWithContentsOfFile:[resourcePath stringByAppendingPathComponent:@"admon-note.svg"]];
+	tempImage = [[NSImage alloc] initWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"admon-note" withExtension:@"svg"]];
 	[svgNote setImage:tempImage];
 	[tempImage release]; tempImage = nil;
-	tempImage = [[NSImage alloc] initWithContentsOfFile:[resourcePath stringByAppendingPathComponent:@"admon-tip.svg"]];
+	tempImage = [[NSImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"admon-tip" ofType:@"svg"]];
 	[svgTip setImage:tempImage];
 	[tempImage release]; tempImage = nil;
 	[svgWarning setImage:[NSImage imageNamed:@"admon-warning"]];
@@ -52,13 +52,12 @@
 
 - (IBAction)selectSVG:(id)sender
 {
-	NSOpenPanel *op;
-	op = [NSOpenPanel openPanel];
-	[op setTitle: @"Open svg file"];
-	[op setAllowsMultipleSelection: NO];
-	[op setAllowedFileTypes:[NSArray arrayWithObjects:@"public.svg-image", @"svg", nil]];
-	[op setCanChooseDirectories: NO];
-	[op setCanChooseFiles: YES];
+	NSOpenPanel *op = [NSOpenPanel openPanel];
+	op.title = @"Open SVG file";
+	op.allowsMultipleSelection = NO;
+	op.allowedFileTypes = @[@"public.svg-image", @"svg"];
+	op.canChooseDirectories = NO;
+	op.canChooseFiles = YES;
 	
 	if ([op runModal] != NSOKButton)
 		return;

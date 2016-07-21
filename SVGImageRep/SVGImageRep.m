@@ -22,18 +22,18 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 	svg_t *svg;
 }
 
-+ (NSArray *)imageUnfilteredFileTypes
++ (NSArray<NSString *> *)imageUnfilteredFileTypes
 {
-	static NSArray *types = nil;
+	static NSArray<NSString *> *types = nil;
 	if (types == nil) {
 		types = [[NSArray alloc] initWithObjects:@"svg", nil];
 	}
 	return types;
 }
 
-+ (NSArray *)imageUnfilteredTypes
++ (NSArray<NSString *> *)imageUnfilteredTypes
 {
-	static NSArray *UTItypes = nil;
+	static NSArray<NSString *> *UTItypes = nil;
 	if (UTItypes == nil) {
 		UTItypes = [[NSArray alloc] initWithObjects:@"public.svg-image", nil];
 	}
@@ -42,7 +42,7 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 
 + (NSArray *)imageUnfilteredPasteboardTypes
 {
-	/* TODO */
+	/* TODO: implement? */
 	return nil;
 }
 
@@ -70,14 +70,13 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 
 	svg_create(&svg);
 	status = svg_parse_buffer(svg, [d bytes], [d length]);
-	if (status != SVG_STATUS_SUCCESS)
-	{
+	if (status != SVG_STATUS_SUCCESS) {
 		return nil;
 	}
 
 	[self setColorSpaceName:NSCalibratedRGBColorSpace];
 	[self setAlpha:YES];
-	[self setBitsPerSample:0];
+	[self setBitsPerSample:NSImageRepMatchesDevice];
 	[self setOpaque:NO];
 
 	{
@@ -85,8 +84,8 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 		svg_get_size(svg, &w, &h);
 		NSSize renderSize = NSMakeSize([SVGRenderContext lengthToPoints:&w], [SVGRenderContext lengthToPoints:&h]);
 		[self setSize:renderSize];
-		[self setPixelsHigh:ceil(renderSize.height)];
-		[self setPixelsWide:ceil(renderSize.width)];
+		[self setPixelsHigh:NSImageRepMatchesDevice];
+		[self setPixelsWide:NSImageRepMatchesDevice];
 	}
 
 	return self;

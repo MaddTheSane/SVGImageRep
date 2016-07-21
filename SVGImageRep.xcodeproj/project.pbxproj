@@ -995,12 +995,12 @@
 		55AFA499151AA3BC00B5351D /* SVGImageRep */ = {
 			isa = PBXGroup;
 			children = (
-				55AFA529151AABB700B5351D /* SVGImageRep.m */,
 				553711A8151BCDB900F8848A /* SVGImageRep.h */,
-				55F0FACB1520E9F8006426B8 /* SVGRenderContext.m */,
+				55AFA529151AABB700B5351D /* SVGImageRep.m */,
 				55F0FACA1520E9F8006426B8 /* SVGRenderContext.h */,
-				55F0FAC71520E925006426B8 /* SVGRenderState.m */,
+				55F0FACB1520E9F8006426B8 /* SVGRenderContext.m */,
 				55F0FAC61520E925006426B8 /* SVGRenderState.h */,
+				55F0FAC71520E925006426B8 /* SVGRenderState.m */,
 				55AFA49A151AA3BC00B5351D /* Supporting Files */,
 			);
 			path = SVGImageRep;

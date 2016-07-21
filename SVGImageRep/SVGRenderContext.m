@@ -30,6 +30,12 @@
 #import <UIKit/UIKit.h>
 #endif
 
+
+static CGGradientRef CreateGradientRefFromSVGGradient(const svg_gradient_t *gradient) CF_RETURNS_RETAINED;
+static CGColorRef CreatePatternColorFromRenderContext(SVGRenderContext *theCont) CF_RETURNS_RETAINED;
+static inline CGColorRef CreateColorRefFromSVGColor(const svg_color_t *c, CGFloat alpha) CF_RETURNS_RETAINED;
+static CGColorSpaceRef GetGenericRGBColorSpace();
+
 @interface SVGRenderContext ()
 
 - (void)prepareRenderWithScale:(double)a_scale renderContext:(CGContextRef)thecontext;
@@ -38,15 +44,22 @@
 
 @end
 
-@implementation SVGRenderContext
-
-@synthesize size, states, scale, renderLayer;
-@synthesize indent = theIndent;
-
-static CGGradientRef CreateGradientRefFromSVGGradient(const svg_gradient_t *gradient) CF_RETURNS_RETAINED;
-static CGColorRef CreatePatternColorFromRenderContext(SVGRenderContext *theCont) CF_RETURNS_RETAINED;
-static inline CGColorRef CreateColorRefFromSVGColor(const svg_color_t *c, CGFloat alpha) CF_RETURNS_RETAINED;
-static CGColorSpaceRef GetGenericRGBColorSpace();
+static CGGradientRef CreateGradientRefFromSVGGradient(const svg_gradient_t *gradient)
+{
+	const int numStops = gradient->num_stops;
+	CFMutableArrayRef colorArray = CFArrayCreateMutable(kCFAllocatorDefault, numStops, &kCFTypeArrayCallBacks);
+	CGFloat *GradStops = malloc(sizeof(CGFloat) * numStops);
+	for (int i = 0; i < numStops; i++) {
+		CGColorRef tempColor = CreateColorRefFromSVGColor(&gradient->stops[i].color, gradient->stops[i].opacity);
+		CFArrayInsertValueAtIndex(colorArray, i, tempColor);
+		CGColorRelease(tempColor);
+		GradStops[i] = gradient->stops[i].offset;
+	}
+	CGGradientRef CGgradient = CGGradientCreateWithColors(GetGenericRGBColorSpace(), colorArray, GradStops);
+	CFRelease(colorArray);
+	free(GradStops);
+	return CGgradient;
+}
 
 static inline CGColorRef CreateColorRefFromSVGColor(const svg_color_t *c, CGFloat alpha)
 {
@@ -63,10 +76,39 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 			theSpace = CGColorSpaceCreateDeviceRGB();
 		} else
 #endif
-		theSpace = CGColorSpaceCreateWithName(kCGColorSpaceSRGB);
+			theSpace = CGColorSpaceCreateWithName(kCGColorSpaceSRGB);
 	}
 	return theSpace;
 }
+
+//Code taken from TBColor from https://github.com/zrxq/TBColor
+#pragma mark TBColor
+static void ImagePatternCallback (void *imagePtr, CGContextRef ctx) {
+	SVGRenderContext *svgCtx = (__bridge SVGRenderContext*)imagePtr;
+	CGContextDrawLayerInRect(ctx, CGRectMake(0, 0, svgCtx.size.width, svgCtx.size.height), svgCtx.renderLayer);
+}
+
+static void ImageReleaseCallback(void *imagePtr) {
+	CFBridgingRelease(imagePtr);
+}
+
+static CGColorRef CreatePatternColorFromRenderContext(SVGRenderContext *theCont)
+{
+	static const CGPatternCallbacks callback = {0, ImagePatternCallback, ImageReleaseCallback};
+	CGPatternRef pattern = CGPatternCreate((void*)CFBridgingRetain(theCont), CGRectMake(0, 0, theCont.size.width, theCont.size.height), CGAffineTransformIdentity, theCont.size.height, theCont.size.width, kCGPatternTilingConstantSpacing, true, &callback);
+	CGColorSpaceRef coloredPatternColorSpace = CGColorSpaceCreatePattern(NULL);
+	CGFloat dummy = 1.0f;
+	CGColorRef color = CGColorCreateWithPattern(coloredPatternColorSpace, pattern, &dummy);
+	CGColorSpaceRelease(coloredPatternColorSpace);
+	CGPatternRelease(pattern);
+	return color;
+}
+//end of taken code
+
+
+@implementation SVGRenderContext
+@synthesize size, states, scale, renderLayer;
+@synthesize indent = theIndent;
 
 - (void)drawAttributedString:(NSAttributedString*)textWFont atX:(CGFloat)xPos y:(CGFloat)yPos context:(CGContextRef)tempCtx
 {
@@ -158,8 +200,7 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 	CTFontRef f = nil, tmpfont = nil;
 	{
 		NSArray<NSString*> *families = [self.current.fontFamily componentsSeparatedByString: @","];
-		for (__strong NSString *family in families)
-		{
+		for (__strong NSString *family in families) {
 			family = [family stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceCharacterSet]];
 			if ([family hasPrefix: @"'"])
 				family = [[family substringToIndex: [family length]-1] substringFromIndex: 1];
@@ -277,10 +318,11 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 			CGContextSetTextDrawingMode(tempCtx, kCGTextFillClip);
 			[self drawAttributedString:textWFont atX:xPos y:yPos context:tempCtx];
 		{
-			if (self.current.fillRule)
+			if (self.current.fillRule) {
 				CGContextEOClip(tempCtx);
-			else
+			} else {
 				CGContextClip(tempCtx);
+			}
 			svg_element_t *tempElement = tempFill.p.pattern_element;
 			SVGRenderContext *patternRender = [[SVGRenderContext alloc] init];
 			svg_pattern_t *pattern = svg_element_pattern(tempElement);
@@ -391,23 +433,6 @@ static CGColorSpaceRef GetGenericRGBColorSpace()
 #undef NSColor
 }
 
-static CGGradientRef CreateGradientRefFromSVGGradient(const svg_gradient_t *gradient)
-{
-	const int numStops = gradient->num_stops;
-	CFMutableArrayRef colorArray = CFArrayCreateMutable(kCFAllocatorDefault, numStops, &kCFTypeArrayCallBacks);
-	CGFloat *GradStops = malloc(sizeof(CGFloat) * numStops);
-	for (int i = 0; i < numStops; i++) {
-		CGColorRef tempColor = CreateColorRefFromSVGColor(&gradient->stops[i].color, gradient->stops[i].opacity);
-		CFArrayInsertValueAtIndex(colorArray, i, tempColor);
-		CGColorRelease(tempColor);
-		GradStops[i] = gradient->stops[i].offset;
-	}
-	CGGradientRef CGgradient = CGGradientCreateWithColors(GetGenericRGBColorSpace(), colorArray, GradStops);
-	CFRelease(colorArray);
-	free(GradStops);
-	return CGgradient;
-}
-
 - (void)prepareRenderWithScale:(double)a_scale renderContext:(CGContextRef)theContext
 {
 	states = [[NSMutableArray alloc] init];
@@ -449,8 +474,7 @@ static CGGradientRef CreateGradientRefFromSVGGradient(const svg_gradient_t *grad
 + (double)lengthToPoints:(const svg_length_t *)l
 {
 	double points;
-	switch (l->unit)
-	{
+	switch (l->unit) {
 		case SVG_LENGTH_UNIT_PT:
 			points = l->value;
 			break;
@@ -494,8 +518,7 @@ static CGGradientRef CreateGradientRefFromSVGGradient(const svg_gradient_t *grad
 - (double)lengthToPoints:(const svg_length_t *)l
 {
 	double points;
-	switch (l->unit)
-	{
+	switch (l->unit) {
 		case SVG_LENGTH_UNIT_PT:
 			points = l->value;
 			break;
@@ -550,29 +573,6 @@ static CGGradientRef CreateGradientRefFromSVGGradient(const svg_gradient_t *grad
 	CGContextSetFillColorWithColor(tempCtx, tempColor);
 	CGColorRelease(tempColor);
 }
-
-//Code taken from TBColor from https://github.com/zrxq/TBColor
-static void ImagePatternCallback (void *imagePtr, CGContextRef ctx) {
-	SVGRenderContext *svgCtx = (__bridge SVGRenderContext*)imagePtr;
-	CGContextDrawLayerInRect(ctx, CGRectMake(0, 0, svgCtx.size.width, svgCtx.size.height), svgCtx.renderLayer);
-}
-
-static void ImageReleaseCallback(void *imagePtr) {
-    CFBridgingRelease(imagePtr);
-}
-
-static CGColorRef CreatePatternColorFromRenderContext(SVGRenderContext *theCont)
-{
-	static const CGPatternCallbacks callback = {0, ImagePatternCallback, ImageReleaseCallback};
-    CGPatternRef pattern = CGPatternCreate((void*)CFBridgingRetain(theCont), CGRectMake(0, 0, theCont.size.width, theCont.size.height), CGAffineTransformIdentity, theCont.size.height, theCont.size.width, kCGPatternTilingConstantSpacing, true, &callback);
-    CGColorSpaceRef coloredPatternColorSpace = CGColorSpaceCreatePattern(NULL);
-    CGFloat dummy = 1.0f;
-    CGColorRef color = CGColorCreateWithPattern(coloredPatternColorSpace, pattern, &dummy);
-    CGColorSpaceRelease(coloredPatternColorSpace);
-    CGPatternRelease(pattern);
-    return color;
-}
-//end of taken code
 
 /*
  A few methods based on code in libxsvg:
@@ -878,8 +878,7 @@ static CGColorRef CreatePatternColorFromRenderContext(SVGRenderContext *theCont)
 			break;
 	}
 	
-	switch (tempStroke.type)
-	{
+	switch (tempStroke.type) {
 		case SVG_PAINT_TYPE_GRADIENT:
 #warning SVG_PAINT_TYPE_GRADIENT not handled yet!
 			CGContextSaveGState(tempCtx);
@@ -969,10 +968,8 @@ static CGColorRef CreatePatternColorFromRenderContext(SVGRenderContext *theCont)
 		tempCtx = CGLayerGetContext(renderLayer);
 	}
 	 
-	if (self.current)
-	{
-		if (!hasSize)
-		{
+	if (self.current) {
+		if (!hasSize) {
 			fprintf(stderr, "beginGroup: with current but no size\n");
 			return SVG_STATUS_INVALID_CALL;
 		}
@@ -1004,8 +1001,7 @@ static CGColorRef CreatePatternColorFromRenderContext(SVGRenderContext *theCont)
 {
 	CGFloat w, h;
 	
-	if (hasSize)
-	{
+	if (hasSize) {
 		fprintf(stderr, "-[SVGRenderContext setViewportDimension]: Already have size, ignoring.\n");
 		return SVG_STATUS_SUCCESS;
 	}
@@ -1030,9 +1026,8 @@ static CGColorRef CreatePatternColorFromRenderContext(SVGRenderContext *theCont)
 {
 	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
 	
-	double w,h;
-	w = [self lengthToPoints:width];
-	h = [self lengthToPoints:height];
+	double w = [self lengthToPoints:width];
+	double h = [self lengthToPoints:height];
 	CGContextScaleCTM(tempCtx, w / viewbox.box.width, h / viewbox.box.height);
 	CGContextTranslateCTM(tempCtx, -viewbox.box.x, -viewbox.box.y);
 	return SVG_STATUS_SUCCESS;
@@ -1043,15 +1038,15 @@ static CGColorRef CreatePatternColorFromRenderContext(SVGRenderContext *theCont)
 {
 	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
 	svg_paint_t tempFill = self.current.fillPaint, tempStroke = self.current.strokePaint;
-	switch (tempFill.type)
-	{
+	switch (tempFill.type) {
 		case SVG_PAINT_TYPE_GRADIENT:
 		{
 			CGContextSaveGState(tempCtx);
-			if (self.current.fillRule)
+			if (self.current.fillRule) {
 				CGContextEOClip(tempCtx);
-			else
+			} else {
 				CGContextClip(tempCtx);
+			}
 			CGGradientRef gradient = CreateGradientRefFromSVGGradient(tempFill.p.gradient);
 			
 			switch (tempFill.p.gradient->type) {
@@ -1110,22 +1105,24 @@ static CGColorRef CreatePatternColorFromRenderContext(SVGRenderContext *theCont)
 			
 		case SVG_PAINT_TYPE_COLOR:
 			[self setFillColor:&tempFill.p.color alpha:self.current.fillOpacity];
-			if (tempStroke.type != SVG_PAINT_TYPE_NONE)
+			if (tempStroke.type != SVG_PAINT_TYPE_NONE) {
 				CGContextSaveGState(tempCtx);
-			if (self.current.fillRule)
+			}
+			if (self.current.fillRule) {
 				CGContextEOFillPath(tempCtx);
-			else
+			} else {
 				CGContextFillPath(tempCtx);
-			if (tempStroke.type != SVG_PAINT_TYPE_NONE)
+			}
+			if (tempStroke.type != SVG_PAINT_TYPE_NONE) {
 				CGContextRestoreGState(tempCtx);
+			}
 			break;
 
 		case SVG_PAINT_TYPE_NONE:
 			break;
 	}
 	
-	switch (tempStroke.type)
-	{
+	switch (tempStroke.type) {
 		case SVG_PAINT_TYPE_GRADIENT:
 #warning SVG_PAINT_TYPE_GRADIENT not handled yet!
 			CGContextSaveGState(tempCtx);
@@ -1291,10 +1288,11 @@ static svg_status_t r_set_fill_rule(void *closure, svg_fill_rule_t fill_rule)
 	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
 	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
-	if (fill_rule == SVG_FILL_RULE_NONZERO)
+	if (fill_rule == SVG_FILL_RULE_NONZERO) {
 		self.current.fillRule = 0;
-	else
+	} else {
 		self.current.fillRule = 1;
+	}
 	return SVG_STATUS_SUCCESS;
 }
 
@@ -1355,8 +1353,7 @@ static svg_status_t r_set_stroke_dash_array(void *closure, double *dashes, int n
 	theCur.dash = NULL;
 	theCur.dashLength = 0;
 
-	if (dashes && num_dashes)
-	{
+	if (dashes && num_dashes) {
 		CGFloat *dash = malloc(sizeof(CGFloat) * num_dashes);
 		if (!dash) {
 			return SVG_STATUS_NO_MEMORY;
@@ -1364,16 +1361,16 @@ static svg_status_t r_set_stroke_dash_array(void *closure, double *dashes, int n
 #if CGFLOAT_IS_DOUBLE
 		memcpy(dash, dashes, sizeof(double) * num_dashes);
 #else
-		int i;
-		for (i = 0; i < num_dashes; i++)
+		for (int i = 0; i < num_dashes; i++) {
 			dash[i] = dashes[i];
+		}
 #endif
 		theCur.dash = dash;
 		theCur.dashLength = num_dashes;
 		CGContextSetLineDash(CGCtx, theCur.dashOffset, theCur.dash, theCur.dashLength);
-	}
-	else
+	} else {
 		CGContextSetLineDash(CGCtx, 0.0, NULL, 0);
+	}
 
 	return SVG_STATUS_SUCCESS;
 }
@@ -1401,9 +1398,11 @@ static svg_status_t r_set_stroke_line_cap(void *closure, svg_stroke_line_cap_t l
 		case SVG_STROKE_LINE_CAP_BUTT:
 			i = kCGLineCapButt;
 			break;
+			
 		case SVG_STROKE_LINE_CAP_ROUND:
 			i = kCGLineCapRound;
 			break;
+			
 		case SVG_STROKE_LINE_CAP_SQUARE:
 			i = kCGLineCapSquare;
 			break;
@@ -1419,19 +1418,21 @@ static svg_status_t r_set_stroke_line_join(void *closure, svg_stroke_line_join_t
 	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	CGLineJoin i;
 
-	switch (line_join)
-	{
+	switch (line_join) {
 		case SVG_STROKE_LINE_JOIN_BEVEL:
 			i = kCGLineJoinBevel;
 			break;
+			
 		default:
 		case SVG_STROKE_LINE_JOIN_MITER:
 			i = kCGLineJoinMiter;
 			break;
+			
 		case SVG_STROKE_LINE_JOIN_ROUND:
 			i = kCGLineJoinRound;
 			break;
 	}
+	
 	CGContextSetLineJoin(CGCtx, i);
 
 	return SVG_STATUS_SUCCESS;
@@ -1547,39 +1548,34 @@ static svg_status_t r_render_text(void *closure, svg_length_t *x, svg_length_t *
 {
 	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
 	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
-	svg_status_t retStat = 0;
 	@autoreleasepool {
-		retStat = [self renderText:utf8 atX:[self lengthToPoints:x] y:[self lengthToPoints:y]];
+		return [self renderText:utf8 atX:[self lengthToPoints:x] y:[self lengthToPoints:y]];
 	}
-	return retStat;
 }
 
 static svg_status_t r_render_image(void *closure, unsigned char *data, unsigned int data_width, unsigned int data_height, svg_length_t *x, svg_length_t *y, svg_length_t *width, svg_length_t *height)
 {
 	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
 	CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
-	{
-		CGFloat cx, cy, cw, ch;
-		cx = [self lengthToPoints:x];
-		cy = [self lengthToPoints:y];
-		cw = [self lengthToPoints:width];
-		ch = [self lengthToPoints:height];
-		NSData *tmpData = [[NSData alloc] initWithBytesNoCopy:data length:data_width * data_height * 4 freeWhenDone:NO];
-		if (!tmpData) {
-			return SVG_STATUS_NO_MEMORY;
-		}
-		CGDataProviderRef theData = CGDataProviderCreateWithCFData((__bridge CFDataRef)tmpData);
-		if (!theData) {
-			return SVG_STATUS_NO_MEMORY;
-		}
-		CGImageRef theImage = CGImageCreate(data_width, data_height, 8, 32, data_width * 4, GetGenericRGBColorSpace(), (CGBitmapInfo)kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrderDefault, theData, NULL, FALSE, kCGRenderingIntentDefault);
-		CGDataProviderRelease(theData);
-		if (!theImage) {
-			return SVG_STATUS_NO_MEMORY;
-		}
-		CGContextDrawImage(CGCtx, CGRectMake(cx, cy, cw, ch), theImage);
-		CGImageRelease(theImage);
+	CGFloat cx = [self lengthToPoints:x];
+	CGFloat cy = [self lengthToPoints:y];
+	CGFloat cw = [self lengthToPoints:width];
+	CGFloat ch = [self lengthToPoints:height];
+	NSData *tmpData = [[NSData alloc] initWithBytesNoCopy:data length:data_width * data_height * 4 freeWhenDone:NO];
+	if (!tmpData) {
+		return SVG_STATUS_NO_MEMORY;
 	}
+	CGDataProviderRef theData = CGDataProviderCreateWithCFData((__bridge CFDataRef)tmpData);
+	if (!theData) {
+		return SVG_STATUS_NO_MEMORY;
+	}
+	CGImageRef theImage = CGImageCreate(data_width, data_height, 8, 32, data_width * 4, GetGenericRGBColorSpace(), (CGBitmapInfo)kCGImageAlphaLast | kCGBitmapByteOrderDefault, theData, NULL, FALSE, kCGRenderingIntentDefault);
+	CGDataProviderRelease(theData);
+	if (!theImage) {
+		return SVG_STATUS_NO_MEMORY;
+	}
+	CGContextDrawImage(CGCtx, CGRectMake(cx, cy, cw, ch), theImage);
+	CGImageRelease(theImage);
 	
 	return SVG_STATUS_SUCCESS;
 }
