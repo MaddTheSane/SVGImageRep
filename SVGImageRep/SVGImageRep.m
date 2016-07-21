@@ -61,7 +61,46 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 	return [[self alloc] initWithData:d];
 }
 
-- (id)initWithData:(NSData *)d
++ (NSImageRep *)imageRepWithContentsOfURL:(NSURL *)url
+{
+	return [[self alloc] initWithURL:url];
+}
+
++ (NSImageRep *)imageRepWithContentsOfFile:(NSString *)filename
+{
+	return [[self alloc] initWithFile:filename];
+}
+
+- (instancetype)initWithFile:(NSString*)file
+{
+	return [self initWithURL:[NSURL fileURLWithPath:file]];
+}
+
+- (instancetype)initWithURL:(NSURL *)d
+{
+	if (self = [super init]) {
+		svg_status_t status;
+		svg_create(&svg);
+		status = svg_parse(svg, d.fileSystemRepresentation);
+		if (status != SVG_STATUS_SUCCESS) {
+			return nil;
+		}
+		[self setColorSpaceName:NSCalibratedRGBColorSpace];
+		[self setAlpha:YES];
+		[self setBitsPerSample:NSImageRepMatchesDevice];
+		[self setOpaque:NO];
+		
+		svg_length_t w, h;
+		svg_get_size(svg, &w, &h);
+		NSSize renderSize = NSMakeSize([SVGRenderContext lengthToPoints:&w], [SVGRenderContext lengthToPoints:&h]);
+		[self setSize:renderSize];
+		[self setPixelsHigh:NSImageRepMatchesDevice];
+		[self setPixelsWide:NSImageRepMatchesDevice];
+	}
+	return self;
+}
+
+- (instancetype)initWithData:(NSData *)d
 {
 	svg_status_t status;
 

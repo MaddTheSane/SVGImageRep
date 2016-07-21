@@ -36,7 +36,12 @@
 	tempImage = [[NSImage alloc] initWithContentsOfFile:[resourcePath stringByAppendingPathComponent:@"admon-caution.svg"]];
 	[svgCaution setImage:tempImage];
 	[tempImage release]; tempImage = nil;
-	tempImage = [[NSImage alloc] initWithContentsOfFile:[resourcePath stringByAppendingPathComponent:@"admon-important.svg"]];
+	{
+		NSURL *tempPath = [NSURL fileURLWithPath:[resourcePath stringByAppendingPathComponent:@"admon-important.svg"]];
+		NSImageRep *imRep = [NSClassFromString(@"SVGImageRep") imageRepWithContentsOfURL:tempPath];
+		tempImage = [[NSImage alloc] init];
+		[tempImage addRepresentation:imRep];
+	}
 	[svgImportant setImage:tempImage];
 	[tempImage release]; tempImage = nil;
 	tempImage = [[NSImage alloc] initWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"admon-note" withExtension:@"svg"]];
@@ -63,7 +68,9 @@
 		return;
 	NSURL *svgUrl = [[op URLs] objectAtIndex:0];
 
-	NSImage *selectImage = [[NSImage alloc] initWithContentsOfURL:svgUrl];
+	NSImageRep *imRep = [NSClassFromString(@"SVGImageRep") imageRepWithContentsOfURL:svgUrl];
+	NSImage *selectImage = [[NSImage alloc] init];
+	[selectImage addRepresentation:imRep];
 	[svgSelected setImage:selectImage];
 	[selectImage release];
 }

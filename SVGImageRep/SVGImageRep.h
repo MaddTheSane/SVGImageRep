@@ -15,7 +15,10 @@
 
 @interface SVGImageRep : NSImageRep
 
-- (id)initWithData:(NSData *)d;
+- (nullable instancetype)initWithData:(nonnull NSData *)d;
+- (nullable instancetype)initWithURL:(nonnull NSURL *)d;
+- (nullable instancetype)initWithFile:(nonnull NSString*)file;
+
 @end
 
 #endif
