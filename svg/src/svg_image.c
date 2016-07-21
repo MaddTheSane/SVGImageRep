@@ -196,11 +196,11 @@ premultiply_data (png_structp png, png_row_infop row_info, png_bytep data)
     for (i = 0; i < row_info->rowbytes; i += 4) {
 		unsigned char *b = &data[i];
 		unsigned char alpha = b[3];
-		unsigned long pixel = ((((b[0] * alpha) / 255) << 0) |
-							   (((b[1] * alpha) / 255) << 8) |
-							   (((b[2] * alpha) / 255) << 16) |
-							   (alpha << 24));
-		unsigned long *p = (unsigned long *) b;
+		unsigned int pixel = ((((b[0] * alpha) / 255) << 0) |
+							  (((b[1] * alpha) / 255) << 8) |
+							  (((b[2] * alpha) / 255) << 16) |
+							  (alpha << 24));
+		unsigned int *p = (unsigned int *) b;
 		*p = pixel;
     }
 }
