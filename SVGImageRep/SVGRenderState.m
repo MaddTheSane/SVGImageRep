@@ -35,8 +35,7 @@
 	new.strokeWidth = strokeWidth;
 	new.fontFamily = fontFamily; //Declared property has copy in it, so it doesn't retain it.
 	
-	if (dash)
-	{
+	if (dash) {
 		new.dash = malloc(sizeof(CGFloat) * dashLength);
 		memcpy(new.dash, dash, sizeof(CGFloat) * dashLength);
 	}

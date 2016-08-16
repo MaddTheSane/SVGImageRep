@@ -17,7 +17,7 @@
 
 - (nullable instancetype)initWithData:(nonnull NSData *)d;
 - (nullable instancetype)initWithContentsOfURL:(nonnull NSURL *)d;
-- (nullable instancetype)initWithContentsOfFile:(nonnull NSString*)file;
+- (nullable instancetype)initWithContentsOfFile:(nonnull NSString *)file;
 
 @end
 

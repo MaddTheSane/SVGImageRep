@@ -723,8 +723,10 @@
 				553711CA151BD0CD00F8848A /* jpeg-8d */,
 				553711B3151BCF9100F8848A /* Supporting Files */,
 			);
+			indentWidth = 2;
 			path = jpeg;
 			sourceTree = "<group>";
+			usesTabs = 0;
 		};
 		553711B3151BCF9100F8848A /* Supporting Files */ = {
 			isa = PBXGroup;
@@ -740,8 +742,10 @@
 				55371325151BD40500F8848A /* libpng-1.5.9 */,
 				553711C2151BCF9A00F8848A /* Supporting Files */,
 			);
+			indentWidth = 3;
 			path = png;
 			sourceTree = "<group>";
+			usesTabs = 0;
 		};
 		553711C2151BCF9A00F8848A /* Supporting Files */ = {
 			isa = PBXGroup;
@@ -949,7 +953,10 @@
 				55AFA492151AA3BC00B5351D /* Frameworks */,
 				55AFA491151AA3BC00B5351D /* Products */,
 			);
+			indentWidth = 4;
 			sourceTree = "<group>";
+			tabWidth = 4;
+			usesTabs = 1;
 		};
 		55AFA491151AA3BC00B5351D /* Products */ = {
 			isa = PBXGroup;
@@ -1053,6 +1060,7 @@
 			);
 			path = svg;
 			sourceTree = "<group>";
+			usesTabs = 0;
 		};
 		55AFA4D0151AA7E900B5351D /* Supporting Files */ = {
 			isa = PBXGroup;

@@ -52,6 +52,8 @@ static void
 _svg_parser_sax_fatal_error (void	*closure,
 			     const char	*msg, ...);
 
+static void _svg_free(void *payload, xmlChar *name);
+
 static xmlSAXHandler SVG_PARSER_SAX_HANDLER = {
     NULL,				/* internalSubset */
     NULL,				/* isStandalone */
@@ -146,6 +148,12 @@ _svg_parser_parse_chunk (svg_parser_t *parser, const char *buf, size_t count)
     return parser->status;
 }
 
+void
+_svg_free(void *payload, xmlChar *name)
+{
+    xmlFree(payload);
+}
+
 svg_status_t
 _svg_parser_end (svg_parser_t *parser)
 {
@@ -158,7 +166,7 @@ _svg_parser_end (svg_parser_t *parser)
     xmlFreeParserCtxt (parser->ctxt);
     parser->ctxt = NULL;
 
-    xmlHashFree (parser->entities, (xmlHashDeallocator) xmlFree);
+    xmlHashFree (parser->entities, _svg_free);
     parser->entities = NULL;
 
     return parser->status;
