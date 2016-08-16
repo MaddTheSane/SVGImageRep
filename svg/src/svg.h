@@ -24,6 +24,7 @@
 #define SVG_H
 
 #include <stdio.h>
+#include <CoreFoundation/CFBase.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -39,7 +40,7 @@ typedef struct svg_color {
     unsigned int rgb;
 } svg_color_t;
 
-typedef enum svg_length_unit {
+typedef CF_ENUM(unsigned char, svg_length_unit_t) {
     SVG_LENGTH_UNIT_CM,
     SVG_LENGTH_UNIT_EM,
     SVG_LENGTH_UNIT_EX,
@@ -49,13 +50,13 @@ typedef enum svg_length_unit {
     SVG_LENGTH_UNIT_PCT,
     SVG_LENGTH_UNIT_PT,
     SVG_LENGTH_UNIT_PX
-} svg_length_unit_t;
+};
 
-typedef enum svg_length_orientation {
+typedef CF_ENUM(unsigned char, svg_length_orientation_t) {
     SVG_LENGTH_ORIENTATION_HORIZONTAL,
     SVG_LENGTH_ORIENTATION_VERTICAL,
     SVG_LENGTH_ORIENTATION_OTHER
-} svg_length_orientation_t;
+};
 
 typedef struct svg_length {
     double value;
@@ -70,7 +71,7 @@ typedef struct svg_rect {
     double height;
 } svg_rect_t;
 
-typedef enum svg_preserve_aspect_ratio {
+typedef CF_ENUM(unsigned char, svg_preserve_aspect_ratio_t) {
     SVG_PRESERVE_ASPECT_RATIO_UNKNOWN,
     SVG_PRESERVE_ASPECT_RATIO_NONE,
     SVG_PRESERVE_ASPECT_RATIO_XMINYMIN,
@@ -82,13 +83,13 @@ typedef enum svg_preserve_aspect_ratio {
     SVG_PRESERVE_ASPECT_RATIO_XMINYMAX,
     SVG_PRESERVE_ASPECT_RATIO_XMIDYMAX,
     SVG_PRESERVE_ASPECT_RATIO_XMAXYMAX
-} svg_preserve_aspect_ratio_t;
+};
 
-typedef enum svg_meet_or_slice {
+typedef CF_ENUM(unsigned char, svg_meet_or_slice_t) {
    SVG_MEET_OR_SLICE_UNKNOWN,
    SVG_MEET_OR_SLICE_MEET,
    SVG_MEET_OR_SLICE_SLICE
-} svg_meet_or_slice_t;
+};
 
 typedef struct svg_view_box {
     svg_rect_t box;
