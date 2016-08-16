@@ -89,7 +89,7 @@ static void ImagePatternCallback (void *imagePtr, CGContextRef ctx) {
 }
 
 static void ImageReleaseCallback(void *imagePtr) {
-	CFBridgingRelease(imagePtr);
+	CFRelease(imagePtr);
 }
 
 static CGColorRef CreatePatternColorFromRenderContext(SVGRenderContext *theCont)
@@ -115,9 +115,9 @@ static CGColorRef CreatePatternColorFromRenderContext(SVGRenderContext *theCont)
 	CGRect ourRect;
 	ourRect.origin.x = xPos;
 	ourRect.origin.y = yPos;
-	CFRange fitRange;
 	CTFrameRef tempFrame;
 	{
+		CFRange fitRange;
 		CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString((CFAttributedStringRef)textWFont);
 		ourRect.size = CTFramesetterSuggestFrameSizeWithConstraints(framesetter, CFRangeMake(0, [textWFont length]), NULL, CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX), &fitRange);
 		CGPathRef squareRef = CGPathCreateWithRect(ourRect, NULL);
@@ -648,31 +648,29 @@ static CGColorRef CreatePatternColorFromRenderContext(SVGRenderContext *theCont)
 }
 
 /**
- * _xsvg_path_arc_to: Add an arc to the given path
+ * Add an arc to the given path.
  *
- * rx: Radius in x direction (before rotation).
- * ry: Radius in y direction (before rotation).
- * x_axis_rotation: Rotation angle for axes.
- * large_arc_flag: 0 for arc length <= 180, 1 for arc >= 180.
- * sweep: 0 for "negative angle", 1 for "positive angle".
- * x: New x coordinate.
- * y: New y coordinate.
+ * @param rx Radius in \c x direction (before rotation).
+ * @param ry Radius in \c y direction (before rotation).
+ * @param x_axis_rotation Rotation angle for axes.
+ * @param large_arc_flag \c NO for arc length <code><= 180</code>, \c YES for arc <code>>= 180</code>.
+ * @param sweep \c NO for "negative angle", \c YES for "positive angle".
+ * @param x New x coordinate.
+ * @param y New y coordinate.
  *
  **/
 - (void)arcToRx:(double)rx ry:(double) ry
 	   rotation:(double)x_axis_rotation
-   largeArcFlag:(int)large_arc_flag
-	  sweepFlag:(int)sweep_flag
+   largeArcFlag:(BOOL)large_arc_flag
+	  sweepFlag:(BOOL)sweep_flag
 			  x:(double)x
 			  y:(double)y
 {
-    double sin_th, cos_th;
     double a00, a01, a10, a11;
     double x0, y0, x1, y1, xc, yc;
     double d, sfactor, sfactor_sq;
     double th0, th1, th_arc;
     int i, n_segs;
-    double dx, dy, dx1, dy1, Pr1, Pr2, Px, Py, check;
     double curx;
     double cury;
 	
@@ -683,24 +681,25 @@ static CGColorRef CreatePatternColorFromRenderContext(SVGRenderContext *theCont)
 		cury = tempPoint.y;
 	}
 	
-    sin_th = sin(x_axis_rotation * (M_PI / 180.0));
-    cos_th = cos(x_axis_rotation * (M_PI / 180.0));
+    double sin_th = sin(x_axis_rotation * (M_PI / 180.0));
+    double cos_th = cos(x_axis_rotation * (M_PI / 180.0));
 	
-    dx = (curx - x) / 2.0;
-    dy = (cury - y) / 2.0;
-    dx1 =  cos_th * dx + sin_th * dy;
-    dy1 = -sin_th * dx + cos_th * dy;
-    Pr1 = rx * rx;
-    Pr2 = ry * ry;
-    Px = dx1 * dx1;
-    Py = dy1 * dy1;
+    double dx = (curx - x) / 2.0;
+    double dy = (cury - y) / 2.0;
+    double dx1 =  cos_th * dx + sin_th * dy;
+    double dy1 = -sin_th * dx + cos_th * dy;
+    double Pr1 = rx * rx;
+    double Pr2 = ry * ry;
+    double Px = dx1 * dx1;
+    double Py = dy1 * dy1;
     /* Spec : check if radii are large enough */
-    check = Px / Pr1 + Py / Pr2;
-    if(check > 1)
-    {
-        rx = rx * sqrt(check);
-        ry = ry * sqrt(check);
-    }
+	{
+		double check = Px / Pr1 + Py / Pr2;
+		if(check > 1){
+			rx = rx * sqrt(check);
+			ry = ry * sqrt(check);
+		}
+	}
 	
     a00 = cos_th / rx;
     a01 = sin_th / rx;
@@ -740,6 +739,9 @@ static CGColorRef CreatePatternColorFromRenderContext(SVGRenderContext *theCont)
 	 bounds of the error from the following computation of
 	 n_segs. Plus the "+ 0.001" looks just plain fishy. -cworth */
     n_segs = ceil(fabs(th_arc / (M_PI * 0.5 + 0.001)));
+	if (isnan(th_arc)) {
+		n_segs = 0;
+	}
     
     for (i = 0; i < n_segs; i++) {
 		[self _pathArcSegment: xc : yc
@@ -778,13 +780,13 @@ static CGColorRef CreatePatternColorFromRenderContext(SVGRenderContext *theCont)
 			if (rx > 0 || ry > 0) {
 				CGContextMoveToPoint(tempCtx, cx + crx, cy);
 				CGContextAddLineToPoint(tempCtx, cx + cw - crx, cy);
-				[self arcToRx: crx ry: cry rotation: 0 largeArcFlag: 0 sweepFlag: 1 x: cx + cw y: cy + cry];
+				[self arcToRx: crx ry: cry rotation: 0 largeArcFlag: NO sweepFlag: YES x: cx + cw y: cy + cry];
 				CGContextAddLineToPoint(tempCtx, cx + cw, cy + ch - cry);
-				[self arcToRx: crx ry: cry rotation: 0 largeArcFlag: 0 sweepFlag: 1 x: cx + cw - crx y: cy + ch];
+				[self arcToRx: crx ry: cry rotation: 0 largeArcFlag: NO sweepFlag: YES x: cx + cw - crx y: cy + ch];
 				CGContextAddLineToPoint(tempCtx, cx + crx, cy + ch);
-				[self arcToRx: crx ry: cry rotation: 0 largeArcFlag: 0 sweepFlag: 1 x: cx y: cy + ch - cry];
+				[self arcToRx: crx ry: cry rotation: 0 largeArcFlag: NO sweepFlag: YES x: cx y: cy + ch - cry];
 				CGContextAddLineToPoint(tempCtx, cx, cy + cry);
-				[self arcToRx: crx ry: cry rotation: 0 largeArcFlag: 0 sweepFlag: 1 x: cx + crx y: cy];
+				[self arcToRx: crx ry: cry rotation: 0 largeArcFlag: NO sweepFlag: YES x: cx + crx y: cy];
 				CGContextClosePath(tempCtx);
 				CGContextClip(tempCtx);
 			} else
@@ -1354,7 +1356,7 @@ static svg_status_t r_set_stroke_dash_array(void *closure, double *dashes, int n
 	theCur.dashLength = 0;
 
 	if (dashes && num_dashes) {
-		CGFloat *dash = malloc(sizeof(CGFloat) * num_dashes);
+		CGFloat *dash = calloc(sizeof(CGFloat), num_dashes);
 		if (!dash) {
 			return SVG_STATUS_NO_MEMORY;
 		}

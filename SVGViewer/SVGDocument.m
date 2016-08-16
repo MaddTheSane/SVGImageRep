@@ -5,6 +5,7 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 #include "SVGDocument.h"
 
 #include <math.h>
+#include <tgmath.h>
 #include <time.h>
 
 #import <Foundation/NSGeometry.h>
@@ -58,8 +59,12 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 	svg_t *svg;
 	
 	svg_create(&svg);
-	
-	svg_status_t status = svg_parse_buffer(svg, [documentData bytes], [documentData length]);
+	svg_status_t status = SVG_STATUS_SUCCESS;
+	if (self.fileURL) {
+		status = svg_parse(svg, self.fileURL.fileSystemRepresentation);
+	} else {
+		status = svg_parse_buffer(svg, [documentData bytes], [documentData length]);
+	}
 	if (status != SVG_STATUS_SUCCESS) {
 		svg_destroy(svg);
 		return;
@@ -107,6 +112,27 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 {
 	[super windowControllerDidLoadNib:aController];
 	[self reload:nil];
+}
+
+- (BOOL)readFromURL:(NSURL *)url ofType:(NSString *)typeName error:(NSError * _Nullable __autoreleasing *)outError
+{
+	svg_t *svg;
+	svg_create(&svg);
+	
+	svg_status_t status = svg_parse(svg, url.fileSystemRepresentation);
+	if (status != SVG_STATUS_SUCCESS) {
+		if (outError != nil) {
+			NSError *error =  [NSError errorWithDomain:NSCocoaErrorDomain code:NSFileReadCorruptFileError userInfo:nil];
+			*outError = error;
+		}
+		svg_destroy(svg);
+		
+		return NO;
+	}
+	self.documentData = [NSData dataWithContentsOfURL:url];
+	
+	svg_destroy(svg);
+	return YES;
 }
 
 - (BOOL)readFromData:(NSData *)data ofType:(NSString *)typeName error:(NSError **)outError

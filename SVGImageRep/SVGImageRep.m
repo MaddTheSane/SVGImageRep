@@ -26,7 +26,7 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 {
 	static NSArray<NSString *> *types = nil;
 	if (types == nil) {
-		types = [[NSArray alloc] initWithObjects:@"svg", nil];
+		types = @[@"svg"];
 	}
 	return types;
 }
@@ -35,7 +35,7 @@ copyright 2003, 2004, 2005 Alexander Malmberg <alexander@malmberg.org>
 {
 	static NSArray<NSString *> *UTItypes = nil;
 	if (UTItypes == nil) {
-		UTItypes = [[NSArray alloc] initWithObjects:@"public.svg-image", nil];
+		UTItypes = @[@"public.svg-image"];
 	}
 	return UTItypes;
 }

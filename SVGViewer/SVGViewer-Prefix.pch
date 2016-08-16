@@ -6,3 +6,5 @@
 	#import <Cocoa/Cocoa.h>
 #endif
 #include "svg.h"
+#include <math.h>
+#include <tgmath.h>

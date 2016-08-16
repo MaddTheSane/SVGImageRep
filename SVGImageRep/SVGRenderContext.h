@@ -59,8 +59,8 @@ extern const svg_render_engine_t cocoa_svg_engine;
 
 - (void)arcToRx:(double)rx ry:(double) ry
 	   rotation:(double)x_axis_rotation
-   largeArcFlag:(int)large_arc_flag
-	  sweepFlag:(int)sweep_flag
+   largeArcFlag:(BOOL)large_arc_flag
+	  sweepFlag:(BOOL)sweep_flag
 			  x:(double)x y:(double)y;
 
 - (svg_status_t)beginGroup: (double)opacity;
