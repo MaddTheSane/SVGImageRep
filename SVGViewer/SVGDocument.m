@@ -8,11 +8,7 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 #include <tgmath.h>
 #include <time.h>
 
-#import <Foundation/NSGeometry.h>
-#import <Foundation/NSData.h>
-#import <Foundation/NSError.h>
-#import <Foundation/FoundationErrors.h>
-#import <AppKit/NSGraphicsContext.h>
+#import <Cocoa/Cocoa.h>
 
 #include <svg.h>
 #import "SVGRenderContext.h"
@@ -88,6 +84,8 @@ copyright 2003, 2004 Alexander Malmberg <alexander@malmberg.org>
 		svg_destroy(svg);
 		return;
 	}
+	minXConstraint.constant = scaledRect.size.width;
+	minYConstraint.constant = scaledRect.size.height;
 	[svg_view setFrame:scaledRect];
 	[svg_view setSVGRenderContext:svg_render_context];
 	

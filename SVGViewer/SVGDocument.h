@@ -9,6 +9,7 @@ copyright 2003 Alexander Malmberg <alexander@malmberg.org>
 #import <AppKit/NSView.h>
 
 @class NSString, NSData;
+@class NSLayoutConstraint;
 @class SVGRenderContext;
 
 @interface SVGView : NSView
@@ -27,6 +28,8 @@ copyright 2003 Alexander Malmberg <alexander@malmberg.org>
 	NSData *documentData;
 
 	IBOutlet SVGView *svg_view;
+	IBOutlet NSLayoutConstraint *minXConstraint;
+	IBOutlet NSLayoutConstraint *minYConstraint;
 
 	double scale;
 }

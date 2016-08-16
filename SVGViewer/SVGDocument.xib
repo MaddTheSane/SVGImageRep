@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10117" systemVersion="15G31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10117" systemVersion="15G31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
+        <development version="7000" identifier="xcode"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10117"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="SVGDocument">
             <connections>
+                <outlet property="minXConstraint" destination="W5P-WD-Ziu" id="Usd-Rh-bMV"/>
+                <outlet property="minYConstraint" destination="8YK-Uf-eSX" id="wEn-17-Smp"/>
                 <outlet property="svg_view" destination="5" id="16"/>
                 <outlet property="window" destination="1" id="14"/>
             </connections>
@@ -17,34 +20,48 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="196" y="240" width="558" height="351"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1057"/>
             <view key="contentView" id="2">
                 <rect key="frame" x="0.0" y="0.0" width="558" height="351"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <scrollView borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" allowsMagnification="YES" usesPredominantAxisScrolling="NO" id="4">
+                    <scrollView borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" allowsMagnification="YES" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4">
                         <rect key="frame" x="0.0" y="0.0" width="558" height="351"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <clipView key="contentView" id="Zse-Xk-X5U">
                             <rect key="frame" x="0.0" y="0.0" width="558" height="351"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <view id="5" customClass="SVGView">
-                                    <rect key="frame" x="0.0" y="0.0" width="558" height="351"/>
-                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <view translatesAutoresizingMaskIntoConstraints="NO" id="5" customClass="SVGView">
+                                    <rect key="frame" x="0.0" y="0.0" width="543" height="336"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="543" placeholder="YES" id="890-Dr-Q14"/>
+                                        <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="200" id="8YK-Uf-eSX"/>
+                                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="200" id="W5P-WD-Ziu"/>
+                                        <constraint firstAttribute="height" constant="336" placeholder="YES" id="Wwi-GV-ftB"/>
+                                    </constraints>
                                 </view>
                             </subviews>
+                            <constraints>
+                                <constraint firstAttribute="bottom" secondItem="5" secondAttribute="bottom" id="lJr-Jo-epC"/>
+                                <constraint firstItem="5" firstAttribute="leading" secondItem="Zse-Xk-X5U" secondAttribute="leading" id="tuu-sF-OG9"/>
+                            </constraints>
                         </clipView>
                         <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="6">
-                            <rect key="frame" x="0.0" y="335" width="558" height="16"/>
+                            <rect key="frame" x="0.0" y="336" width="543" height="15"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
-                        <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="7">
-                            <rect key="frame" x="542" y="0.0" width="16" height="351"/>
+                        <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="7">
+                            <rect key="frame" x="543" y="0.0" width="15" height="336"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                     </scrollView>
                 </subviews>
+                <constraints>
+                    <constraint firstItem="4" firstAttribute="leading" secondItem="2" secondAttribute="leading" id="WQe-Yu-FCP"/>
+                    <constraint firstItem="4" firstAttribute="top" secondItem="2" secondAttribute="top" id="s0T-os-bTK"/>
+                    <constraint firstAttribute="trailing" secondItem="4" secondAttribute="trailing" id="uGs-Cb-EAT"/>
+                    <constraint firstAttribute="bottom" secondItem="4" secondAttribute="bottom" id="vNT-3z-0Jr"/>
+                </constraints>
             </view>
         </window>
     </objects>

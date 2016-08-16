@@ -8,7 +8,7 @@
 
 #import <Foundation/NSObject.h>
 #include <CoreGraphics/CoreGraphics.h>
-#if !(TARGET_OS_EMBEDDED || TARGET_OS_IPHONE)
+#if !(TARGET_OS_EMBEDDED || TARGET_OS_IPHONE || TARGET_OS_WATCH || TARGET_OS_TV)
 #import <Foundation/NSGeometry.h>
 #else
 typedef CGSize NSSize;

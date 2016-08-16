@@ -129,9 +129,12 @@ static CGColorRef CreatePatternColorFromRenderContext(SVGRenderContext *theCont)
 	CFRelease(tempFrame);
 }
 
-#if !(TARGET_OS_EMBEDDED || TARGET_OS_IPHONE || TARGET_OS_WATCH || TARGET_OS_TV)
 - (id)getCurrentFont
 {
+	
+#if !(TARGET_OS_EMBEDDED || TARGET_OS_IPHONE || TARGET_OS_WATCH || TARGET_OS_TV)
+//OS X
+	
 	NSFont *f = nil;
 	NSFontManager *fm = [NSFontManager sharedFontManager];
 	NSInteger w = ceil(self.current.fontWeight / 80.0);
@@ -191,12 +194,10 @@ static CGColorRef CreatePatternColorFromRenderContext(SVGRenderContext *theCont)
 		f = [fm fontWithFamily:@"Helvetica" traits:fontTrait weight:w size:self.current.fontSize];
 	
 	return f;
-}
-
+	
 #else
+	//iOS / TvOS / WatchOS
 
--(id)getCurrentFont
-{
 	CTFontRef f = nil, tmpfont = nil;
 	{
 		NSArray<NSString*> *families = [self.current.fontFamily componentsSeparatedByString: @","];
@@ -245,8 +246,8 @@ static CGColorRef CreatePatternColorFromRenderContext(SVGRenderContext *theCont)
 	}
 	CFRelease(f);
 	return CFBridgingRelease(tmpfont);
-}
 #endif
+}
 
 - (void)prepareRender:(double)a_scale
 {
