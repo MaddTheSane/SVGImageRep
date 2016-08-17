@@ -60,8 +60,13 @@ extern CGImageRef CreateSVGImageFromDataWithScaleAutoScale(NSData *data, CGFloat
 	
 	if (rendered == SVG_STATUS_SUCCESS) {
 		CGSize renderSize = [svg_render_context size];
-		unsigned rowBytes = 4 * renderSize.width;
-		CGColorSpaceRef defaultSpace = CGColorSpaceCreateDeviceRGB();
+		unsigned rowBytes = 4 * (unsigned)renderSize.width;
+		CGColorSpaceRef defaultSpace;
+		if (&kCGColorSpaceSRGB == NULL || &CGColorSpaceCreateWithName == NULL) {
+			defaultSpace = CGColorSpaceCreateDeviceRGB();
+		} else {
+			defaultSpace = CGColorSpaceCreateWithName(kCGColorSpaceSRGB);
+		}
 		
 		CGContextRef bitmapContext = CGBitmapContextCreateWithData(NULL, renderSize.width, renderSize.height, 8, rowBytes, defaultSpace, kCGImageAlphaPremultipliedLast, NULL, NULL);
 		CGColorSpaceRelease(defaultSpace);

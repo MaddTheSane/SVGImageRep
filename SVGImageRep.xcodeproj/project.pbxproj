@@ -2016,6 +2016,7 @@
 		55863C98154738DE00A73C76 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				DSTROOT = /tmp/SVGImageRepiOS.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -2036,6 +2037,7 @@
 		55863C99154738DE00A73C76 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				DSTROOT = /tmp/SVGImageRepiOS.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;

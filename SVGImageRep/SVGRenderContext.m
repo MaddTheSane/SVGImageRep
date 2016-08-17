@@ -319,7 +319,7 @@ static CGColorRef CreatePatternColorFromRenderContext(SVGRenderContext *theCont)
 			CGContextSetTextDrawingMode(tempCtx, kCGTextFillClip);
 			[self drawAttributedString:textWFont atX:xPos y:yPos context:tempCtx];
 		{
-			if (self.current.fillRule) {
+			if (self.current.fillRule == SVG_FILL_RULE_EVEN_ODD) {
 				CGContextEOClip(tempCtx);
 			} else {
 				CGContextClip(tempCtx);
@@ -911,12 +911,10 @@ static CGColorRef CreatePatternColorFromRenderContext(SVGRenderContext *theCont)
 
 - (svg_status_t)renderEllipseWithCx:(svg_length_t *)lcx cy:(svg_length_t *)lcy rx:(svg_length_t *)lrx ry:(svg_length_t *)lry;
 {
-	double cx, cy, rx, ry;
-	
-	cx = [self lengthToPoints:lcx];
-	cy = [self lengthToPoints:lcy];
-	rx = [self lengthToPoints:lrx];
-	ry = [self lengthToPoints:lry];
+	double cx = [self lengthToPoints:lcx];
+	double cy = [self lengthToPoints:lcy];
+	double rx = [self lengthToPoints:lrx];
+	double ry = [self lengthToPoints:lry];
 	
 	CGContextRef tempCtx = CGLayerGetContext(renderLayer);
 	
@@ -938,9 +936,6 @@ static CGColorRef CreatePatternColorFromRenderContext(SVGRenderContext *theCont)
 
 - (SVGRenderState*)current
 {
-	if ([states count] == 0) {
-		return nil;
-	}
 	return [states lastObject];
 }
 
@@ -1046,7 +1041,7 @@ static CGColorRef CreatePatternColorFromRenderContext(SVGRenderContext *theCont)
 		case SVG_PAINT_TYPE_GRADIENT:
 		{
 			CGContextSaveGState(tempCtx);
-			if (self.current.fillRule) {
+			if (self.current.fillRule == SVG_FILL_RULE_EVEN_ODD) {
 				CGContextEOClip(tempCtx);
 			} else {
 				CGContextClip(tempCtx);
@@ -1086,10 +1081,11 @@ static CGColorRef CreatePatternColorFromRenderContext(SVGRenderContext *theCont)
 #warning SVG_PAINT_TYPE_PATTERN not handled yet!
 			CGContextSaveGState(tempCtx);
 		{
-			if (self.current.fillRule)
+			if (self.current.fillRule == SVG_FILL_RULE_EVEN_ODD) {
 				CGContextEOClip(tempCtx);
-			else
+			} else {
 				CGContextClip(tempCtx);
+			}
 			svg_element_t *tempElement = tempFill.p.pattern_element;
 			SVGRenderContext *patternRender = [[SVGRenderContext alloc] init];
 			svg_pattern_t *pattern = svg_element_pattern(tempElement);
@@ -1112,7 +1108,7 @@ static CGColorRef CreatePatternColorFromRenderContext(SVGRenderContext *theCont)
 			if (tempStroke.type != SVG_PAINT_TYPE_NONE) {
 				CGContextSaveGState(tempCtx);
 			}
-			if (self.current.fillRule) {
+			if (self.current.fillRule == SVG_FILL_RULE_EVEN_ODD) {
 				CGContextEOFillPath(tempCtx);
 			} else {
 				CGContextFillPath(tempCtx);
@@ -1292,11 +1288,7 @@ static svg_status_t r_set_fill_rule(void *closure, svg_fill_rule_t fill_rule)
 	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
 	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	
-	if (fill_rule == SVG_FILL_RULE_NONZERO) {
-		self.current.fillRule = 0;
-	} else {
-		self.current.fillRule = 1;
-	}
+	self.current.fillRule = fill_rule;
 	return SVG_STATUS_SUCCESS;
 }
 
@@ -1304,8 +1296,8 @@ static svg_status_t r_set_font_family(void *closure, const char *family)
 {
 	SVGRenderContext *self = (__bridge SVGRenderContext *)closure;
 	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
-	NSString *tempString = @(family);
-	self.current.fontFamily = tempString;
+	
+	self.current.fontFamily = @(family);
 	return SVG_STATUS_SUCCESS;
 }
 

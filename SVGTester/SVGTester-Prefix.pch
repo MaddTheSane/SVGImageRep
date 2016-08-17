@@ -2,6 +2,8 @@
 // Prefix header for all source files of the 'SVGTester' target in the 'SVGTester' project
 //
 
+#include <math.h>
+#include <tgmath.h>
 #import <Availability.h>
 
 #ifndef __IPHONE_4_0

@@ -20,7 +20,7 @@
 @property (readwrite, nonatomic) svg_color_t color;
 @property (readwrite, nonatomic) double opacity;
 @property (readwrite, nonatomic) double strokeWidth;
-@property (readwrite, nonatomic) int fillRule;
+@property (readwrite, nonatomic) svg_fill_rule_t fillRule;
 @property (readwrite, nonatomic, copy) NSString *fontFamily;
 @property (readwrite, nonatomic) svg_font_style_t fontStyle;
 @property (readwrite, nonatomic) double fontSize;
