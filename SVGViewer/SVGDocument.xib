@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10117" systemVersion="15G31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <deployment identifier="macosx"/>
         <development version="7000" identifier="xcode"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10117"/>
     </dependencies>
     <objects>
-        <customObject id="-2" userLabel="File's Owner" customClass="SVGDocument">
+        <customObject id="-2" userLabel="File's Owner" customClass="SVGDocument" customModule="SVGViewer" customModuleProvider="target">
             <connections>
                 <outlet property="minXConstraint" destination="W5P-WD-Ziu" id="Usd-Rh-bMV"/>
                 <outlet property="minYConstraint" destination="8YK-Uf-eSX" id="wEn-17-Smp"/>
-                <outlet property="svg_view" destination="5" id="16"/>
+                <outlet property="svgView" destination="5" id="16"/>
                 <outlet property="window" destination="1" id="14"/>
             </connections>
         </customObject>
@@ -20,7 +19,7 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="196" y="240" width="558" height="351"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1057"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <view key="contentView" id="2">
                 <rect key="frame" x="0.0" y="0.0" width="558" height="351"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -31,7 +30,7 @@
                             <rect key="frame" x="0.0" y="0.0" width="558" height="351"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <view translatesAutoresizingMaskIntoConstraints="NO" id="5" customClass="SVGView">
+                                <view translatesAutoresizingMaskIntoConstraints="NO" id="5" customClass="SVGView" customModule="SVGViewer" customModuleProvider="target">
                                     <rect key="frame" x="0.0" y="0.0" width="543" height="336"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="543" placeholder="YES" id="890-Dr-Q14"/>
@@ -47,11 +46,11 @@
                             </constraints>
                         </clipView>
                         <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="6">
-                            <rect key="frame" x="0.0" y="336" width="543" height="15"/>
+                            <rect key="frame" x="0.0" y="335" width="558" height="16"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="7">
-                            <rect key="frame" x="543" y="0.0" width="15" height="336"/>
+                            <rect key="frame" x="543" y="0.0" width="15" height="351"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                     </scrollView>
