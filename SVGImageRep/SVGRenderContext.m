@@ -967,7 +967,7 @@ static CGColorRef CreatePatternColorFromRenderContext(SVGRenderContext *theCont)
 {
 	CGContextRef tempCtx;
 	if (theIndent == 4) {
-		tempCtx= CGLayerGetContext(unsizedRenderLayer);
+		tempCtx = CGLayerGetContext(unsizedRenderLayer);
 	} else {
 		tempCtx = CGLayerGetContext(renderLayer);
 	}

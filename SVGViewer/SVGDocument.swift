@@ -36,7 +36,7 @@ class SVGDocument: NSDocument {
 	@IBOutlet weak var minXConstraint: NSLayoutConstraint!
 	@IBOutlet weak var minYConstraint: NSLayoutConstraint!
 	
-	var scale = 0.0
+	private var scale = 1.0
 	
 	@IBAction func reload(sender: AnyObject?) {
 		var svg: COpaquePointer = nil
@@ -49,7 +49,6 @@ class SVGDocument: NSDocument {
 			status = svg_parse(svg, fileURL.fileSystemRepresentation)
 		} else {
 			status = svg_parse_buffer(svg, UnsafePointer<Int8>(documentData.bytes), documentData.length);
-
 		}
 		if status != SVG_STATUS_SUCCESS {
 			return
@@ -65,7 +64,7 @@ class SVGDocument: NSDocument {
 		}()
 		let svg_render_context = SVGRenderContext()
 		
-		autoreleasepool { 
+		autoreleasepool {
 			svg_render_context.prepareRender(scale)
 			//Because Swift can be too strict about consts
 			var tmpEngine = cocoa_svg_engine
@@ -94,13 +93,26 @@ class SVGDocument: NSDocument {
 	
 	override func readFromURL(url: NSURL, ofType typeName: String) throws {
 		var svg: COpaquePointer = nil
-		svg_create(&svg);
+		var status = svg_create(&svg);
+		if status == SVG_STATUS_NO_MEMORY {
+			throw NSError(domain: NSOSStatusErrorDomain, code: kENOMEMErr, userInfo: nil)
+		}
 		defer {
 			svg_destroy(svg);
 		}
 		
-		let status = svg_parse(svg, url.fileSystemRepresentation);
-		if status != SVG_STATUS_SUCCESS {
+		status = svg_parse(svg, url.fileSystemRepresentation);
+		switch status {
+		case SVG_STATUS_SUCCESS:
+			break;
+			
+		case SVG_STATUS_NO_MEMORY:
+			throw NSError(domain: NSOSStatusErrorDomain, code: kENOMEMErr, userInfo: nil)
+			
+		case SVG_STATUS_FILE_NOT_FOUND:
+			throw NSError(domain: NSCocoaErrorDomain, code: NSFileReadNoSuchFileError, userInfo: nil)
+
+		default:
 			throw NSError(domain: NSCocoaErrorDomain, code: NSFileReadCorruptFileError, userInfo: nil)
 		}
 		documentData = NSData(contentsOfURL: url)
@@ -108,13 +120,26 @@ class SVGDocument: NSDocument {
 	
 	override func readFromData(data: NSData, ofType typeName: String) throws {
 		var svg: COpaquePointer = nil
-		svg_create(&svg);
+		var status = svg_create(&svg);
+		if status == SVG_STATUS_NO_MEMORY {
+			throw NSError(domain: NSOSStatusErrorDomain, code: kENOMEMErr, userInfo: nil)
+		}
 		defer {
 			svg_destroy(svg);
 		}
 
-		let status = svg_parse_buffer(svg, UnsafePointer<Int8>(data.bytes), data.length);
-		if status != SVG_STATUS_SUCCESS {
+		status = svg_parse_buffer(svg, UnsafePointer<Int8>(data.bytes), data.length);
+		switch status {
+		case SVG_STATUS_SUCCESS:
+			break;
+			
+		case SVG_STATUS_NO_MEMORY:
+			throw NSError(domain: NSOSStatusErrorDomain, code: kENOMEMErr, userInfo: nil)
+			
+		case SVG_STATUS_FILE_NOT_FOUND:
+			throw NSError(domain: NSCocoaErrorDomain, code: NSFileReadNoSuchFileError, userInfo: nil)
+			
+		default:
 			throw NSError(domain: NSCocoaErrorDomain, code: NSFileReadCorruptFileError, userInfo: nil)
 		}
 		documentData = data;
