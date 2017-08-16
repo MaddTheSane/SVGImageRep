@@ -266,7 +266,7 @@ _svg_parser_sax_characters (void		*closure,
 
     dst = ch_copy;
     space = 0;
-    for (src=ch, i=0; i < len; i++, src++) {
+    for ((void)(src=ch), i=0; i < len; (void)(i++), src++) {
 		if (*src == '\n')
 			continue;
 		if (*src == '\t' || *src == ' ') {

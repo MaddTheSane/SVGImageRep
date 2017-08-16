@@ -4852,8 +4852,9 @@ png_do_expand_16(png_row_infop row_info, png_bytep row)
        */
       png_byte *sp = row + row_info->rowbytes; /* source, last byte + 1 */
       png_byte *dp = sp + row_info->rowbytes;  /* destination, end + 1 */
-      while (dp > sp)
-         dp[-2] = dp[-1] = *--sp, dp -= 2;
+      while (dp > sp) {
+         dp[-2] = dp[-1] = *--sp; dp -= 2;
+      }
 
       row_info->rowbytes *= 2;
       row_info->bit_depth = 16;

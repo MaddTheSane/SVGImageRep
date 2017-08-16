@@ -111,7 +111,7 @@ put_pixel_rows (j_decompress_ptr cinfo, djpeg_dest_ptr dinfo,
     outptr[0] = (char) GETJSAMPLE(inptr[2]); /* RGB to BGR order */
     outptr[1] = (char) GETJSAMPLE(inptr[1]);
     outptr[2] = (char) GETJSAMPLE(inptr[0]);
-    inptr += 3, outptr += 3;
+    inptr += 3; outptr += 3;
   }
   (void) JFWRITE(dest->pub.output_file, dest->iobuffer, dest->buffer_width);
 }

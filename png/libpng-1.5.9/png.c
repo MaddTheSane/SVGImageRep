@@ -1475,7 +1475,7 @@ png_pow10(int power)
    if (power < 0)
    {
       if (power < DBL_MIN_10_EXP) return 0;
-      recip = 1, power = -power;
+      recip = 1; power = -power;
    }
 
    if (power > 0)
@@ -1552,8 +1552,9 @@ png_ascii_from_fp(png_structp png_ptr, png_charp ascii, png_size_t size,
             /* And this may overflow. */
             double test = png_pow10(exp_b10+1);
 
-            if (test <= DBL_MAX)
-               ++exp_b10, base = test;
+            if (test <= DBL_MAX) {
+               ++exp_b10; base = test;
+            }
 
             else
                break;
@@ -1567,7 +1568,7 @@ png_ascii_from_fp(png_structp png_ptr, png_charp ascii, png_size_t size,
           * test on DBL_MAX above.
           */
          fp /= base;
-         while (fp >= 1) fp /= 10, ++exp_b10;
+         while (fp >= 1) { fp /= 10; ++exp_b10; }
 
          /* Because of the code above fp may, at this point, be
           * less than .1, this is ok because the code below can
@@ -1618,7 +1619,7 @@ png_ascii_from_fp(png_structp png_ptr, png_charp ascii, png_size_t size,
                      /* Rounding up to 10, handle that here. */
                      if (czero > 0)
                      {
-                        --czero, d = 1;
+                        --czero; d = 1;
                         if (cdigits == 0) --clead;
                      }
                      else
@@ -1632,7 +1633,7 @@ png_ascii_from_fp(png_structp png_ptr, png_charp ascii, png_size_t size,
 
                            else if (ch == 46)
                            {
-                              ch = *--ascii, ++size;
+                              ch = *--ascii; ++size;
                               /* Advance exp_b10 to '1', so that the
                                * decimal point happens after the
                                * previous digit.
@@ -1826,9 +1827,9 @@ png_ascii_from_fixed(png_structp png_ptr, png_charp ascii, png_size_t size,
       png_uint_32 num;
 
       /* Avoid overflow here on the minimum integer. */
-      if (fp < 0)
-         *ascii++ = 45, --size, num = -fp;
-      else
+      if (fp < 0) {
+         *ascii++ = 45; --size; num = -fp;
+      } else
          num = fp;
 
       if (num <= 0x80000000) /* else overflowed */

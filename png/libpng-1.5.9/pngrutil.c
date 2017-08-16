@@ -3598,7 +3598,7 @@ png_read_filter_row_paeth_1byte_pixel(png_row_infop row_info, png_bytep row,
       /* Find the best predictor, the least of pa, pb, pc favoring the earlier
        * ones in the case of a tie.
        */
-      if (pb < pa) pa = pb, a = b;
+      if (pb < pa) { pa = pb; a = b; }
       if (pc < pa) a = c;
 
       /* Calculate the current pixel in a, and move the previous row pixel to c
@@ -3650,7 +3650,7 @@ png_read_filter_row_paeth_multibyte_pixel(png_row_infop row_info, png_bytep row,
          pc = (p + pc) < 0 ? -(p + pc) : p + pc;
 #     endif
 
-      if (pb < pa) pa = pb, a = b;
+      if (pb < pa) { pa = pb; a = b; }
       if (pc < pa) a = c;
 
       c = b;

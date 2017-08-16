@@ -469,7 +469,7 @@ _svg_style_parse_stroke_dash_array (svg_style_t *style, const char *str)
 			return SVG_STATUS_NO_MEMORY;
 		style->stroke_dash_array = new_dash_array;
 		
-		for (i=0, j=style->num_dashes / 2; j < style->num_dashes; i++, j++)
+        for ((void)(i=0), j=style->num_dashes / 2; j < style->num_dashes; (void)(i++), j++)
 			style->stroke_dash_array[j] = style->stroke_dash_array[i];
     }
 
