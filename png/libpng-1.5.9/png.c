@@ -1659,8 +1659,9 @@ png_ascii_from_fp(png_structp png_ptr, png_charp ascii, png_size_t size,
                                */
                               int ch = *--ascii;
 
-                              if (ch == 46)
-                                 ++size, exp_b10 = 1;
+                              if (ch == 46) {
+                                 ++size; exp_b10 = 1;
+                              }
 
                               /* Else lost a leading zero, so 'exp_b10' is
                                * still ok at (-1)
@@ -1696,20 +1697,20 @@ png_ascii_from_fp(png_structp png_ptr, png_charp ascii, png_size_t size,
                       */
                      if (exp_b10 != (-1))
                      {
-                        if (exp_b10 == 0) *ascii++ = 46, --size;
+                        if (exp_b10 == 0) {*ascii++ = 46; --size;}
                         /* PLUS 1: TOTAL 4 */
                         --exp_b10;
                      }
-                     *ascii++ = 48, --czero;
+                     *ascii++ = 48; --czero;
                   }
 
                   if (exp_b10 != (-1))
                   {
-                     if (exp_b10 == 0) *ascii++ = 46, --size; /* counted
+                     if (exp_b10 == 0) {*ascii++ = 46; --size;} /* counted
                                                                  above */
                      --exp_b10;
                   }
-                  *ascii++ = (char)(48 + (int)d), ++cdigits;
+                  *ascii++ = (char)(48 + (int)d); ++cdigits;
                }
             }
             while (cdigits+czero-clead < (int)precision && fp > DBL_MIN);
@@ -1750,7 +1751,7 @@ png_ascii_from_fp(png_structp png_ptr, png_charp ascii, png_size_t size,
              */
             size -= cdigits;
 
-            *ascii++ = 69, --size;    /* 'E': PLUS 1 TOTAL 2+precision */
+            *ascii++ = 69; --size;    /* 'E': PLUS 1 TOTAL 2+precision */
 
             /* The following use of an unsigned temporary avoids ambiguities in
              * the signed arithmetic on exp_b10 and permits GCC at least to do
@@ -1761,7 +1762,7 @@ png_ascii_from_fp(png_structp png_ptr, png_charp ascii, png_size_t size,
 
                if (exp_b10 < 0)
                {
-                  *ascii++ = 45, --size; /* '-': PLUS 1 TOTAL 3+precision */
+                  *ascii++ = 45; --size; /* '-': PLUS 1 TOTAL 3+precision */
                   uexp_b10 = -exp_b10;
                }
 
@@ -1866,7 +1867,7 @@ png_ascii_from_fixed(png_structp png_ptr, png_charp ascii, png_size_t size,
                 * then ndigits digits to first:
                 */
                i = 5;
-               while (ndigits < i) *ascii++ = 48, --i;
+               while (ndigits < i) {*ascii++ = 48; --i;}
                while (ndigits >= first) *ascii++ = digits[--ndigits];
                /* Don't output the trailing zeros! */
             }

@@ -3096,7 +3096,7 @@ png_combine_row(png_structp png_ptr, png_bytep dp, int display)
                 */
                do
                {
-                  dp[0] = sp[0], dp[1] = sp[1];
+                  dp[0] = sp[0]; dp[1] = sp[1];
 
                   if (row_width <= bytes_to_jump)
                      return;
@@ -3117,7 +3117,7 @@ png_combine_row(png_structp png_ptr, png_bytep dp, int display)
                 */
                for(;;)
                {
-                  dp[0] = sp[0], dp[1] = sp[1], dp[2] = sp[2];
+                  dp[0] = sp[0]; dp[1] = sp[1]; dp[2] = sp[2];
 
                   if (row_width <= bytes_to_jump)
                      return;

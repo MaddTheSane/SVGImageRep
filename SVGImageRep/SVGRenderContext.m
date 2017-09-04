@@ -34,7 +34,7 @@
 static CGGradientRef CreateGradientRefFromSVGGradient(const svg_gradient_t *gradient) CF_RETURNS_RETAINED;
 static CGColorRef CreatePatternColorFromRenderContext(SVGRenderContext *theCont) CF_RETURNS_RETAINED;
 static inline CGColorRef CreateColorRefFromSVGColor(const svg_color_t *c, CGFloat alpha) CF_RETURNS_RETAINED;
-static CGColorSpaceRef GetGenericRGBColorSpace(void);
+static CGColorSpaceRef GetGenericRGBColorSpace(void) CF_RETURNS_NOT_RETAINED;
 
 @interface SVGRenderContext ()
 
@@ -1238,11 +1238,11 @@ static svg_status_t r_arc_to(void *closure, double rx, double ry, double x_axis_
 	//CGContextRef CGCtx = CGLayerGetContext(self.renderLayer);
 	[self arcToRx: rx
 			   ry: ry
-			   rotation: x_axis_rotation
-			   largeArcFlag: large_arc_flag
-			   sweepFlag: sweep_flag
-			   x: x
-			   y: y];
+		 rotation: x_axis_rotation
+	 largeArcFlag: large_arc_flag
+		sweepFlag: sweep_flag
+				x: x
+				y: y];
 	return SVG_STATUS_SUCCESS;
 }
 
