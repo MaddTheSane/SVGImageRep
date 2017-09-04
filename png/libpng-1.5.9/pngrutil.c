@@ -3096,7 +3096,7 @@ png_combine_row(png_structp png_ptr, png_bytep dp, int display)
                 */
                do
                {
-                  dp[0] = sp[0], dp[1] = sp[1];
+                  dp[0] = sp[0]; dp[1] = sp[1];
 
                   if (row_width <= bytes_to_jump)
                      return;
@@ -3117,7 +3117,7 @@ png_combine_row(png_structp png_ptr, png_bytep dp, int display)
                 */
                for(;;)
                {
-                  dp[0] = sp[0], dp[1] = sp[1], dp[2] = sp[2];
+                  dp[0] = sp[0]; dp[1] = sp[1]; dp[2] = sp[2];
 
                   if (row_width <= bytes_to_jump)
                      return;
@@ -3598,7 +3598,7 @@ png_read_filter_row_paeth_1byte_pixel(png_row_infop row_info, png_bytep row,
       /* Find the best predictor, the least of pa, pb, pc favoring the earlier
        * ones in the case of a tie.
        */
-      if (pb < pa) pa = pb, a = b;
+      if (pb < pa) { pa = pb; a = b; }
       if (pc < pa) a = c;
 
       /* Calculate the current pixel in a, and move the previous row pixel to c
@@ -3650,7 +3650,7 @@ png_read_filter_row_paeth_multibyte_pixel(png_row_infop row_info, png_bytep row,
          pc = (p + pc) < 0 ? -(p + pc) : p + pc;
 #     endif
 
-      if (pb < pa) pa = pb, a = b;
+      if (pb < pa) { pa = pb; a = b; }
       if (pc < pa) a = c;
 
       c = b;

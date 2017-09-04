@@ -34,7 +34,7 @@
 static CGGradientRef CreateGradientRefFromSVGGradient(const svg_gradient_t *gradient) CF_RETURNS_RETAINED;
 static CGColorRef CreatePatternColorFromRenderContext(SVGRenderContext *theCont) CF_RETURNS_RETAINED;
 static inline CGColorRef CreateColorRefFromSVGColor(const svg_color_t *c, CGFloat alpha) CF_RETURNS_RETAINED;
-static CGColorSpaceRef GetGenericRGBColorSpace();
+static CGColorSpaceRef GetGenericRGBColorSpace(void) CF_RETURNS_NOT_RETAINED;
 
 @interface SVGRenderContext ()
 
