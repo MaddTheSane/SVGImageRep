@@ -15,22 +15,22 @@ class SVGView : NSView {
 		}
 	}
 	
-	override var opaque: Bool {
+	override var isOpaque: Bool {
 		return true
 	}
 	
-	override func drawRect(dirtyRect: NSRect) {
-		if let tempRef = NSGraphicsContext.currentContext()?.CGContext, svg = renderContext {
+	override func draw(_ dirtyRect: NSRect) {
+		if let tempRef = NSGraphicsContext.current?.cgContext, let svg = renderContext {
 			let svgSize = svg.size
-			CGContextSetGrayFillColor(tempRef, 1.0, 1.0);
-			CGContextFillRect(tempRef, CGRect(origin: .zero, size: svgSize))
-			CGContextDrawLayerInRect(tempRef, CGRect(origin: .zero, size: svgSize), svg.renderLayer);
+			tempRef.setFillColor(gray: 1.0, alpha: 1.0)
+			tempRef.fill(CGRect(origin: .zero, size: svgSize))
+			tempRef.draw(svg.renderLayer, in: CGRect(origin: .zero, size: svgSize))
 		}
 	}
 }
 
 class SVGDocument: NSDocument {
-	@NSCopying private var documentData: NSData!
+	private var documentData: Data!
 
 	@IBOutlet weak var svgView: SVGView!
 	@IBOutlet weak var minXConstraint: NSLayoutConstraint!
@@ -38,17 +38,21 @@ class SVGDocument: NSDocument {
 	
 	private var scale = 1.0
 	
-	@IBAction func reload(sender: AnyObject?) {
-		var svg: COpaquePointer = nil
+	@IBAction func reload(_ sender: AnyObject?) {
+		var svg: OpaquePointer? = nil
 		svg_create(&svg)
 		defer {
 			svg_destroy(svg)
 		}
 		var status = SVG_STATUS_SUCCESS
 		if let fileURL = fileURL {
-			status = svg_parse(svg, fileURL.fileSystemRepresentation)
+			status = fileURL.withUnsafeFileSystemRepresentation({ (path) -> svg_status_t in
+				return svg_parse(svg, path)
+			})
 		} else {
-			status = svg_parse_buffer(svg, UnsafePointer<Int8>(documentData.bytes), documentData.length);
+			status = documentData.withUnsafeBytes { (bytes: UnsafePointer<Int8>) -> svg_status_t in
+				return svg_parse_buffer(svg, bytes, documentData.count)
+			}
 		}
 		if status != SVG_STATUS_SUCCESS {
 			return
@@ -59,16 +63,16 @@ class SVGDocument: NSDocument {
 			var height = svg_length_t()
 			var width = svg_length_t()
 			svg_get_size(svg, &width, &height)
-			tmpRect.size = NSSize(width: SVGRenderContext.lengthToPoints(&width) * scale, height: SVGRenderContext.lengthToPoints(&height) * scale)
+			tmpRect.size = NSSize(width: SVGRenderContext.length(toPoints: &width) * scale, height: SVGRenderContext.length(toPoints: &height) * scale)
 			return tmpRect
 		}()
 		let svg_render_context = SVGRenderContext()
 		
 		autoreleasepool {
 			svg_render_context.prepareRender(scale)
-			//Because Swift can be too strict about consts
+			// Because Swift can be too strict about consts
 			var tmpEngine = cocoa_svg_engine
-			status = svg_render(svg, &tmpEngine, UnsafeMutablePointer<Void>(Unmanaged.passUnretained(svg_render_context).toOpaque()))
+			status = svg_render(svg, &tmpEngine, Unmanaged.passUnretained(svg_render_context).toOpaque())
 			svg_render_context.finishRender()
 		}
 		
@@ -82,17 +86,17 @@ class SVGDocument: NSDocument {
 		svgView.renderContext = svg_render_context
 	}
 	
-	override var windowNibName: String? {
-		return "SVGDocument"
+	override var windowNibName: NSNib.Name? {
+		return NSNib.Name("SVGDocument")
 	}
 	
-	override func windowControllerDidLoadNib(windowController: NSWindowController) {
+	override func windowControllerDidLoadNib(_ windowController: NSWindowController) {
 		super.windowControllerDidLoadNib(windowController)
 		reload(nil)
 	}
 	
-	override func readFromURL(url: NSURL, ofType typeName: String) throws {
-		var svg: COpaquePointer = nil
+	override func read(from url: URL, ofType typeName: String) throws {
+		var svg: OpaquePointer? = nil
 		var status = svg_create(&svg);
 		if status == SVG_STATUS_NO_MEMORY {
 			throw NSError(domain: NSOSStatusErrorDomain, code: kENOMEMErr, userInfo: nil)
@@ -101,7 +105,9 @@ class SVGDocument: NSDocument {
 			svg_destroy(svg);
 		}
 		
-		status = svg_parse(svg, url.fileSystemRepresentation);
+		status = url.withUnsafeFileSystemRepresentation { (fsr) -> svg_status_t in
+			return svg_parse(svg, fsr)
+		}
 		switch status {
 		case SVG_STATUS_SUCCESS:
 			break;
@@ -115,11 +121,11 @@ class SVGDocument: NSDocument {
 		default:
 			throw NSError(domain: NSCocoaErrorDomain, code: NSFileReadCorruptFileError, userInfo: nil)
 		}
-		documentData = NSData(contentsOfURL: url)
+		documentData = try Data(contentsOf: url)
 	}
 	
-	override func readFromData(data: NSData, ofType typeName: String) throws {
-		var svg: COpaquePointer = nil
+	override func read(from data: Data, ofType typeName: String) throws {
+		var svg: OpaquePointer? = nil
 		var status = svg_create(&svg);
 		if status == SVG_STATUS_NO_MEMORY {
 			throw NSError(domain: NSOSStatusErrorDomain, code: kENOMEMErr, userInfo: nil)
@@ -128,7 +134,9 @@ class SVGDocument: NSDocument {
 			svg_destroy(svg);
 		}
 
-		status = svg_parse_buffer(svg, UnsafePointer<Int8>(data.bytes), data.length);
+		status = data.withUnsafeBytes { (bytes: UnsafePointer<Int8>) -> svg_status_t in
+			return svg_parse_buffer(svg, bytes, data.count)
+		}
 		switch status {
 		case SVG_STATUS_SUCCESS:
 			break;
@@ -147,43 +155,43 @@ class SVGDocument: NSDocument {
 	
 	
 	
-	@IBAction func scale_0_1(sender: AnyObject!) {
+	@IBAction func scale_0_1(_ sender: AnyObject!) {
 		scale = 0.1
 		reload(nil)
 	}
-	@IBAction func scale_0_25(sender: AnyObject!) {
+	@IBAction func scale_0_25(_ sender: AnyObject!) {
 		scale = 0.25
 		reload(nil)
 	}
-	@IBAction func scale_0_5(sender: AnyObject!) {
+	@IBAction func scale_0_5(_ sender: AnyObject!) {
 		scale = 0.5
 		reload(nil)
 	}
-	@IBAction func scale_0_75(sender: AnyObject!) {
+	@IBAction func scale_0_75(_ sender: AnyObject!) {
 		scale = 0.75
 		reload(nil)
 	}
-	@IBAction func scale_1_0(sender: AnyObject!) {
+	@IBAction func scale_1_0(_ sender: AnyObject!) {
 		scale = 1
 		reload(nil)
 	}
-	@IBAction func scale_1_5(sender: AnyObject!) {
+	@IBAction func scale_1_5(_ sender: AnyObject!) {
 		scale = 1.5
 		reload(nil)
 	}
-	@IBAction func scale_2_0(sender: AnyObject!) {
+	@IBAction func scale_2_0(_ sender: AnyObject!) {
 		scale = 2
 		reload(nil)
 	}
-	@IBAction func scale_3_0(sender: AnyObject!) {
+	@IBAction func scale_3_0(_ sender: AnyObject!) {
 		scale = 3
 		reload(nil)
 	}
-	@IBAction func scale_4_0(sender: AnyObject!) {
+	@IBAction func scale_4_0(_ sender: AnyObject!) {
 		scale = 4
 		reload(nil)
 	}
-	@IBAction func scale_5_0(sender: AnyObject!) {
+	@IBAction func scale_5_0(_ sender: AnyObject!) {
 		scale = 5
 		reload(nil)
 	}
